@@ -15,7 +15,6 @@ namespace UnityXD.Editor
     public class UIComponentInspector : UnityEditor.Editor
     {
         protected UIComponent _componentRef;
-        protected Label _label;
         protected string m_text;
         protected bool m_isVisible;
 

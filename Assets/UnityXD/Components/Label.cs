@@ -54,7 +54,6 @@ namespace UnityXD.Components
                 CurrentStyle.Size = XDSizes.Custom;
                 IsHeightDependantOnWidth = false;
             }
-          
 
             TextRef.text = Text;
             TextRef.font = FontClassData.Font;
