@@ -9,6 +9,62 @@ namespace UnityXD.Editor
 {
     public static class XDUtility
     {
+
+        public static void CreateTabBar(string[] labels, ref string selected)
+        {
+            var x = 0;
+            var cntr = 0;
+            var style = XDStyles.Instance.Tab;
+            var rectBar = CreateEmptyPlaceHolder(labels.Length*(int)style.fixedWidth, (int)style.fixedHeight);
+
+            foreach (var label in labels)
+            {
+            
+                var tabRect = rectBar;
+                var isSelected = selected.ToLower().Equals(label.ToLower());
+                tabRect.width = style.fixedWidth;
+                tabRect.height = style.fixedHeight;
+                tabRect.x += x;
+                var currSelected = CreateTab(tabRect, label, isSelected);
+                if (currSelected)
+                    selected = label;
+                x += (int)tabRect.width;
+            }
+
+        }
+        public static bool CreateTab(Rect pos, string label, bool selected)
+        {
+            var tabSelected = XDStyles.Instance.TabSelected;
+            var tabUnselected = XDStyles.Instance.TabUnselected;
+
+            var styleAdjusted = new GUIStyle(XDStyles.Instance.Tab);
+            styleAdjusted.fixedHeight = pos.height - (styleAdjusted.margin.bottom + styleAdjusted.margin.top);
+            styleAdjusted.fixedWidth = pos.width - (styleAdjusted.margin.left + styleAdjusted.margin.right);
+
+            pos.width = styleAdjusted.fixedWidth;
+            pos.height = styleAdjusted.fixedHeight;
+            pos.x += styleAdjusted.margin.left;
+            pos.y += styleAdjusted.margin.top;
+
+            // Draw the Rect.
+            DrawRect(pos, selected ? tabSelected : tabUnselected);
+
+             // Draw the Top Decal.
+            if (selected)
+            {
+                var decalRect = pos;
+                decalRect.height = styleAdjusted.border.top;
+                DrawRect(decalRect, XDStyles.Instance.Highlight);
+            }
+
+            // Render the Label.
+            if (GUI.Button(pos, label, XDStyles.Instance.ButtonLabel))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static void CreateSwatch(Color color, int size, bool selected)
         {
             var swatchRect = CreateEmptyPlaceHolder(size,size);           
@@ -265,11 +321,16 @@ namespace UnityXD.Editor
             return clr;
         }
 
-        public static void DebugLastRect()
+        public static void DebugLastRect(bool outputConsole = false)
         {
             var rect = GUILayoutUtility.GetLastRect();
             var debugColor = Color.red.Alpha(0.2F);
             EditorGUI.DrawRect(rect, debugColor);
+
+            if (outputConsole)
+            {
+                Debug.LogFormat("W:{0} H:{1} X:{2} Y:{3}", rect.width, rect.height, rect.x, rect.y);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -16,6 +17,12 @@ namespace UnityXD.Editor
         protected Label _label;
         protected string m_text;
         protected bool m_isVisible;
+        protected const string m_labelLayout = "Layout";
+        protected const string m_labelDesign = "Design";
+        protected const string m_labelBinding = "Binding";
+
+        protected string[] m_tabs = {m_labelLayout, m_labelDesign, m_labelBinding};
+        protected string m_currentSelectedTab = m_labelLayout;
 
         public void OnEnable()
         {
@@ -54,16 +61,30 @@ namespace UnityXD.Editor
 
         protected virtual void GeneratateInspector()
         {
-            CreateLayoutControls();
-            CreateBindingControls();
-            CreateDesignControls();
+            CreateTabBar();
+
+            if (m_currentSelectedTab == m_labelLayout)
+                CreateLayoutControls();
+
+            if (m_currentSelectedTab == m_labelDesign)
+                CreateDesignControls();
+
+            if (m_currentSelectedTab == m_labelBinding)
+                CreateBindingControls();
+            
+        }
+
+        protected virtual void CreateTabBar()
+        {
+            XDUtility.CreateTabBar(m_tabs, ref m_currentSelectedTab);
+
         }
 
         protected virtual void CreateLayoutControls()
         {
             GUILayout.Space(8);
             var icon = Resources.Load<Sprite>("icons/Editor/AlignHorizLeft_off");
-            XDUtility.CreateButton(icon,24,24);
+            XDUtility.CreateButton(icon,32,32);
         }
 
         protected virtual void CreateDesignControls()

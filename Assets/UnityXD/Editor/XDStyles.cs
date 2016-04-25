@@ -21,6 +21,7 @@ namespace UnityXD.Editor
         public GUIStyle Checkbox;
         public GUIStyle Button;
         public GUIStyle ButtonLabel;
+        public GUIStyle Tab;
 
         // Foregrounds
         public Color Normal = EditorGUIUtility.isProSkin ? Color.white : Color.black;
@@ -28,6 +29,8 @@ namespace UnityXD.Editor
         public Color Disabled = Color.grey;
         public Color Highlight = Color.green;
         public Color Selected = Color.blue;
+        public Color TabSelected = Color.white;
+        public Color TabUnselected = Color.gray;
 
         // Backgrounds.
         public Color Background = GUI.backgroundColor;
@@ -110,6 +113,15 @@ namespace UnityXD.Editor
             ButtonLabel = new GUIStyle(Label);
             ButtonLabel.alignment = TextAnchor.MiddleCenter;
 
+            Tab = new GUIStyle(Button);
+            Tab.fixedHeight = 24;
+            Tab.fixedWidth = 72;
+            Tab.border = new RectOffset(0,0,2,0);
+            Tab.normal.textColor = Color.blue;
+            Tab.normal.background = XDUtility.CreateColoredTexture(TabUnselected);
+            Tab.active.textColor = Color.black;
+            Tab.active.background = XDUtility.CreateColoredTexture(TabSelected);
+            Tab.margin = new RectOffset(0,4,0,0);
         }
     }
 }
