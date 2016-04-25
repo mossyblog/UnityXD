@@ -15,11 +15,22 @@ namespace UnityXD.Editor
     public class UIComponentInspector : UnityEditor.Editor
     {
         protected UIComponent _componentRef;
+
+        // LABEL SPECIFIC
+        protected Label _labelRef;
+        protected TextAnchor m_textAlignment;
+        protected bool m_autosized;
+        protected bool m_truncate;
+        protected XDFontSizes m_fontSize;
+        protected XDFontStyle m_fontStyle;
+        protected XDFontStyleNames m_fontStyleName;
+
         protected string m_text;
         protected bool m_isVisible;
 
         protected bool m_design_backfillEnabled;
         protected bool m_design_fillEnabled = true;
+        protected bool m_design_labelEnabled = false;
         protected bool m_layout_paddingEnabled = true;
         protected bool m_layout_sizelistEnabled = true;
 
@@ -118,6 +129,26 @@ namespace UnityXD.Editor
                 _componentRef.ApplyTheme(m_style);
             }
             EditorUtility.SetDirty(target);
+        }
+
+        protected virtual void CommitLabelProperties()
+        {
+
+            m_fontStyle = XDTheme.Instance.ResolveFontClass(m_fontStyleName, m_fontSize);
+            m_fontStyle.FrontFill = m_style.FrontFill;
+            m_fontStyle.Size = m_currentSize;
+
+            XDGUIUtility.Bind(ref _labelRef.Text, ref m_text);
+            XDGUIUtility.Bind(ref _labelRef.Alignment, ref m_textAlignment);
+            XDGUIUtility.Bind(ref _labelRef.AutoSize, ref m_autosized);
+            XDGUIUtility.Bind(ref _labelRef.TruncateToFit, ref m_truncate);
+            XDGUIUtility.Bind(ref _labelRef.FontClassData, ref m_fontStyle);
+            XDGUIUtility.Bind(ref _labelRef.FontClassData.FontSize, ref m_fontSize);
+
+            if (GUI.changed)
+            {
+                _labelRef.ApplyTheme(m_fontStyle);
+            }
         }
 
         protected virtual void GeneratateInspector()
@@ -381,6 +412,31 @@ namespace UnityXD.Editor
             }
         }
 
+        protected virtual void CreateDesignLabelControls()
+        {
+            CreateDivider();
+
+            var filterSizes = new List<String>();
+            filterSizes.Add(XDFontSizes.L.ToString());
+            filterSizes.Add(XDFontSizes.M.ToString());
+            filterSizes.Add(XDFontSizes.S.ToString());
+
+            XDGUIUtility.CreateHeading("Font Settings");
+            using (new XDGUILayout(false, XDGUIStyles.Instance.Group))
+            {
+                XDGUIUtility.CreateTextField("Text", ref m_text, 128, true, true);
+                XDGUIUtility.CreateEnumField("Alignment", ref m_textAlignment, (int)m_textAlignment, 128, null);
+                XDGUIUtility.CreateSpacer(16);
+                XDGUIUtility.CreateEnumField("Size", ref m_fontSize, (int)m_fontSize, 128, filterSizes.ToArray());
+                XDGUIUtility.CreateEnumField("Style", ref m_fontStyleName, (int)m_fontStyleName, 128, null);
+                XDGUIUtility.CreateSpacer(16);
+                using (new XDGUILayout(true))
+                {
+                    XDGUIUtility.CreateCheckbox("AutoSize", ref m_autosized, XDGUISizes.Medium);
+                    XDGUIUtility.CreateCheckbox("Truncate", ref m_truncate, XDGUISizes.Medium);
+                }
+            }
+        }
         protected virtual void CreateBindingControls()
         {
         }

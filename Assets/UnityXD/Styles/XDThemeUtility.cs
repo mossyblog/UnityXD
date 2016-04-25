@@ -6,6 +6,8 @@ namespace UnityXD.Styles
 {
     public static class XDThemeUtility
     {
+
+
         public static Color ToColor(this XDColors color, float alpha = 1f)
         {
             var hex = (int) color;

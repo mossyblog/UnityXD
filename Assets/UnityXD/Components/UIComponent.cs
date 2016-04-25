@@ -403,12 +403,46 @@ namespace UnityXD.Components
         public virtual void ApplyTheme(XDStyle xd)
         {
             CurrentStyle = xd;
+        }
 
-            if (ImageRef != null)
+
+        public T GetOrCreateChild<T>(string name)
+        {
+            var result = default(T);
+            var searchresult = gameObject.GetComponentsInChildren<T>(true);
+
+            foreach (var item in searchresult)
             {
-                ImageRef.color = xd.FrontFill.ToColor();
+                var childObj = item.GetType().GetProperty("gameObject").GetValue(item, null);
+                var gameObj = (GameObject)Convert.ChangeType(childObj, typeof(GameObject));
+                result = item;
+                if (gameObj.name == name)
+                {
+                    result = item;
+                }
             }
 
+            if (result == null)
+            {
+                result = CreateChild<T>(name);
+            }
+            return result;
         }
+        public T CreateChild<T>(string name)
+        {
+
+            if (!gameObject.activeInHierarchy)
+            {
+                return default(T);
+            }
+
+            var child = new GameObject();
+            child.transform.SetParent(transform, false);
+            child.name = name;
+            var comp = child.AddComponent(typeof(T));
+
+            return (T)Convert.ChangeType(comp, typeof(T));
+        }
+
     }
 }
