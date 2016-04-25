@@ -20,7 +20,6 @@ namespace UnityXD.Components
         public int X;
         public int Y;
         public bool IsHeightDependantOnWidth;
-        public string Text;
         public bool IsVisible;
         public RectOffset Padding;
         public RectOffset Margin;
@@ -66,6 +65,7 @@ namespace UnityXD.Components
         /// </summary>
         public virtual void InvalidateDisplay()
         {
+
             CreateChildren();
             InvalidateProperties();
             InvalidateMeasure();
@@ -410,10 +410,5 @@ namespace UnityXD.Components
             }
 
         }
-    }
-
-    public class Label : MonoBehaviour
-    {
-
     }
 }

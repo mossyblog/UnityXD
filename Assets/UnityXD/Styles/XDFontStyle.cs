@@ -10,7 +10,6 @@ namespace UnityXD.Styles
         public XDFontStyleNames StyleName;
         public Font Font;
         public int ActualFontSize;
-        public bool IsManuallyGenerated;
 
         public XDFontStyle ()
         {			

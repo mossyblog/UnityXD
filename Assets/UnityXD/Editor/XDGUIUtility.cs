@@ -176,7 +176,26 @@ namespace UnityXD.Editor
                 fieldRect.x += (int)fieldSize / 4;
             }
             DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
+        }
 
+        public static void CreateTextField(String label, ref string field, int fieldSize, bool isHorizontal = true, bool isenabled = true, TextAnchor labelAlignment = TextAnchor.MiddleLeft)
+        {
+            var fieldRect = CreateLabelPair(label, XDGUISizes.Large, isHorizontal, labelAlignment);
+            var fieldStyle = new GUIStyle(XDGUIStyles.Instance.Field);
+            fieldStyle.alignment = isHorizontal ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
+
+            fieldRect.width = fieldSize;
+
+            GUI.enabled = isenabled;
+            field = EditorGUI.TextField(fieldRect, field, fieldStyle);
+            GUI.enabled = true;
+            
+            if (!isHorizontal)
+            {
+                fieldRect.width -= (int)fieldSize / 2;
+                fieldRect.x += (int)fieldSize / 4;
+            }
+            DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
         }
 
         /// <summary>
@@ -257,14 +276,18 @@ namespace UnityXD.Editor
             //field = EditorGUI.Toggle(fieldRect, field, XDGUIStyles.Instance.Field);
         }
 
-        public static void CreateEnumField<T>(String label, ref T field, int selected, XDGUISizes fieldSize, string[] filters, bool isHorizontal = true, bool isenabled = true, TextAnchor labelAlignment = TextAnchor.MiddleLeft)
+        public static void CreateEnumField<T>(String label, ref T field, int selected, int fieldSize, string[] filters, bool isHorizontal = true, bool isenabled = true, TextAnchor labelAlignment = TextAnchor.MiddleLeft)
         {
-            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal, labelAlignment);
+            var fieldRect = CreateLabelPair(label, XDGUISizes.Large, isHorizontal, labelAlignment);
             var rawValues = new Dictionary<Type, int[]>();
             var names = Enum.GetNames(typeof(T));
             var values = GetEnumValues<T>(rawValues);
+
             var fieldStyle = new GUIStyle(XDGUIStyles.Instance.Field);
             fieldStyle.alignment = isHorizontal ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
+
+            fieldRect.width = fieldSize;
+
             if (filters != null)
             {
                 names = filters;

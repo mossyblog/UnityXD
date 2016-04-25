@@ -10,7 +10,6 @@ using UnityXD.Styles;
 
 namespace UnityXD.Editor
 {
-    [DisallowMultipleComponent]
     [CanEditMultipleObjects]
     [CustomEditor(typeof(UIComponent))]
     public class UIComponentInspector : UnityEditor.Editor
@@ -19,10 +18,15 @@ namespace UnityXD.Editor
         protected Label _label;
         protected string m_text;
         protected bool m_isVisible;
+
+        protected bool m_design_backfillEnabled;
+        protected bool m_design_fillEnabled = true;
+        protected bool m_layout_paddingEnabled = true;
+        protected bool m_layout_sizelistEnabled = true;
+
         protected const string m_labelLayout = "Layout";
         protected const string m_labelDesign = "Design";
         protected const string m_labelBinding = "Binding";
-
         protected string[] m_tabs = {m_labelLayout, m_labelDesign, m_labelBinding};
         protected string m_currentSelectedTab = m_labelLayout;
 
@@ -87,7 +91,8 @@ namespace UnityXD.Editor
 
             m_margin = _componentRef.Margin;
             m_padding = _componentRef.Padding;
-
+            m_style = _componentRef.CurrentStyle;
+            m_currentSize = _componentRef.CurrentStyle.Size;
         }
 
         protected virtual void CommitProperties()
@@ -165,10 +170,14 @@ namespace UnityXD.Editor
                 SIZES.            
             *********************************************************************************/
 
-            using (new XDGUILayout(false, groupStyle))
+            if (m_layout_sizelistEnabled)
             {
-                XDGUIUtility.CreateEnumField("Size", ref m_currentSize, (int)m_currentSize, XDGUISizes.Medium, null);
+                using (new XDGUILayout(false, groupStyle))
+                {
+                    XDGUIUtility.CreateEnumField("Size", ref m_currentSize, (int) m_currentSize, 128, null);
+                }
             }
+
             using (new XDGUILayout(true, groupStyle, GUILayout.Width(64)))
             {
                
@@ -194,27 +203,31 @@ namespace UnityXD.Editor
                 }
             }
 
-            /*********************************************************************************
-               Padding
-           *********************************************************************************/
-            using (new XDGUILayout(false,groupStyle))
+            if (m_layout_paddingEnabled)
             {
-                XDGUIUtility.CreateHeading("Padding");
-            }
+                /*********************************************************************************
+                    Padding
+                *********************************************************************************/
+                using (new XDGUILayout(false, groupStyle))
+                {
+                    XDGUIUtility.CreateHeading("Padding");
+                }
+                using (new XDGUILayout(true, groupStyle))
+                {
+                    var left = m_padding.left;
+                    var right = m_padding.right;
+                    var top = m_padding.top;
+                    var bot = m_padding.bottom;
 
-            using (new XDGUILayout(true, groupStyle))
-            {
-                var left = m_padding.left;
-                var right = m_padding.right;
-                var top = m_padding.top;
-                var bot = m_padding.bottom;
+                    XDGUIUtility.CreateTextField("Left", ref left, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+                    XDGUIUtility.CreateTextField("Right", ref right, XDGUISizes.Small, false, true,
+                        TextAnchor.LowerCenter);
+                    XDGUIUtility.CreateTextField("Top", ref top, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+                    XDGUIUtility.CreateTextField("Bottom", ref bot, XDGUISizes.Small, false, true,
+                        TextAnchor.LowerCenter);
 
-                XDGUIUtility.CreateTextField("Left", ref left, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
-                XDGUIUtility.CreateTextField("Right", ref right, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
-                XDGUIUtility.CreateTextField("Top", ref top, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
-                XDGUIUtility.CreateTextField("Bottom", ref bot, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
-
-                m_padding = new RectOffset(left,right,top,bot);
+                    m_padding = new RectOffset(left, right, top, bot);
+                }
             }
 
             /*********************************************************************************
@@ -329,39 +342,44 @@ namespace UnityXD.Editor
                      .Where(s => s.ToLower().Contains(XDColorTypes.Accent.ToString().ToLower()))
                      .ToList();
 
-            XDGUIUtility.CreateSpacer(8);
-            XDGUIUtility.CreateHeading("Fill Color");
-            using (new XDGUILayout(true, groupStyle))
+            if (m_design_fillEnabled)
             {
-                // Preview Swatch.
-                XDGUIUtility.CreateSwatch(m_style.FrontFill.ToColor(),48,true);                                
-                XDGUIUtility.CreateSpacer(16);
-                using (new XDGUILayout(false))
+                XDGUIUtility.CreateSpacer(8);
+                XDGUIUtility.CreateHeading("Fill Color");
+                using (new XDGUILayout(true, groupStyle))
                 {
-                    XDGUIUtility.CreateSwatchRow(AccentColors.ToArray(), 16, ref m_style.FrontFill);
-                    XDGUIUtility.CreateSwatchRow(BrandColors.ToArray(), 16, ref m_style.FrontFill);
-                    XDGUIUtility.CreateSwatchRow(ChromeColors.ToArray(), 16, ref m_style.FrontFill);
+                    // Preview Swatch.
+                    XDGUIUtility.CreateSwatch(m_style.FrontFill.ToColor(), 48, true);
+                    XDGUIUtility.CreateSpacer(16);
+                    using (new XDGUILayout(false))
+                    {
+                        XDGUIUtility.CreateSwatchRow(AccentColors.ToArray(), 16, ref m_style.FrontFill);
+                        XDGUIUtility.CreateSwatchRow(BrandColors.ToArray(), 16, ref m_style.FrontFill);
+                        XDGUIUtility.CreateSwatchRow(ChromeColors.ToArray(), 16, ref m_style.FrontFill);
+                    }
+
                 }
 
-            }
-
-            XDGUIUtility.CreateSpacer(16);
-
-            XDGUIUtility.CreateHeading("Back Fill Color");
-            using (new XDGUILayout(true, groupStyle))
-            {
-                // Preview Swatch.
-                XDGUIUtility.CreateSwatch(m_style.BackFill.ToColor(), 48, true);
                 XDGUIUtility.CreateSpacer(16);
-                using (new XDGUILayout(false))
-                {
-                    XDGUIUtility.CreateSwatchRow(AccentColors.ToArray(), 16, ref m_style.BackFill);
-                    XDGUIUtility.CreateSwatchRow(BrandColors.ToArray(), 16, ref m_style.BackFill);
-                    XDGUIUtility.CreateSwatchRow(ChromeColors.ToArray(), 16, ref m_style.BackFill);
-                }
-
             }
 
+            if (m_design_backfillEnabled)
+            {
+                XDGUIUtility.CreateHeading("Back Fill Color");
+                using (new XDGUILayout(true, groupStyle))
+                {
+                    // Preview Swatch.
+                    XDGUIUtility.CreateSwatch(m_style.BackFill.ToColor(), 48, true);
+                    XDGUIUtility.CreateSpacer(16);
+                    using (new XDGUILayout(false))
+                    {
+                        XDGUIUtility.CreateSwatchRow(AccentColors.ToArray(), 16, ref m_style.BackFill);
+                        XDGUIUtility.CreateSwatchRow(BrandColors.ToArray(), 16, ref m_style.BackFill);
+                        XDGUIUtility.CreateSwatchRow(ChromeColors.ToArray(), 16, ref m_style.BackFill);
+                    }
+
+                }
+            }
         }
 
         protected virtual void CreateBindingControls()
