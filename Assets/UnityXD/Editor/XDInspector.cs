@@ -57,8 +57,14 @@ namespace UnityXD.Editor
 
         protected virtual void CreateLayoutControls()
         {
-            XDUtility.CreateTextField("test", ref m_text, XDSizes.Large);
-            XDUtility.DebugLastRect();
+            using (new XDLayout(true))
+            {
+                XDUtility.CreateTextField("Width", ref m_text, XDSizes.Small);
+                XDUtility.CreateTextField("Height", ref m_text, XDSizes.Small);
+
+                XDUtility.DebugLastRect();
+            }
+            
         }
 
         protected virtual void CreateDesignControls()

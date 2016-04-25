@@ -6,27 +6,69 @@ namespace UnityXD.Editor
 {
     public static class XDUtility
     {
-
+        /// <summary>
+        /// Creates a TextField that allows type of String.
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="field"></param>
+        /// <param name="fieldSize"></param>
+        /// <param name="isHorizontal"></param>
         public static void CreateTextField(String label, ref string field, XDSizes fieldSize, bool isHorizontal = true)
         {
-            var groupStyle = XDStyles.Instance.ResolveGroup(fieldSize, isHorizontal);
+            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            field = EditorGUI.TextField(fieldRect, field, XDStyles.Instance.Field);
+        }
+
+        /// <summary>
+        /// Creates a TextField that allows type of Double.
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="field"></param>
+        /// <param name="fieldSize"></param>
+        /// <param name="isHorizontal"></param>
+        public static void CreateTextField(String label, ref double field, XDSizes fieldSize, bool isHorizontal = true)
+        {
+            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            field = EditorGUI.DoubleField(fieldRect, field, XDStyles.Instance.Field);
+        }
+
+        /// <summary>
+        /// Creates a TextField that allows type of Int.
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="field"></param>
+        /// <param name="fieldSize"></param>
+        /// <param name="isHorizontal"></param>
+        public static void CreateTextField(String label, ref int field, XDSizes fieldSize, bool isHorizontal = true)
+        {
+            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            field = EditorGUI.IntField(fieldRect, field, XDStyles.Instance.Field);
+        }
+
+        public static Rect CreateLabelPair(string label, XDSizes fieldSize, bool isHorizontal = true)
+        {
+            var groupStyle = XDStyles.Instance.ResolveGroup(fieldSize, isHorizontal);            
+            var labelRect = new Rect(0,0,0,0);
+            var fieldRect = new Rect(0, 0, 0, 0);
+
+            
             using (var box = new XDLayout(isHorizontal, groupStyle))
             {
                 GUILayout.Space(0);
-
-                var labelRect = box.Rect;
-                var fieldRect = box.Rect;
-
+                labelRect = box.Rect;
+                fieldRect = box.Rect;
+             
                 if (isHorizontal)
                 {
-                    labelRect.width = (int) fieldSize;
-                    fieldRect.width -= (int) fieldSize;
-                    fieldRect.x += (int)fieldSize;
+                    labelRect.width = (int)fieldSize * 2;
+                    fieldRect.width -= (int)fieldSize * 2;
+                    fieldRect.x += (int)fieldSize * 2;
                 }
 
-                GUI.Label(labelRect, label, XDStyles.Instance.Label);
-                field = GUI.TextField(fieldRect, field, XDStyles.Instance.Field);
+                GUI.Label(labelRect, label, XDStyles.Instance.Label);                
             }
+
+            return fieldRect;
         }
 
         public static Texture2D CreateColoredTexture(Color col)
@@ -43,6 +85,12 @@ namespace UnityXD.Editor
             result.Apply();
 
             return result;
+        }      
+
+        public static Color Alpha(this Color clr, float amt)
+        {
+            clr.a = amt;
+            return clr;
         }
 
         public static void DebugLastRect()
@@ -51,12 +99,5 @@ namespace UnityXD.Editor
             var debugColor = Color.red.Alpha(0.2F);
             EditorGUI.DrawRect(rect, debugColor);
         }
-
-        public static Color Alpha(this Color clr, float amt)
-        {
-            clr.a = amt;
-            return clr;
-        }
-
     }
 }
