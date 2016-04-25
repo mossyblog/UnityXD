@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine.UI;
 using UnityXD.Components;
@@ -60,18 +61,7 @@ namespace UnityXD.Editor
 
         protected virtual void CreateLayoutControls()
         {
-            var m_test = XDSizes.Small;
-            
-
-            using (new XDLayout(true))
-            {
-                XDUtility.CreateTextField("Width", ref m_text, XDSizes.Small);
-                XDUtility.CreateTextField("Height", ref m_text, XDSizes.Small);
-               
-                XDUtility.DebugLastRect();
-            }
-            XDUtility.CreateEnumField<XDSizes>("test", ref m_test, 0, XDSizes.Small, null);
-            XDUtility.CreateCheckbox("Height", ref m_isVisible, XDSizes.Small);
+   
         }
 
         protected virtual void CreateDesignControls()

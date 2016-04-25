@@ -8,6 +8,32 @@ namespace UnityXD.Editor
 {
     public static class XDUtility
     {
+        public static void CreateSwatch(Color color, int size, bool selected)
+        {
+            var swatchRect = CreateEmptyPlaceHolder(size,size);           
+            DrawRect(swatchRect, selected ? XDStyles.Instance.SelectedBorder : XDStyles.Instance.UnselectedBorder, color,
+                new RectOffset(1, 1, 1, 1));
+        }
+
+        public static void CreateSwatchRow(Color[] colors, int size, Color colorSelected)
+        {
+            var rowWidth = size*colors.Length;
+            var swatchesRect = CreateEmptyPlaceHolder(rowWidth, size);
+            var x = swatchesRect.x;
+            foreach (var color in colors)
+            {
+                var swatchRect = swatchesRect;
+                var selected = (colorSelected == color);
+                swatchRect.width = size;
+                swatchRect.height = size;
+                swatchRect.x = x;
+                DrawRect(swatchRect, selected ? XDStyles.Instance.SelectedBorder : XDStyles.Instance.UnselectedBorder, color,
+                    new RectOffset(1, 1, 1, 1));
+
+                x += swatchRect.width;
+            }
+        }
+
         /// <summary>
         /// Creates a TextField that allows type of String.
         /// </summary>
@@ -107,16 +133,16 @@ namespace UnityXD.Editor
         {
             var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
             var rawValues = new Dictionary<Type, int[]>();
-            var names = Enum.GetNames(typeof(T));
+            var names = Enum.GetNames(typeof (T));
             var values = GetEnumValues<T>(rawValues);
-            
+
             if (filters != null)
             {
                 names = filters;
                 var valList = new List<int>();
                 foreach (var name in names)
                 {
-                    valList.Add((int)Enum.Parse(typeof(T), name));
+                    valList.Add((int) Enum.Parse(typeof (T), name));
                 }
                 values = valList.ToArray();
             }
@@ -143,25 +169,25 @@ namespace UnityXD.Editor
             fillRect.y += thickness.top;
 
             // Draw the Fill.
-            DrawRect(fillRect,fillColor);
+            DrawRect(fillRect, fillColor);
 
             return fillRect;
         }
 
         private static int[] GetEnumValues<T>(Dictionary<Type, int[]> enumcache)
         {
-            if (!enumcache.ContainsKey(typeof(T)))
-                enumcache[typeof(T)] = Enum.GetValues(typeof(T)).Cast<int>().ToArray();
-            return enumcache[typeof(T)];
+            if (!enumcache.ContainsKey(typeof (T)))
+                enumcache[typeof (T)] = Enum.GetValues(typeof (T)).Cast<int>().ToArray();
+            return enumcache[typeof (T)];
         }
 
         public static Rect CreateLabelPair(string label, XDSizes fieldSize, bool isHorizontal = true)
         {
-            var groupStyle = XDStyles.Instance.ResolveGroup(fieldSize, isHorizontal);            
-            var labelRect = new Rect(0,0,0,0);
+            var groupStyle = XDStyles.Instance.ResolveGroup(fieldSize, isHorizontal);
+            var labelRect = new Rect(0, 0, 0, 0);
             var fieldRect = new Rect(0, 0, 0, 0);
 
-            
+
             using (var box = new XDLayout(isHorizontal, groupStyle))
             {
                 GUILayout.Space(0);
@@ -175,7 +201,22 @@ namespace UnityXD.Editor
                     fieldRect.x += labelW;
                 }
 
-                GUI.Label(labelRect, label, XDStyles.Instance.Label);                
+                GUI.Label(labelRect, label, XDStyles.Instance.Label);
+            }
+
+            return fieldRect;
+        }
+
+        public static Rect CreateEmptyPlaceHolder(int width, int height, bool isHorizontal = true)
+        {
+            var fieldRect = new Rect(0, 0, width, height);
+            var style = new GUIStyle(GUIStyle.none);
+            style.fixedWidth = width;
+            style.fixedHeight = height;
+            using (var box = new XDLayout(isHorizontal,style))
+            {
+                GUILayout.Space(0);
+                fieldRect = box.Rect;
             }
 
             return fieldRect;
@@ -185,7 +226,7 @@ namespace UnityXD.Editor
         {
             var width = 10;
             var height = 10;
-            var pix = new Color[width * height];
+            var pix = new Color[width*height];
 
             for (var i = 0; i < pix.Length; i++)
                 pix[i] = col;
@@ -195,7 +236,7 @@ namespace UnityXD.Editor
             result.Apply();
 
             return result;
-        }      
+        }
 
         public static Color Alpha(this Color clr, float amt)
         {

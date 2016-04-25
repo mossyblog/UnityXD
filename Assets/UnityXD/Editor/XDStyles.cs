@@ -22,16 +22,23 @@ namespace UnityXD.Editor
         public GUIStyle Button;
         public GUIStyle ButtonLabel;
 
+        // Foregrounds
         public Color Normal = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-        public Color Selected = Color.white;
+        public Color PressedForeground = Color.white;
         public Color Disabled = Color.grey;
         public Color Highlight = Color.green;
+        public Color Selected = Color.blue;
+
+        // Backgrounds.
         public Color Background = GUI.backgroundColor;
         public Color FieldBackground = Color.white;
         public Color InputBackground = Color.gray;
-        public Color32 Skin = EditorGUIUtility.isProSkin ? new Color32(56, 56, 56, 255) : new Color32(194, 194, 194, 255);
-
+        public Color PressedBackground = Color.green;
+        public Color SelectedBorder = Color.black;
+        public Color UnselectedBorder = Color.white;
         
+        // Other.
+        public Color32 Skin = EditorGUIUtility.isProSkin ? new Color32(56, 56, 56, 255) : new Color32(194, 194, 194, 255);
 
         public static XDStyles Instance
         {
@@ -97,8 +104,8 @@ namespace UnityXD.Editor
             Button.alignment = TextAnchor.MiddleCenter;
             Button.normal.textColor = Normal;           
             Button.normal.background = XDUtility.CreateColoredTexture(InputBackground);
-            Button.active.textColor = Selected;
-            Button.active.background = XDUtility.CreateColoredTexture(Highlight);
+            Button.active.textColor = PressedForeground;
+            Button.active.background = XDUtility.CreateColoredTexture(PressedBackground);
 
             ButtonLabel = new GUIStyle(Label);
             ButtonLabel.alignment = TextAnchor.MiddleCenter;
