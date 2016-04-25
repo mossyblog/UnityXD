@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.Sprites;
 using UnityEngine;
+using UnityXD.Styles;
 
 namespace UnityXD.Editor
 {
@@ -117,7 +118,22 @@ namespace UnityXD.Editor
                 new RectOffset(1, 1, 1, 1));
         }
 
-        public static void CreateSwatchRow(Color[] colors, int size, Color colorSelected)
+        public static void CreateSwatchRow(string[] colors, int size, ref XDColors colorSelected)
+        {
+            var colorList = new List<XDColors>();
+            foreach (var colorName in colors)
+            {
+                var themeColor = (XDColors)Enum.Parse(typeof(XDColors), colorName);
+                if (themeColor != null)
+                {
+                    colorList.Add(themeColor);
+                }
+            }
+
+            CreateSwatchRow(colorList.ToArray(),size,ref colorSelected);
+        }
+
+        public static void CreateSwatchRow(XDColors[] colors, int size, ref XDColors colorSelected)
         {
             var rowWidth = size*colors.Length;
             var swatchesRect = CreateEmptyPlaceHolder(rowWidth, size);
@@ -129,9 +145,11 @@ namespace UnityXD.Editor
                 swatchRect.width = size;
                 swatchRect.height = size;
                 swatchRect.x = x;
-                DrawRect(swatchRect, selected ? XDGUIStyles.Instance.SelectedBorder : XDGUIStyles.Instance.UnselectedBorder, color,
-                    new RectOffset(1, 1, 1, 1));
-
+                DrawRect(swatchRect, selected ? XDGUIStyles.Instance.SelectedBorder : XDGUIStyles.Instance.UnselectedBorder, color.ToColor(), new RectOffset(1, 1, 1, 1));
+                if (GUI.Button(swatchRect, String.Empty, GUIStyle.none))
+                {
+                    colorSelected = color;
+                }
                 x += swatchRect.width;
             }
         }

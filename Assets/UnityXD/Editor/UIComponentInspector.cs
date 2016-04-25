@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine.UI;
 using UnityXD.Components;
@@ -46,7 +47,7 @@ namespace UnityXD.Editor
 
         protected RectOffset m_padding;
         protected RectOffset m_margin;
-
+        protected XDStyle m_style;
         protected Rect m_bodyRect;
 
         public void OnEnable()
@@ -89,13 +90,6 @@ namespace UnityXD.Editor
 
         }
 
-
-        protected virtual void CommitBindings()
-        {
-           
-        }
-   
-
         protected virtual void CommitProperties()
         {
 
@@ -106,7 +100,9 @@ namespace UnityXD.Editor
             XDGUIUtility.Bind(ref _componentRef.IsHeightDependantOnWidth, ref m_isWLinkedToH);
             XDGUIUtility.Bind(ref _componentRef.Padding, ref m_padding);
             XDGUIUtility.Bind(ref _componentRef.Margin, ref m_margin);
+            XDGUIUtility.Bind(ref _componentRef.CurrentStyle, ref m_style);
             XDGUIUtility.Bind(ref _componentRef.CurrentStyle.Size, ref m_currentSize);
+            
 
             if (GUI.changed)
             {
@@ -115,6 +111,7 @@ namespace UnityXD.Editor
                 _componentRef.Dock(align, m_isAnchorHStretched, m_isAnchorVStretched);
                 _componentRef.SetMargin(m_margin);
                 _componentRef.SetPadding(m_padding);
+                _componentRef.ApplyTheme(m_style);
             }
             EditorUtility.SetDirty(target);
         }
@@ -156,9 +153,8 @@ namespace UnityXD.Editor
             CreateAnchorToolBar();     
             CreateDivider();
 
-            var layoutStyle = new GUIStyle(GUIStyle.none);                        
-            layoutStyle.alignment = TextAnchor.MiddleCenter;
-            layoutStyle.padding = new RectOffset(4,4,4,4);
+            var groupStyle = XDGUIStyles.Instance.Group;
+          
 
             // SWITCHES.
             var w_enabled = m_currentSize == XDSizes.Custom && !m_isAnchorHStretched;
@@ -169,11 +165,11 @@ namespace UnityXD.Editor
                 SIZES.            
             *********************************************************************************/
 
-            using (new XDGUILayout(false, layoutStyle))
+            using (new XDGUILayout(false, groupStyle))
             {
                 XDGUIUtility.CreateEnumField("Size", ref m_currentSize, (int)m_currentSize, XDGUISizes.Medium, null);
             }
-            using (new XDGUILayout(true, layoutStyle, GUILayout.Width(64)))
+            using (new XDGUILayout(true, groupStyle, GUILayout.Width(64)))
             {
                
                 using (new XDGUILayout(false))
@@ -201,12 +197,12 @@ namespace UnityXD.Editor
             /*********************************************************************************
                Padding
            *********************************************************************************/
-            using (new XDGUILayout(false,layoutStyle))
+            using (new XDGUILayout(false,groupStyle))
             {
                 XDGUIUtility.CreateHeading("Padding");
             }
 
-            using (new XDGUILayout(true, layoutStyle))
+            using (new XDGUILayout(true, groupStyle))
             {
                 var left = m_padding.left;
                 var right = m_padding.right;
@@ -224,12 +220,12 @@ namespace UnityXD.Editor
             /*********************************************************************************
                 Margin
             *********************************************************************************/
-            using (new XDGUILayout(false, layoutStyle))
+            using (new XDGUILayout(false, groupStyle))
             {
                 XDGUIUtility.CreateHeading("Margins");
             }
 
-            using (new XDGUILayout(true, layoutStyle))
+            using (new XDGUILayout(true, groupStyle))
             {
                 var left = m_margin.left;
                 var right = m_margin.right;
@@ -314,6 +310,58 @@ namespace UnityXD.Editor
 
         protected virtual void CreateDesignControls()
         {
+            var groupStyle = XDGUIStyles.Instance.Group;
+            var currentFill = m_style.FrontFill;
+            var currentBackFill = m_style.BackFill;
+            // Chrome Row
+            var ChromeColors = Enum.GetNames(typeof(XDColors))
+                .OrderBy(x => x)
+                .Where(s => s.ToLower().Contains(XDColorTypes.Chrome.ToString().ToLower()))
+                .ToList();
+
+            var BrandColors = Enum.GetNames(typeof(XDColors))
+                .OrderBy(x => x)
+                .Where(s => s.ToLower().Contains(XDColorTypes.Brand.ToString().ToLower()))
+                .ToList();
+
+            var AccentColors = Enum.GetNames(typeof(XDColors))
+                     .OrderBy(x => x)
+                     .Where(s => s.ToLower().Contains(XDColorTypes.Accent.ToString().ToLower()))
+                     .ToList();
+
+            XDGUIUtility.CreateSpacer(8);
+            XDGUIUtility.CreateHeading("Fill Color");
+            using (new XDGUILayout(true, groupStyle))
+            {
+                // Preview Swatch.
+                XDGUIUtility.CreateSwatch(m_style.FrontFill.ToColor(),48,true);                                
+                XDGUIUtility.CreateSpacer(16);
+                using (new XDGUILayout(false))
+                {
+                    XDGUIUtility.CreateSwatchRow(AccentColors.ToArray(), 16, ref m_style.FrontFill);
+                    XDGUIUtility.CreateSwatchRow(BrandColors.ToArray(), 16, ref m_style.FrontFill);
+                    XDGUIUtility.CreateSwatchRow(ChromeColors.ToArray(), 16, ref m_style.FrontFill);
+                }
+
+            }
+
+            XDGUIUtility.CreateSpacer(16);
+
+            XDGUIUtility.CreateHeading("Back Fill Color");
+            using (new XDGUILayout(true, groupStyle))
+            {
+                // Preview Swatch.
+                XDGUIUtility.CreateSwatch(m_style.BackFill.ToColor(), 48, true);
+                XDGUIUtility.CreateSpacer(16);
+                using (new XDGUILayout(false))
+                {
+                    XDGUIUtility.CreateSwatchRow(AccentColors.ToArray(), 16, ref m_style.BackFill);
+                    XDGUIUtility.CreateSwatchRow(BrandColors.ToArray(), 16, ref m_style.BackFill);
+                    XDGUIUtility.CreateSwatchRow(ChromeColors.ToArray(), 16, ref m_style.BackFill);
+                }
+
+            }
+
         }
 
         protected virtual void CreateBindingControls()

@@ -25,6 +25,7 @@ namespace UnityXD.Editor
         public GUIStyle Tab;
         public GUIStyle Body;
         public GUIStyle Heading;
+        public GUIStyle Group;
 
         // Foregrounds
         public Color Normal = EditorGUIUtility.isProSkin ? XDColors.ChromeDarker.ToColor() : XDColors.Chrome.ToColor();
@@ -76,6 +77,11 @@ namespace UnityXD.Editor
 
         public void InitStyles()
         {
+
+            Group = new GUIStyle(GUIStyle.none);
+            Group.alignment = TextAnchor.MiddleCenter;
+            Group.padding = new RectOffset(4, 4, 4, 4);
+
             // TextField
             Label = new GUIStyle(EditorStyles.textField);
             Label.alignment = TextAnchor.MiddleLeft;
