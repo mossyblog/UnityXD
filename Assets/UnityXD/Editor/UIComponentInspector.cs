@@ -37,6 +37,16 @@ namespace UnityXD.Editor
         protected XDVerticalAlignment m_vertAlignment;
         protected XDHorizontalAlignment m_horizAlignment;
 
+        protected int m_width;
+        protected int m_height;
+        protected int m_x;
+        protected int m_y;
+        protected bool m_isWLinkedToH;
+        protected XDSizes m_currentSize;
+
+        protected RectOffset m_padding;
+        protected RectOffset m_margin;
+
         protected Rect m_bodyRect;
 
         public void OnEnable()
@@ -57,38 +67,50 @@ namespace UnityXD.Editor
 
         protected virtual void Initialize()
         {
+
             if (_componentRef == null)
                 _componentRef = (UIComponent)target;
 
-            var horizAlign = _componentRef.CurrentAnchorAlignment.ToHorizontalAlignment();
-            var vertAlign = _componentRef.CurrentAnchorAlignment.ToVerticalAlignment();
+            // For some reason the Play/Stop causes the Styles to act weird.
+            m_horizAlignment = _componentRef.CurrentAnchorAlignment.ToHorizontalAlignment();
+            m_vertAlignment = _componentRef.CurrentAnchorAlignment.ToVerticalAlignment();
 
-            m_text = _componentRef.Text;
-            m_isVisible = _componentRef.IsVisible;
-
-            m_isAnchorRightEnabled = XDHorizontalAlignment.Right == horizAlign;
-            m_isAnchorLeftEnabled = XDHorizontalAlignment.Left== horizAlign;
-            m_isAnchorMiddleHEnabled = XDHorizontalAlignment.Center == horizAlign;
-
-            m_isAnchorTopEnabled = XDVerticalAlignment.Top == vertAlign;
-            m_isAnchorMiddleVEnabled = XDVerticalAlignment.Center == vertAlign;
-            m_isAnchorBottomEnabled = XDVerticalAlignment.Bottom == vertAlign;
-
+            m_isAnchorRightEnabled = XDHorizontalAlignment.Right == m_horizAlignment;
+            m_isAnchorLeftEnabled = XDHorizontalAlignment.Left== m_horizAlignment;
+            m_isAnchorMiddleHEnabled = XDHorizontalAlignment.Center == m_horizAlignment;
+            m_isAnchorTopEnabled = XDVerticalAlignment.Top == m_vertAlignment;
+            m_isAnchorMiddleVEnabled = XDVerticalAlignment.Center == m_vertAlignment;
+            m_isAnchorBottomEnabled = XDVerticalAlignment.Bottom == m_vertAlignment;
             m_isAnchorHStretched = _componentRef.IsHorizontalStretchEnabled;
             m_isAnchorVStretched = _componentRef.IsVeritcalStretchEnabled;
 
+
         }
 
-        
+
+        protected virtual void CommitBindings()
+        {
+           
+        }
+   
 
         protected virtual void CommitProperties()
         {
-            if (GUI.changed && _componentRef != null)
-            {
-                _componentRef.Text = m_text;
-                _componentRef.IsVisible = m_isVisible;
-                _componentRef.Dock(XDThemeUtility.ToAlignment(m_horizAlignment, m_vertAlignment), m_isAnchorHStretched, m_isAnchorVStretched);
 
+            XDGUIUtility.Bind(ref _componentRef.Width, ref m_width);
+            XDGUIUtility.Bind(ref _componentRef.Height, ref m_height);
+            XDGUIUtility.Bind(ref _componentRef.X, ref m_x);
+            XDGUIUtility.Bind(ref _componentRef.Y, ref m_y);
+            XDGUIUtility.Bind(ref _componentRef.IsHeightDependantOnWidth, ref m_isWLinkedToH);
+            XDGUIUtility.Bind(ref _componentRef.Padding, ref m_padding);
+            XDGUIUtility.Bind(ref _componentRef.Margin, ref m_margin);
+            XDGUIUtility.Bind(ref _componentRef.CurrentStyle.Size, ref m_currentSize);
+
+            if (GUI.changed)
+            {
+                // Dock It.
+                var align = XDThemeUtility.ToAlignment(m_horizAlignment, m_vertAlignment);
+                _componentRef.Dock(align, m_isAnchorHStretched, m_isAnchorVStretched);
             }
             EditorUtility.SetDirty(target);
         }
@@ -96,15 +118,14 @@ namespace UnityXD.Editor
         protected virtual void GeneratateInspector()
         {
 
-            
+            XDGUIStyles.Instance.InitStyles();
+
             var body = XDGUIUtility.CreateSpacer();
 
             if (body.width > 0)
                 m_bodyRect = body;
 
-
             CreateTabBar();
-           
             using (var rect = new XDGUILayout(false, XDGUIStyles.Instance.Body))
             {
                 if (m_currentSelectedTab == m_labelLayout)
@@ -129,8 +150,53 @@ namespace UnityXD.Editor
         {
             XDGUIUtility.CreateSpacer();
             CreateAnchorToolBar();     
-            CreateDivider();       
-           
+            CreateDivider();
+
+            var layoutStyle = new GUIStyle(GUIStyle.none);                        
+            layoutStyle.alignment = TextAnchor.MiddleCenter;
+            layoutStyle.padding = new RectOffset(4,4,4,4);
+
+            // SWITCHES.
+            var w_enabled = m_currentSize == XDSizes.Custom && !m_isAnchorHStretched;
+            var h_enabled = m_currentSize == XDSizes.Custom && !m_isAnchorVStretched && !m_isWLinkedToH;
+            var link_enabled = w_enabled && !m_isAnchorHStretched && !m_isAnchorVStretched;
+
+            /*********************************************************************************
+                SIZES.            
+            *********************************************************************************/
+
+            using (new XDGUILayout(false, layoutStyle))
+            {
+                XDGUIUtility.CreateEnumField("Size", ref m_currentSize, (int)m_currentSize, XDGUISizes.Medium, null);
+            }
+            using (new XDGUILayout(true, layoutStyle, GUILayout.Width(64)))
+            {
+               
+                using (new XDGUILayout(false))
+                {
+                    XDGUIUtility.CreateTextField("W", ref m_width, XDGUISizes.Small, true, w_enabled);
+                    XDGUIUtility.CreateTextField("H", ref m_height, XDGUISizes.Small, true, h_enabled);                    
+                }   
+                using (new XDGUILayout(false, GUILayout.Width(48)))
+                {
+                    GUILayout.Space(3);
+                    var linkSprite = Resources.Load<Sprite>("Icons/Editor/SizeLink_" + (m_isWLinkedToH ? "On" : "Off"));
+                    if (XDGUIUtility.CreateButton(linkSprite, 24, 48, GUIStyle.none, false, link_enabled))
+                    {
+                        m_isWLinkedToH = !m_isWLinkedToH;
+                    }                    
+                    
+                }
+                using (new XDGUILayout(false))
+                {
+                    XDGUIUtility.CreateTextField("X", ref m_x, XDGUISizes.Small, true);
+                    XDGUIUtility.CreateTextField("Y", ref m_y, XDGUISizes.Small, true);
+                }
+
+                
+            }
+
+          
         }
 
         protected virtual void CreateAnchorToolBar()
@@ -164,8 +230,9 @@ namespace UnityXD.Editor
             style.alignment = TextAnchor.MiddleCenter;
             style.margin = new RectOffset(3,3,3,3);
 
-            using (new XDGUILayout(true, style))
+            using (new XDGUILayout(true, style, GUILayout.Width(128)))
             {
+                XDGUIUtility.CreateSpacer(16);
                 if (XDGUIUtility.CreateButton(horizStretchSprite, 24, 24, style, false))
                 {
                     m_isAnchorHStretched = !m_isAnchorHStretched;
@@ -174,15 +241,27 @@ namespace UnityXD.Editor
                 {
                     m_isAnchorVStretched = !m_isAnchorVStretched;
                 }
-                XDGUIUtility.CreateSpacer();
-                m_horizAlignment = XDGUIUtility.CreateButton(leftSprite, 24, 24, style, false) ? XDHorizontalAlignment.Left : m_horizAlignment;
-                m_horizAlignment = XDGUIUtility.CreateButton(midHSprite, 24, 24, style, false) ? XDHorizontalAlignment.Center : m_horizAlignment;
-                m_horizAlignment = XDGUIUtility.CreateButton(rightSprite, 24, 24, style, false) ? XDHorizontalAlignment.Right : m_horizAlignment;
-                XDGUIUtility.CreateSpacer();
-                m_vertAlignment = XDGUIUtility.CreateButton(topSprite, 24, 24, style, false) ? XDVerticalAlignment.Top : m_vertAlignment;
-                m_vertAlignment = XDGUIUtility.CreateButton(midVSprite, 24, 24, style, false) ? XDVerticalAlignment.Center : m_vertAlignment;
-                m_vertAlignment = XDGUIUtility.CreateButton(botSprite, 24, 24, style, false) ? XDVerticalAlignment.Bottom : m_vertAlignment;
+                XDGUIUtility.CreateSpacer(16);
 
+                if (XDGUIUtility.CreateButton(leftSprite, 24, 24, style, false))
+                    m_horizAlignment = XDHorizontalAlignment.Left;
+
+                if (XDGUIUtility.CreateButton(midHSprite, 24, 24, style, false))
+                    m_horizAlignment = XDHorizontalAlignment.Center;
+
+                if (XDGUIUtility.CreateButton(rightSprite, 24, 24, style, false))
+                    m_horizAlignment = XDHorizontalAlignment.Right;
+
+                XDGUIUtility.CreateSpacer(16);
+
+                if (XDGUIUtility.CreateButton(topSprite, 24, 24, style, false))
+                    m_vertAlignment = XDVerticalAlignment.Top;
+
+                if (XDGUIUtility.CreateButton(midVSprite, 24, 24, style, false))
+                    m_vertAlignment = XDVerticalAlignment.Center;
+
+                if (XDGUIUtility.CreateButton(botSprite, 24, 24, style, false))
+                    m_vertAlignment = XDVerticalAlignment.Bottom;
             }
 
         }

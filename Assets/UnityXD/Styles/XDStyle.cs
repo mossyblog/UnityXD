@@ -11,7 +11,7 @@ namespace UnityXD.Styles
     [Serializable]
 	public class XDStyle
 	{
-		public XDSizes Sizes = XDSizes.M;
+		public XDSizes Size = XDSizes.M;
 		public XDColors FrontFill = XDColors.Chrome;
 		public XDColors BackFill = XDColors.ChromeLightest;
 

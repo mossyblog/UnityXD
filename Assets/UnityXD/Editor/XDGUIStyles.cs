@@ -29,15 +29,15 @@ namespace UnityXD.Editor
         public Color Normal = EditorGUIUtility.isProSkin ? XDColors.ChromeDarker.ToColor() : XDColors.Chrome.ToColor();
         public Color PressedForeground = XDColors.ChromeLightest.ToColor();
         public Color Disabled = Color.grey;
-        public Color Highlight = XDColors.Brand.ToColor();
+        public Color Highlight = XDColors.Brand.ToColor(0.1f);
         public Color Selected = XDColors.BrandLighter.ToColor();
         public Color TabSelected = XDColors.Brand.ToColor();
         public Color TabUnselected = XDColors.ChromeLighter.ToColor();
-        public Color Divider = Color.black;
+        public Color Divider = Color.black.Alpha(0.2F);
 
         // Backgrounds.
         public Color Background = XDColors.ChromeLightest.ToColor();
-        public Color FieldBackground = XDColors.Chrome.ToColor();
+        public Color FieldBackground = XDColors.ChromeLightest.ToColor();
         public Color InputBackground = XDColors.Brand.ToColor();
         public Color PressedBackground = XDColors.Brand.ToColor();
         public Color SelectedBorder = Color.black;
@@ -70,6 +70,11 @@ namespace UnityXD.Editor
 
         public XDGUIStyles()
         {
+            InitStyles();
+        }
+
+        public void InitStyles()
+        {
             // TextField
             Label = new GUIStyle(EditorStyles.textField);
             Label.alignment = TextAnchor.MiddleLeft;
@@ -77,40 +82,41 @@ namespace UnityXD.Editor
             Label.normal.background = XDGUIUtility.CreateColoredTexture(Color.clear);
             Label.focused.textColor = Normal;
             Label.focused.background = XDGUIUtility.CreateColoredTexture(Color.clear);
-            Label.border = new RectOffset(4, 0, 0, 0);
-            Label.margin = new RectOffset(4, 4, 4, 4);
-            
+
 
             // Label 
             Field = new GUIStyle(Label);
+            Field.normal.textColor = XDColors.ChromeDarkest.ToColor();
+            Field.focused.textColor = XDColors.BrandDarkest.ToColor();
+            Field.fontStyle = FontStyle.Bold;
             Field.normal.background = XDGUIUtility.CreateColoredTexture(FieldBackground);
             Field.focused.background = XDGUIUtility.CreateColoredTexture(Highlight);
 
             // GROUP - Horizontal
             Horiz_Small = new GUIStyle(GUIStyle.none);
-            Horiz_Small.fixedWidth = (int) XDGUISizes.Small*3;
+            Horiz_Small.fixedWidth = (int)XDGUISizes.Small * 3;
             Horiz_Small.fixedHeight = 24;
-            Horiz_Small.margin = new RectOffset(4,4,4,4);
+            Horiz_Small.margin = new RectOffset(4, 4, 4, 4);
 
             Horiz_Medium = new GUIStyle(Horiz_Small);
-            Horiz_Medium.fixedWidth = (int) XDGUISizes.Medium*3;
+            Horiz_Medium.fixedWidth = (int)XDGUISizes.Medium * 3;
             Horiz_Medium.fixedHeight = 24;
 
             Horiz_Large = new GUIStyle(Horiz_Medium);
-            Horiz_Large.fixedWidth = (int) XDGUISizes.Large*3;
+            Horiz_Large.fixedWidth = (int)XDGUISizes.Large * 3;
             Horiz_Large.fixedHeight = 24;
 
             Checkbox = new GUIStyle();
             Checkbox.fixedWidth = 16;
-            Checkbox.fixedHeight = 16;            
+            Checkbox.fixedHeight = 16;
             Checkbox.normal.background = XDGUIUtility.CreateColoredTexture(Background);
             Checkbox.active.background = XDGUIUtility.CreateColoredTexture(Highlight);
-            Checkbox.border = new RectOffset(1,1,1,1);
+            Checkbox.border = new RectOffset(1, 1, 1, 1);
 
             Button = new GUIStyle(Checkbox);
             Button.fixedHeight = 24;
             Button.alignment = TextAnchor.MiddleCenter;
-            Button.normal.textColor = Normal;           
+            Button.normal.textColor = Normal;
             Button.normal.background = XDGUIUtility.CreateColoredTexture(InputBackground);
             Button.active.textColor = PressedForeground;
             Button.active.background = XDGUIUtility.CreateColoredTexture(PressedBackground);
@@ -121,12 +127,12 @@ namespace UnityXD.Editor
             Tab = new GUIStyle(Button);
             Tab.fixedHeight = 24;
             Tab.fixedWidth = 72;
-            Tab.border = new RectOffset(0,0,2,0);
+            Tab.border = new RectOffset(0, 0, 2, 0);
             Tab.normal.textColor = Color.blue;
             Tab.normal.background = XDGUIUtility.CreateColoredTexture(TabUnselected);
             Tab.active.textColor = Color.black;
             Tab.active.background = XDGUIUtility.CreateColoredTexture(TabSelected);
-            Tab.margin = new RectOffset(0,4,0,0);
+            Tab.margin = new RectOffset(0, 4, 0, 0);
 
 
             Body = new GUIStyle(GUIStyle.none);

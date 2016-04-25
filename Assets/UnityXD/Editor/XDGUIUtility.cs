@@ -10,6 +10,18 @@ namespace UnityXD.Editor
     public static class XDGUIUtility
     {
 
+        public static void Bind<T>(ref T inbound, ref T outbound)
+        {
+            if (GUI.changed)
+            {
+                inbound = outbound;
+            }
+            else
+            {
+                outbound = inbound;
+            }
+        }
+
         public static Rect CreateSpacer()
         {
             var rect = new Rect(0,0,0,0);
@@ -123,10 +135,14 @@ namespace UnityXD.Editor
         /// <param name="field"></param>
         /// <param name="fieldSize"></param>
         /// <param name="isHorizontal"></param>
-        public static void CreateTextField(String label, ref string field, XDGUISizes fieldSize, bool isHorizontal = true)
+        public static void CreateTextField(String label, ref string field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true)
         {
             var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            GUI.enabled = isenabled;
             field = EditorGUI.TextField(fieldRect, field, XDGUIStyles.Instance.Field);
+            GUI.enabled = true;
+            DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
+
         }
 
         /// <summary>
@@ -136,10 +152,13 @@ namespace UnityXD.Editor
         /// <param name="field"></param>
         /// <param name="fieldSize"></param>
         /// <param name="isHorizontal"></param>
-        public static void CreateTextField(String label, ref double field, XDGUISizes fieldSize, bool isHorizontal = true)
+        public static void CreateTextField(String label, ref double field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true)
         {
             var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            GUI.enabled = isenabled;
             field = EditorGUI.DoubleField(fieldRect, field, XDGUIStyles.Instance.Field);
+            GUI.enabled = true;
+            DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
         }
 
         /// <summary>
@@ -149,10 +168,13 @@ namespace UnityXD.Editor
         /// <param name="field"></param>
         /// <param name="fieldSize"></param>
         /// <param name="isHorizontal"></param>
-        public static void CreateTextField(String label, ref int field, XDGUISizes fieldSize, bool isHorizontal = true)
+        public static void CreateTextField(String label, ref int field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true)
         {
             var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            GUI.enabled = isenabled;
             field = EditorGUI.IntField(fieldRect, field, XDGUIStyles.Instance.Field);
+            GUI.enabled = true;
+            DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
         }
 
         /// <summary>
@@ -162,7 +184,7 @@ namespace UnityXD.Editor
         /// <param name="field"></param>
         /// <param name="fieldSize"></param>
         /// <param name="isHorizontal"></param>
-        public static void CreateCheckbox(String label, ref bool field, XDGUISizes fieldSize, bool isHorizontal = true)
+        public static void CreateCheckbox(String label, ref bool field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true)
         {
             var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
             var checkBoxRec = fieldRect;
@@ -175,12 +197,45 @@ namespace UnityXD.Editor
             checkBoxRec.y += fieldRect.height/2 - checkBoxRec.height/2;
 
             DrawRect(checkBoxRec, Color.black, (field ? fillEnabled : fillDisabled), style.border);
-
+            GUI.enabled = isenabled;
             if (GUI.Button(fieldRect, String.Empty, GUIStyle.none))
             {
                 field = !field;
             }
+            GUI.enabled = true;
             //field = EditorGUI.Toggle(fieldRect, field, XDGUIStyles.Instance.Field);
+        }
+
+        public static void CreateEnumField<T>(String label, ref T field, int selected, XDGUISizes fieldSize, string[] filters, bool isHorizontal = true, bool isenabled = true)
+        {
+            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            var rawValues = new Dictionary<Type, int[]>();
+            var names = Enum.GetNames(typeof(T));
+            var values = GetEnumValues<T>(rawValues);
+
+            if (filters != null)
+            {
+                names = filters;
+                var valList = new List<int>();
+                foreach (var name in names)
+                {
+                    valList.Add((int)Enum.Parse(typeof(T), name));
+                }
+                values = valList.ToArray();
+            }
+            GUI.enabled = isenabled;
+            var selectedIndex = EditorGUI.Popup(fieldRect, Array.IndexOf(values, selected), names, XDGUIStyles.Instance.Field);
+            GUI.enabled = true;
+            var result = selectedIndex >= 0 && selectedIndex < values.Length ? values[selectedIndex] : selected;
+            field = (T)(object)result;
+            DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
+
+        }
+        private static int[] GetEnumValues<T>(Dictionary<Type, int[]> enumcache)
+        {
+            if (!enumcache.ContainsKey(typeof(T)))
+                enumcache[typeof(T)] = Enum.GetValues(typeof(T)).Cast<int>().ToArray();
+            return enumcache[typeof(T)];
         }
 
         public static bool CreateButton(string label, XDGUISizes fieldSizes)
@@ -211,51 +266,25 @@ namespace UnityXD.Editor
             }
         }
 
-        public static bool CreateButton(Sprite sprite, int width, int height)
+        public static bool CreateButton(Sprite sprite, int width, int height, bool isEnabled = true)
         {
+            GUI.enabled = isEnabled;
            return  CreateButton(sprite, width, height, XDGUIStyles.Instance.Button);
         }
 
-        public static bool CreateButton(Sprite sprite, int width, int height, GUIStyle style, bool isBorderEnabled = true)
+        public static bool CreateButton(Sprite sprite, int width, int height, GUIStyle style, bool isBorderEnabled = true, bool isEnabled = true)
         {
-            var buttonRect = CreateEmptyPlaceHolder(width, height);            
-            var thickness = XDGUIStyles.Instance.Button.border;
-
-            if(isBorderEnabled)
-                DrawRect(buttonRect, Color.black);
-
-            var fillRect = buttonRect;
-            fillRect.width -= thickness.left + thickness.right;
-            fillRect.height -= thickness.top + thickness.bottom;
-            fillRect.x += thickness.left;
-            fillRect.y += thickness.top;
+            var fillRect = CreateEmptyPlaceHolder(width, height);
+           
+            if (isBorderEnabled)
+                DrawRect(fillRect, Color.black);
 
             var buttonStyleAdjusted = new GUIStyle(style);
             buttonStyleAdjusted.fixedHeight = fillRect.height;
             buttonStyleAdjusted.fixedWidth = fillRect.width;
+            buttonStyleAdjusted.alignment = TextAnchor.MiddleCenter;
+            GUI.enabled = isEnabled;
             return GUI.Button(fillRect, SpriteUtility.GetSpriteTexture(sprite, false), buttonStyleAdjusted);
-        }
-
-        public static void CreateEnumField<T>(String label, ref T field, int selected, XDGUISizes fieldSize, string[] filters, bool isHorizontal = true)
-        {
-            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
-            var rawValues = new Dictionary<Type, int[]>();
-            var names = Enum.GetNames(typeof (T));
-            var values = GetEnumValues<T>(rawValues);
-
-            if (filters != null)
-            {
-                names = filters;
-                var valList = new List<int>();
-                foreach (var name in names)
-                {
-                    valList.Add((int) Enum.Parse(typeof (T), name));
-                }
-                values = valList.ToArray();
-            }
-            var selectedIndex = EditorGUI.Popup(fieldRect, Array.IndexOf(values, selected), names, XDGUIStyles.Instance.Field);
-            var result = selectedIndex >= 0 && selectedIndex < values.Length ? values[selectedIndex] : selected;
-            field = (T) (object) result;
         }
 
         public static Rect DrawRect(Rect pos, Color color)
@@ -314,13 +343,6 @@ namespace UnityXD.Editor
             DrawLine(rect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Center);
         }
 
-        private static int[] GetEnumValues<T>(Dictionary<Type, int[]> enumcache)
-        {
-            if (!enumcache.ContainsKey(typeof (T)))
-                enumcache[typeof (T)] = Enum.GetValues(typeof (T)).Cast<int>().ToArray();
-            return enumcache[typeof (T)];
-        }
-
         public static Rect CreateLabelPair(string label, XDGUISizes fieldSize, bool isHorizontal = true)
         {
             var groupStyle = XDGUIStyles.Instance.ResolveGroup(fieldSize, isHorizontal);
@@ -353,7 +375,9 @@ namespace UnityXD.Editor
             var style = new GUIStyle(GUIStyle.none);
             style.fixedWidth = width;
             style.fixedHeight = height;
-            using (var box = new XDGUILayout(isHorizontal, style))
+            style.alignment = TextAnchor.MiddleCenter;
+            
+            using (var box = new XDGUILayout(isHorizontal, style, GUILayout.Height(height), GUILayout.Width(width)))
             {
                 GUILayout.Space(0);
                 fieldRect = box.Rect;

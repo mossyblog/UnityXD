@@ -2,8 +2,8 @@
 {
     public enum XDGUISizes
     {
-        Small = 32,
-        Medium = 48,
-        Large = 64
+        Small = 24,
+        Medium = 40,
+        Large = 48
     }
 }

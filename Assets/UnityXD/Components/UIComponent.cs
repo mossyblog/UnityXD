@@ -6,13 +6,15 @@ using UnityXD.Styles;
 
 namespace UnityXD.Components
 {
-    [InitializeOnLoad]
     [Serializable]
     [ExecuteInEditMode]
+    [RequireComponent(typeof(RectTransform))]
+    [RequireComponent(typeof(CanvasRenderer))]
     public class UIComponent : MonoBehaviour
     {
-        public SpriteAlignment CurrentAnchorAlignment { get; private set; }
-        public SpriteAlignment CurrentPivotAlignment { get; private set; }
+        [SerializeField] public SpriteAlignment CurrentAnchorAlignment;
+        [SerializeField] public SpriteAlignment CurrentPivotAlignment;
+
         public int Width;
         public int Height;
         public int X;
@@ -24,12 +26,12 @@ namespace UnityXD.Components
         public RectOffset Margin;
         public RectOffset ParentPadding;
         public bool IgnoreParentPadding;
-        public XDStyle CurrentXD = new XDStyle();
+        public XDStyle CurrentStyle = new XDStyle();
         public event InvalidateCompleteHandler InvalidateComplete;
         public event InvalidateCompleteHandler CreationComplete;
         public delegate void CreationCompleteHandler(EventArgs e);
         public delegate void InvalidateCompleteHandler(EventArgs e);
-
+        
 
         [NonSerialized]
         private RectTransform _rectTransformRef;
@@ -50,6 +52,11 @@ namespace UnityXD.Components
                 Margin = new RectOffset(0, 0, 0, 0);
                 ParentPadding = new RectOffset(0, 0, 0, 0);
             }
+        }
+
+        public virtual void Start()
+        {
+            InvalidateDisplay();
         }
 
         #region XD Invalidation Lifecyle
@@ -97,8 +104,7 @@ namespace UnityXD.Components
         /// </summary>
         protected virtual void CommitProperties()
         {
-            SetPosition(X, Y);
-            SetSize(Width, Height);
+           
         }
 
         /// <summary>
@@ -114,6 +120,7 @@ namespace UnityXD.Components
         /// </summary>
         protected virtual void LayoutChrome()
         {
+            SetPosition(X, Y);
 
         }
 
@@ -224,9 +231,9 @@ namespace UnityXD.Components
                 h = w;
             }
 
-            if (CurrentXD.Sizes != XDSizes.Custom)
+            if (CurrentStyle.Size != XDSizes.Custom)
             {
-                w = h = (int)CurrentXD.Sizes;
+                w = h = (int)CurrentStyle.Size;
                 IsHeightDependantOnWidth = true;
             }
 
@@ -395,7 +402,7 @@ namespace UnityXD.Components
 
         public virtual void ApplyTheme(XDStyle xd)
         {
-            CurrentXD = xd;
+            CurrentStyle = xd;
 
             if (ImageRef != null)
             {

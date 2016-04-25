@@ -19,7 +19,7 @@ namespace UnityXD.Styles
         public XDFontStyle (XDFontStyle data)
         {
             StyleName = data.StyleName;
-            Sizes = data.Sizes;
+            Size = data.Size;
             FontSize = data.FontSize;
             Font = data.Font;
             ActualFontSize = data.ActualFontSize;		
