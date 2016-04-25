@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Sprites;
 using UnityEngine;
 
 namespace UnityXD.Editor
@@ -127,6 +128,26 @@ namespace UnityXD.Editor
 
                 return GUI.Button(fillRect, "test", buttonStyleAdjusted);
             }
+        }
+
+        public static bool CreateButton(Sprite sprite, int width, int height)
+        {
+            var buttonRect = CreateEmptyPlaceHolder(width, height);
+            var style = XDStyles.Instance.Button;
+            var thickness = XDStyles.Instance.Button.border;
+
+            DrawRect(buttonRect, Color.black);
+
+            var fillRect = buttonRect;
+            fillRect.width -= thickness.left + thickness.right;
+            fillRect.height -= thickness.top + thickness.bottom;
+            fillRect.x += thickness.left;
+            fillRect.y += thickness.top;
+
+            var buttonStyleAdjusted = new GUIStyle(style);
+            buttonStyleAdjusted.fixedHeight = fillRect.height;
+            buttonStyleAdjusted.fixedWidth = fillRect.width;
+            return GUI.Button(fillRect, SpriteUtility.GetSpriteTexture(sprite, false), buttonStyleAdjusted);
         }
 
         public static void CreateEnumField<T>(String label, ref T field, int selected, XDSizes fieldSize, string[] filters, bool isHorizontal = true)

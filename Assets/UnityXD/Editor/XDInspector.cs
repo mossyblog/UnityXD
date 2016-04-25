@@ -61,7 +61,9 @@ namespace UnityXD.Editor
 
         protected virtual void CreateLayoutControls()
         {
-   
+            GUILayout.Space(8);
+            var icon = Resources.Load<Sprite>("icons/Editor/AlignHorizLeft_off");
+            XDUtility.CreateButton(icon,24,24);
         }
 
         protected virtual void CreateDesignControls()
