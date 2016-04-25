@@ -9,6 +9,7 @@ namespace UnityXD.Components
     public class UIComponent : MonoBehaviour
     {
         public string Text;
+        public bool IsVisible;
         public event InvalidateCompleteHandler InvalidateComplete;
         public event InvalidateCompleteHandler CreationComplete;
         public delegate void CreationCompleteHandler(EventArgs e);

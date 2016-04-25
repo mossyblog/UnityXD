@@ -3,7 +3,7 @@
     public enum XDSizes
     {
         Small = 32,
-        Medium = 64,
-        Large = 128
+        Medium = 48,
+        Large = 64
     }
 }

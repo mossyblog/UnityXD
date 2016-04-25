@@ -1,6 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UnityXD.Editor
 {
@@ -17,12 +18,17 @@ namespace UnityXD.Editor
 
         public GUIStyle Field;
         public GUIStyle Label;
+        public GUIStyle Checkbox;
+        public GUIStyle Button;
+        public GUIStyle ButtonLabel;
 
         public Color Normal = EditorGUIUtility.isProSkin ? Color.white : Color.black;
+        public Color Selected = Color.white;
         public Color Disabled = Color.grey;
         public Color Highlight = Color.green;
         public Color Background = GUI.backgroundColor;
         public Color FieldBackground = Color.white;
+        public Color InputBackground = Color.gray;
         public Color32 Skin = EditorGUIUtility.isProSkin ? new Color32(56, 56, 56, 255) : new Color32(194, 194, 194, 255);
 
         
@@ -63,20 +69,40 @@ namespace UnityXD.Editor
             // Label 
             Field = new GUIStyle(Label);
             Field.normal.background = XDUtility.CreateColoredTexture(FieldBackground);
-            Field.focused.background = XDUtility.CreateColoredTexture(Highlight.Alpha(0.2f));
+            Field.focused.background = XDUtility.CreateColoredTexture(Highlight);
 
             // GROUP - Horizontal
             Horiz_Small = new GUIStyle(GUIStyle.none);
             Horiz_Small.fixedWidth = (int) XDSizes.Small*3;
-            Horiz_Small.fixedHeight = (int) XDSizes.Small;
+            Horiz_Small.fixedHeight = 24;
+            Horiz_Small.margin = new RectOffset(4,4,4,4);
 
-            Horiz_Medium = new GUIStyle(GUIStyle.none);
+            Horiz_Medium = new GUIStyle(Horiz_Small);
             Horiz_Medium.fixedWidth = (int) XDSizes.Medium*3;
-            Horiz_Medium.fixedHeight = (int) XDSizes.Small;
+            Horiz_Medium.fixedHeight = 24;
 
-            Horiz_Large = new GUIStyle(GUIStyle.none);
+            Horiz_Large = new GUIStyle(Horiz_Medium);
             Horiz_Large.fixedWidth = (int) XDSizes.Large*3;
-            Horiz_Large.fixedHeight = (int) XDSizes.Small;
+            Horiz_Large.fixedHeight = 24;
+
+            Checkbox = new GUIStyle();
+            Checkbox.fixedWidth = 16;
+            Checkbox.fixedHeight = 16;            
+            Checkbox.normal.background = XDUtility.CreateColoredTexture(Background);
+            Checkbox.active.background = XDUtility.CreateColoredTexture(Highlight);
+            Checkbox.border = new RectOffset(1,1,1,1);
+
+            Button = new GUIStyle(Checkbox);
+            Button.fixedHeight = 24;
+            Button.alignment = TextAnchor.MiddleCenter;
+            Button.normal.textColor = Normal;           
+            Button.normal.background = XDUtility.CreateColoredTexture(InputBackground);
+            Button.active.textColor = Selected;
+            Button.active.background = XDUtility.CreateColoredTexture(Highlight);
+
+            ButtonLabel = new GUIStyle(Label);
+            ButtonLabel.alignment = TextAnchor.MiddleCenter;
+
         }
     }
 }
