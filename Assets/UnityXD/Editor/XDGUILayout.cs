@@ -3,19 +3,19 @@ using UnityEngine;
 
 namespace UnityXD.Editor
 {
-    public class XDLayout : GUI.Scope
+    public class XDGUILayout : GUI.Scope
     {
-        public XDLayout(params GUILayoutOption[] options)
+        public XDGUILayout(params GUILayoutOption[] options)
         {
             Rect = EditorGUILayout.BeginVertical(options);
         }
 
-        public XDLayout(bool isHorizontal, params GUILayoutOption[] options)
+        public XDGUILayout(bool isHorizontal, params GUILayoutOption[] options)
         {
             Rect = isHorizontal ? EditorGUILayout.BeginHorizontal(options) : EditorGUILayout.BeginVertical(options);
         }
 
-        public XDLayout(bool isHorizontal, GUIStyle style, params GUILayoutOption[] options)
+        public XDGUILayout(bool isHorizontal, GUIStyle style, params GUILayoutOption[] options)
         {
             Rect = isHorizontal ? EditorGUILayout.BeginHorizontal(style, options) : EditorGUILayout.BeginVertical(style, options);
         }

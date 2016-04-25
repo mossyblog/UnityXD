@@ -1,6 +1,6 @@
 ﻿namespace UnityXD.Editor
 {
-    public enum XDSizes
+    public enum XDGUISizes
     {
         Small = 32,
         Medium = 48,
