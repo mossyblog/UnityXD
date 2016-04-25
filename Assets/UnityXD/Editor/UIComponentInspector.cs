@@ -84,6 +84,8 @@ namespace UnityXD.Editor
             m_isAnchorHStretched = _componentRef.IsHorizontalStretchEnabled;
             m_isAnchorVStretched = _componentRef.IsVeritcalStretchEnabled;
 
+            m_margin = _componentRef.Margin;
+            m_padding = _componentRef.Padding;
 
         }
 
@@ -111,6 +113,8 @@ namespace UnityXD.Editor
                 // Dock It.
                 var align = XDThemeUtility.ToAlignment(m_horizAlignment, m_vertAlignment);
                 _componentRef.Dock(align, m_isAnchorHStretched, m_isAnchorVStretched);
+                _componentRef.SetMargin(m_margin);
+                _componentRef.SetPadding(m_padding);
             }
             EditorUtility.SetDirty(target);
         }
@@ -192,11 +196,53 @@ namespace UnityXD.Editor
                     XDGUIUtility.CreateTextField("X", ref m_x, XDGUISizes.Small, true);
                     XDGUIUtility.CreateTextField("Y", ref m_y, XDGUISizes.Small, true);
                 }
-
-                
             }
 
-          
+            /*********************************************************************************
+               Padding
+           *********************************************************************************/
+            using (new XDGUILayout(false,layoutStyle))
+            {
+                XDGUIUtility.CreateHeading("Padding");
+            }
+
+            using (new XDGUILayout(true, layoutStyle))
+            {
+                var left = m_padding.left;
+                var right = m_padding.right;
+                var top = m_padding.top;
+                var bot = m_padding.bottom;
+
+                XDGUIUtility.CreateTextField("Left", ref left, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+                XDGUIUtility.CreateTextField("Right", ref right, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+                XDGUIUtility.CreateTextField("Top", ref top, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+                XDGUIUtility.CreateTextField("Bottom", ref bot, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+
+                m_padding = new RectOffset(left,right,top,bot);
+            }
+
+            /*********************************************************************************
+                Margin
+            *********************************************************************************/
+            using (new XDGUILayout(false, layoutStyle))
+            {
+                XDGUIUtility.CreateHeading("Margins");
+            }
+
+            using (new XDGUILayout(true, layoutStyle))
+            {
+                var left = m_margin.left;
+                var right = m_margin.right;
+                var top = m_margin.top;
+                var bot = m_margin.bottom;
+
+                XDGUIUtility.CreateTextField("Left", ref left, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+                XDGUIUtility.CreateTextField("Right", ref right, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+                XDGUIUtility.CreateTextField("Top", ref top, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+                XDGUIUtility.CreateTextField("Bottom", ref bot, XDGUISizes.Small, false, true, TextAnchor.LowerCenter);
+
+                m_margin = new RectOffset(left, right, top, bot);
+            }
         }
 
         protected virtual void CreateAnchorToolBar()

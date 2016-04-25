@@ -10,6 +10,14 @@ namespace UnityXD.Editor
     public static class XDGUIUtility
     {
 
+        public static void CreateHeading(string label)
+        {
+            using (new XDGUILayout(false))
+            {
+                GUILayout.Space(0);
+                GUILayout.Label(label, XDGUIStyles.Instance.Heading);
+            }
+        }
         public static void Bind<T>(ref T inbound, ref T outbound)
         {
             if (GUI.changed)
@@ -135,12 +143,20 @@ namespace UnityXD.Editor
         /// <param name="field"></param>
         /// <param name="fieldSize"></param>
         /// <param name="isHorizontal"></param>
-        public static void CreateTextField(String label, ref string field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true)
+        public static void CreateTextField(String label, ref string field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true, TextAnchor labelAlignment = TextAnchor.MiddleLeft)
         {
-            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal, labelAlignment);
+            var fieldStyle = new GUIStyle(XDGUIStyles.Instance.Field);
+            fieldStyle.alignment = isHorizontal ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
+
             GUI.enabled = isenabled;
-            field = EditorGUI.TextField(fieldRect, field, XDGUIStyles.Instance.Field);
+            field = EditorGUI.TextField(fieldRect, field, fieldStyle);
             GUI.enabled = true;
+            if (!isHorizontal)
+            {
+                fieldRect.width -= (int)fieldSize / 2;
+                fieldRect.x += (int)fieldSize / 4;
+            }
             DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
 
         }
@@ -152,12 +168,20 @@ namespace UnityXD.Editor
         /// <param name="field"></param>
         /// <param name="fieldSize"></param>
         /// <param name="isHorizontal"></param>
-        public static void CreateTextField(String label, ref double field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true)
+        public static void CreateTextField(String label, ref double field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true, TextAnchor labelAlignment = TextAnchor.MiddleLeft)
         {
-            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal, labelAlignment);
+            var fieldStyle = new GUIStyle(XDGUIStyles.Instance.Field);
+            fieldStyle.alignment = isHorizontal ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
+
             GUI.enabled = isenabled;
-            field = EditorGUI.DoubleField(fieldRect, field, XDGUIStyles.Instance.Field);
+            field = EditorGUI.DoubleField(fieldRect, field, fieldStyle);
             GUI.enabled = true;
+            if (!isHorizontal)
+            {
+                fieldRect.width -= (int)fieldSize / 2;
+                fieldRect.x += (int)fieldSize / 4;
+            }
             DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
         }
 
@@ -168,12 +192,21 @@ namespace UnityXD.Editor
         /// <param name="field"></param>
         /// <param name="fieldSize"></param>
         /// <param name="isHorizontal"></param>
-        public static void CreateTextField(String label, ref int field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true)
+        public static void CreateTextField(String label, ref int field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true, TextAnchor labelAlignment = TextAnchor.MiddleLeft)
         {
-            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal, labelAlignment);
+            var fieldStyle = new GUIStyle(XDGUIStyles.Instance.Field);
+            fieldStyle.alignment = isHorizontal ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
+
             GUI.enabled = isenabled;
-            field = EditorGUI.IntField(fieldRect, field, XDGUIStyles.Instance.Field);
+            field = EditorGUI.IntField(fieldRect, field, fieldStyle);
             GUI.enabled = true;
+
+            if (!isHorizontal)
+            {
+                fieldRect.width -= (int)fieldSize/2;
+                fieldRect.x += (int)fieldSize / 4;
+            }
             DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
         }
 
@@ -184,7 +217,7 @@ namespace UnityXD.Editor
         /// <param name="field"></param>
         /// <param name="fieldSize"></param>
         /// <param name="isHorizontal"></param>
-        public static void CreateCheckbox(String label, ref bool field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true)
+        public static void CreateCheckbox(String label, ref bool field, XDGUISizes fieldSize, bool isHorizontal = true, bool isenabled = true, TextAnchor labelAlignment = TextAnchor.MiddleLeft)
         {
             var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
             var checkBoxRec = fieldRect;
@@ -206,13 +239,14 @@ namespace UnityXD.Editor
             //field = EditorGUI.Toggle(fieldRect, field, XDGUIStyles.Instance.Field);
         }
 
-        public static void CreateEnumField<T>(String label, ref T field, int selected, XDGUISizes fieldSize, string[] filters, bool isHorizontal = true, bool isenabled = true)
+        public static void CreateEnumField<T>(String label, ref T field, int selected, XDGUISizes fieldSize, string[] filters, bool isHorizontal = true, bool isenabled = true, TextAnchor labelAlignment = TextAnchor.MiddleLeft)
         {
-            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal);
+            var fieldRect = CreateLabelPair(label, fieldSize, isHorizontal, labelAlignment);
             var rawValues = new Dictionary<Type, int[]>();
             var names = Enum.GetNames(typeof(T));
             var values = GetEnumValues<T>(rawValues);
-
+            var fieldStyle = new GUIStyle(XDGUIStyles.Instance.Field);
+            fieldStyle.alignment = isHorizontal ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
             if (filters != null)
             {
                 names = filters;
@@ -224,10 +258,16 @@ namespace UnityXD.Editor
                 values = valList.ToArray();
             }
             GUI.enabled = isenabled;
-            var selectedIndex = EditorGUI.Popup(fieldRect, Array.IndexOf(values, selected), names, XDGUIStyles.Instance.Field);
+            var selectedIndex = EditorGUI.Popup(fieldRect, Array.IndexOf(values, selected), names, fieldStyle);
             GUI.enabled = true;
             var result = selectedIndex >= 0 && selectedIndex < values.Length ? values[selectedIndex] : selected;
             field = (T)(object)result;
+
+            if (!isHorizontal)
+            {
+                fieldRect.width -= (int)fieldSize / 2;
+                fieldRect.x += (int)fieldSize / 4;
+            }
             DrawLine(fieldRect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Bottom);
 
         }
@@ -343,12 +383,11 @@ namespace UnityXD.Editor
             DrawLine(rect, 1, XDGUIStyles.Instance.Divider, XDVerticalAlignment.Center);
         }
 
-        public static Rect CreateLabelPair(string label, XDGUISizes fieldSize, bool isHorizontal = true)
+        public static Rect CreateLabelPair(string label, XDGUISizes fieldSize, bool isHorizontal = true, TextAnchor alignmnet = TextAnchor.MiddleLeft)
         {
             var groupStyle = XDGUIStyles.Instance.ResolveGroup(fieldSize, isHorizontal);
             var labelRect = new Rect(0, 0, 0, 0);
             var fieldRect = new Rect(0, 0, 0, 0);
-
 
             using (var box = new XDGUILayout(isHorizontal, groupStyle))
             {
@@ -356,14 +395,22 @@ namespace UnityXD.Editor
                 labelRect = box.Rect;
                 fieldRect = box.Rect;
                 var labelW = box.Rect.width/2;
+                var labelH = box.Rect.height/2;
+                var labelStyle = new GUIStyle(XDGUIStyles.Instance.Label);
+                labelStyle.alignment = alignmnet;
                 if (isHorizontal)
                 {
                     labelRect.width = labelW;
                     fieldRect.width -= labelW;
                     fieldRect.x += labelW;
                 }
-
-                GUI.Label(labelRect, label, XDGUIStyles.Instance.Label);
+                else
+                {
+                    fieldRect.height = labelH;
+                }
+                
+                
+                GUI.Label(labelRect, label, labelStyle);
             }
 
             return fieldRect;

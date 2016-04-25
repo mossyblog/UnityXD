@@ -24,6 +24,7 @@ namespace UnityXD.Editor
         public GUIStyle ButtonLabel;
         public GUIStyle Tab;
         public GUIStyle Body;
+        public GUIStyle Heading;
 
         // Foregrounds
         public Color Normal = EditorGUIUtility.isProSkin ? XDColors.ChromeDarker.ToColor() : XDColors.Chrome.ToColor();
@@ -106,6 +107,22 @@ namespace UnityXD.Editor
             Horiz_Large.fixedWidth = (int)XDGUISizes.Large * 3;
             Horiz_Large.fixedHeight = 24;
 
+            Vert_Small = new GUIStyle(GUIStyle.none);
+            Vert_Small.fixedWidth = (int)XDGUISizes.Small * 2;
+            Vert_Small.fixedHeight = 48;
+            Vert_Small.margin = new RectOffset(4, 4, 4, 4);
+            
+
+            Vert_Medium = new GUIStyle(Vert_Small);
+            Vert_Medium.fixedWidth = (int)XDGUISizes.Medium * 2;
+            Vert_Medium.fixedHeight = 48;
+
+            Vert_Large = new GUIStyle(Vert_Medium);
+            Vert_Large.fixedWidth = (int) XDGUISizes.Large*2;
+            Vert_Large.fixedHeight = 48;
+
+
+
             Checkbox = new GUIStyle();
             Checkbox.fixedWidth = 16;
             Checkbox.fixedHeight = 16;
@@ -138,6 +155,12 @@ namespace UnityXD.Editor
             Body = new GUIStyle(GUIStyle.none);
             Body.padding = new RectOffset(4, 4, 4, 4);
             Body.normal.background = XDGUIUtility.CreateColoredTexture(Background);
+
+            Heading = new GUIStyle(Label);
+            Heading.fontStyle = FontStyle.Bold;
+            Heading.normal.textColor = XDColors.Chrome.ToColor();
+            Heading.normal.background = XDGUIUtility.CreateColoredTexture(XDColors.ChromeLighter.ToColor());
+            Heading.padding = new RectOffset(4,4,4,4);
         }
     }
 }
