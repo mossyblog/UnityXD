@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UnityXD.Styles
 {
     [Serializable]
-    public class XDFontStyle : XDStyle
+    public class XDFontStyle
     {
         public XDFontSizes FontSize;
         public XDFontStyleNames StyleName;
@@ -17,8 +17,7 @@ namespace UnityXD.Styles
 
         public XDFontStyle (XDFontStyle data)
         {
-            StyleName = data.StyleName;
-            Size = data.Size;
+            StyleName = data.StyleName;            
             FontSize = data.FontSize;
             Font = data.Font;
             ActualFontSize = data.ActualFontSize;		

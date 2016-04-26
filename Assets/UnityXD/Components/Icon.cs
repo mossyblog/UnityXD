@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using UnityXD.Components;
 using UnityXD.Styles;
 
-namespace Assets.UnityXD.Components
+namespace UnityXD.Components
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(Image))]

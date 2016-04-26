@@ -51,7 +51,6 @@ namespace UnityXD.Editor
         public static void CreateTabBar(string[] labels, ref string selected)
         {
             var x = 0;
-            var cntr = 0;
             var style = XDGUIStyles.Instance.Tab;
             var rectBar = CreateEmptyPlaceHolder(labels.Length*(int)style.fixedWidth, (int)style.fixedHeight);
 
@@ -124,10 +123,7 @@ namespace UnityXD.Editor
             foreach (var colorName in colors)
             {
                 var themeColor = (XDColors)Enum.Parse(typeof(XDColors), colorName);
-                if (themeColor != null)
-                {
-                    colorList.Add(themeColor);
-                }
+				colorList.Add(themeColor);
             }
 
             CreateSwatchRow(colorList.ToArray(),size,ref colorSelected);
@@ -456,6 +452,10 @@ namespace UnityXD.Editor
 
             return fieldRect;
         }
+
+		public static void CreateSpritePreview(Rect pos, Sprite sprite) {
+			GUI.DrawTexture(pos, SpriteUtility.GetSpriteTexture(sprite,false));
+		}
 
         public static Rect CreateEmptyPlaceHolder(int width, int height, bool isHorizontal = true)
         {

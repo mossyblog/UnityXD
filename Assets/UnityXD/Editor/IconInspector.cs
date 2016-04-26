@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assets.UnityXD.Components;
 using UnityEditor;
 using UnityEngine;
 using UnityXD.Components;
 using UnityXD.Editor;
 using UnityXD.Styles;
 
-namespace Assets.UnityXD.Editor
+namespace UnityXD.Editor
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(Icon))]

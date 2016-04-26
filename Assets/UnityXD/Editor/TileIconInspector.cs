@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assets.UnityXD.Components;
 using UnityEditor;
 using UnityEngine;
 using UnityXD.Components;
 using UnityXD.Editor;
 using UnityXD.Styles;
 
-namespace Assets.UnityXD.Editor
+namespace UnityXD.Editor
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(TileIcon))]
@@ -21,6 +20,8 @@ namespace Assets.UnityXD.Editor
         protected override void Initialize()
         {
             m_design_backfillEnabled = true;
+			m_design_labelAlignment = false;
+
             if (_tileIconRef == null)
             {
                 _tileIconRef = target as TileIcon;
@@ -55,17 +56,20 @@ namespace Assets.UnityXD.Editor
 
         {
             m_layout_paddingEnabled = false;
-            XDGUIUtility.Bind(ref _tileIconRef.CurrentIcon, ref m_currentIcon);
+            
+			XDGUIUtility.Bind(ref _tileIconRef.CurrentIcon, ref m_currentIcon);
             XDGUIUtility.Bind(ref _tileIconRef.CurrentStyle, ref m_style);
             XDGUIUtility.Bind(ref _tileIconRef.IconPlacement, ref m_placement);
 
-            CommitLabelProperties();
-            base.CommitProperties();
+            
+			base.CommitProperties();
+
 
             if (GUI.changed)
             {
                 _tileIconRef.SetIcon(m_currentIcon);
             }
+
            
 
         }

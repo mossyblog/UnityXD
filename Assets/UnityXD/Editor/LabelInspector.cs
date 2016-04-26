@@ -8,7 +8,7 @@ using UnityXD.Components;
 using UnityXD.Editor;
 using UnityXD.Styles;
 
-namespace Assets.UnityXD.Editor
+namespace UnityXD.Editor
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(Label))]
@@ -23,12 +23,6 @@ namespace Assets.UnityXD.Editor
                 _labelRef = target as Label;
             }
             base.Initialize();
-        }
-
-        protected override void CommitProperties()
-        {
-            base.CommitProperties();
-            CommitLabelProperties();
         }
 
         protected override void CreateDesignControls()

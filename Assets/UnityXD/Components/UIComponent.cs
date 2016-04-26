@@ -14,7 +14,7 @@ namespace UnityXD.Components
     {
         [SerializeField] public SpriteAlignment CurrentAnchorAlignment;
         [SerializeField] public SpriteAlignment CurrentPivotAlignment;
-
+		public bool IsChildReadOnly;
         public int Width;
         public int Height;
         public int X;
@@ -30,13 +30,13 @@ namespace UnityXD.Components
         public event InvalidateCompleteHandler CreationComplete;
         public delegate void CreationCompleteHandler(EventArgs e);
         public delegate void InvalidateCompleteHandler(EventArgs e);
-        
 
         [NonSerialized]
         private RectTransform _rectTransformRef;
 
         [NonSerialized]
         private Image _imageRef;
+
         [NonSerialized]
         private Text _textRef;
 
@@ -53,10 +53,49 @@ namespace UnityXD.Components
             }
         }
 
-        public virtual void Start()
+		/// <summary>
+		/// Start this instance.
+		/// </summary>
+		public virtual void Start()
         {
-            InvalidateDisplay();
+           InvalidateDisplay();
         }
+
+		/// <summary>
+		/// Update this instance.
+		/// </summary>
+		public virtual void Update() {
+			ValidateHeirachy ();
+		}
+
+		#region XD Internal References.
+		/// <summary>
+		///     Gets the rect transform reference & caches it.
+		/// </summary>
+		/// <value>The rect transform reference.</value>
+		public RectTransform RectTransformRef
+		{
+			get { return _rectTransformRef ?? (_rectTransformRef = GetComponent<RectTransform>()); }
+		}
+
+		/// <summary>
+		///     Gets the rect transform reference & caches it.
+		/// </summary>
+		/// <value>The rect transform reference.</value>
+		public Image ImageRef
+		{
+			get { return _imageRef ?? (_imageRef = GetComponent<Image>()); }
+		}
+
+		/// <summary>
+		/// Gets the text reference.
+		/// </summary>
+		/// <value>The text reference.</value>
+		public Text TextRef
+		{
+			get { return _textRef ?? (_textRef = GetComponent<Text>()); }
+		}
+		#endregion
 
         #region XD Invalidation Lifecyle
         /// <summary>
@@ -69,7 +108,7 @@ namespace UnityXD.Components
             CreateChildren();
             InvalidateProperties();
             InvalidateMeasure();
-            LayoutChrome();
+            UpdateLayout();
             OnInvalidateComplete();
         }
 
@@ -95,9 +134,19 @@ namespace UnityXD.Components
         protected virtual void CreateChildren()
         {
 
-            // Now Invoke Children Created 
-            OnChildrenCreated();
+			//ValidateHeirachy ();
+            // Now Invoke Children Created             
+			OnChildrenCreated();
+
         }
+
+
+		/// <summary>
+		/// Validates the heirachy (ensures things are where they are supposed to be).
+		/// </summary>
+		protected virtual void ValidateHeirachy() {
+			
+		}
 
         /// <summary>
         /// The purpose of this function is to commit any changes to properties and to synchronize changes so they occur at the same time or in a specific order.
@@ -115,10 +164,10 @@ namespace UnityXD.Components
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        protected virtual void LayoutChrome()
+		/// <summary>
+		/// Updates the layout once all measurements, children and properties have finalized.
+		/// </summary>
+        protected virtual void UpdateLayout()
         {
             SetPosition(X, Y);
 
@@ -159,7 +208,6 @@ namespace UnityXD.Components
             get { return IsHorizontalStretchEnabled || IsVeritcalStretchEnabled; }
         }
 
-
         /// <summary>
         ///     Gets a value indicating whether this instance is horizontal stretch enabled.
         /// </summary>
@@ -186,28 +234,6 @@ namespace UnityXD.Components
                 var max = RectTransformRef.anchorMax;
                 return !min.Equals(max) && min.y == 0 && max.y == 1;
             }
-        }
-        /// <summary>
-        ///     Gets the rect transform reference & caches it.
-        /// </summary>
-        /// <value>The rect transform reference.</value>
-        public RectTransform RectTransformRef
-        {
-            get { return _rectTransformRef ?? (_rectTransformRef = GetComponent<RectTransform>()); }
-        }
-
-        /// <summary>
-        ///     Gets the rect transform reference & caches it.
-        /// </summary>
-        /// <value>The rect transform reference.</value>
-        public Image ImageRef
-        {
-            get { return _imageRef ?? (_imageRef = GetComponent<Image>()); }
-        }
-
-        public Text TextRef
-        {
-            get { return _textRef ?? (_textRef = GetComponent<Text>()); }
         }
 
         /// <summary>
@@ -358,6 +384,7 @@ namespace UnityXD.Components
 
             InvalidateDisplay();
         }
+
         /// <summary>
         /// Sets the padding.
         /// </summary>
@@ -400,12 +427,21 @@ namespace UnityXD.Components
             InvalidateDisplay();
         }
 
+		/// <summary>
+		/// Applies the theme.
+		/// </summary>
+		/// <param name="xd">Xd.</param>
         public virtual void ApplyTheme(XDStyle xd)
         {
-            CurrentStyle = xd;
+           // CurrentStyle = xd;
         }
-
-
+				
+		/// <summary>
+		/// Gets the or create child.
+		/// </summary>
+		/// <returns>The or create child.</returns>
+		/// <param name="name">Name.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
         public T GetOrCreateChild<T>(string name)
         {
             var result = default(T);
@@ -428,6 +464,13 @@ namespace UnityXD.Components
             }
             return result;
         }
+
+		/// <summary>
+		/// Creates the child.
+		/// </summary>
+		/// <returns>The child.</returns>
+		/// <param name="name">Name.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
         public T CreateChild<T>(string name)
         {
 
@@ -443,6 +486,20 @@ namespace UnityXD.Components
 
             return (T)Convert.ChangeType(comp, typeof(T));
         }
+
+		/// <summary>
+		/// Applies the child naming.
+		/// </summary>
+		/// <param name="gameObject">Game object.</param>
+		/// <param name="name">Name.</param>
+		public void ApplyChildNaming(GameObject gameObject, String name) {
+
+			var treeNodeName = gameObject.transform.parent.name + name;
+			if (gameObject.name != treeNodeName) {
+				gameObject.name = treeNodeName;
+			}
+		}
+
 
     }
 }

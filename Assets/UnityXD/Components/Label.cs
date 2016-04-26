@@ -9,7 +9,6 @@ namespace UnityXD.Components
     [ExecuteInEditMode]
     public class Label : UIComponent
     {
-        public XDFontStyle FontClassData = new XDFontStyle();
         public bool TruncateToFit;
         public bool AutoSize;
         public TextAnchor Alignment;
@@ -56,8 +55,8 @@ namespace UnityXD.Components
             }
 
             TextRef.text = Text;
-            TextRef.font = FontClassData.Font;
-            TextRef.fontSize = FontClassData.ActualFontSize;
+			//TextRef.font = CurrentStyle.FontStyle.Font;
+			//TextRef.fontSize = CurrentStyle.FontStyle.ActualFontSize;
             TextRef.color = CurrentStyle.FrontFill.ToColor();
             TextRef.alignment = Alignment;
 
@@ -106,12 +105,7 @@ namespace UnityXD.Components
 
         }
 
-        public void ApplyTheme(XDFontStyle theme)
-        {
-            base.ApplyTheme(theme);
-            FontClassData = theme;
-        }
-
+       
         public void OnRectTransformDimensionsChange()
         {
             // May need to truncate according to new dimensions.
