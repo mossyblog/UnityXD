@@ -21,6 +21,8 @@ namespace UnityXD.Components
         public int Y;
         public bool IsHeightDependantOnWidth;
         public bool IsVisible;
+        public Sprite BackgroundSprite = null;
+        public bool PreserveAspect;
         public RectOffset Padding;
         public RectOffset Margin;
         public RectOffset ParentPadding;

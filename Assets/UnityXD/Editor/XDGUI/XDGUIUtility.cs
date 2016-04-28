@@ -95,7 +95,7 @@ namespace UnityXD.XDGUIEditor
                 DrawRect(decalRect, XDGUIStyles.Instance.Highlight);
             }
 
-            // Render the Label.
+            // Render the Text.
             if (GUI.Button(pos, label, tabStyleAdjusted))
             {
                 return true;

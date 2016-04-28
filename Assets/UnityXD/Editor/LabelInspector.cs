@@ -9,7 +9,7 @@ using UnityXD.Editor;
 using UnityXD.Styles;
 using UnityXD.XDGUIEditor;
 
-namespace UnityXD.Editor
+namespace UnityXD.XDGUIEditor
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(Label))]
@@ -32,10 +32,11 @@ namespace UnityXD.Editor
             base.CreateDesignControls();
 
             XDGUIStyleInspector.Create(ref _labelRef)
-                .DisplayHeading()
-                .DisplayText()
-                .DisplayAlignment()
-                .DisplayFontStyle();
+                .FillColor()
+                .Heading("Font Settings")
+                .LabelText()
+                .FontAlignment()
+                .FontStyle();
 
 
         }

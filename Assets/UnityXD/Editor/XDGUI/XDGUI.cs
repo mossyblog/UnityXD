@@ -13,7 +13,7 @@ namespace UnityXD.XDGUIEditor
 {
     public  class XDGUI
     {
-        private String CurrentLabel;
+        private string CurrentLabel;
         private Sprite CurrentSprite;
         private GUIContent CurrentContent = new GUIContent();
         private GUIStyle CurrentStyle;
@@ -21,10 +21,10 @@ namespace UnityXD.XDGUIEditor
         private int Width;
         private int Height;
         private UIComponent _componentRef;
-        private List<GUILayoutOption> CurrentOptions = new List<GUILayoutOption>();
-        private List<GUILayoutOption> FieldOptions = new List<GUILayoutOption>();
-        private int FieldWidth;
-        private int FieldHeight;
+        private List<GUILayoutOption> _currentOptions = new List<GUILayoutOption>();
+        private readonly List<GUILayoutOption> _fieldOptions = new List<GUILayoutOption>();
+        private int _fieldWidth;
+        private int _fieldHeight;
 
         #region Constructors
 
@@ -32,8 +32,8 @@ namespace UnityXD.XDGUIEditor
         {
             CurrentStyle = new GUIStyle(XDGUIStyles.Instance.Label);
             FieldStyle = new GUIStyle(XDGUIStyles.Instance.Field);
-            CurrentOptions.Add(GUILayout.MinHeight(22));
-            FieldOptions.Add(GUILayout.MinHeight(22));
+            _currentOptions.Add(GUILayout.MinHeight(22));
+            _fieldOptions.Add(GUILayout.MinHeight(22));
         }
 
         public XDGUI(ref UIComponent componentRef)
@@ -41,8 +41,8 @@ namespace UnityXD.XDGUIEditor
             _componentRef = componentRef;
             CurrentStyle = new GUIStyle(XDGUIStyles.Instance.Label);
             FieldStyle = new GUIStyle(XDGUIStyles.Instance.Field);
-            CurrentOptions.Add(GUILayout.MinHeight(22));
-            FieldOptions.Add(GUILayout.MinHeight(22));
+            _currentOptions.Add(GUILayout.MinHeight(22));
+            _fieldOptions.Add(GUILayout.MinHeight(22));
         }
 
         public static XDGUI Create()
@@ -61,7 +61,7 @@ namespace UnityXD.XDGUIEditor
 
         public XDGUI Options(GUILayoutOption[] options)
         {
-            CurrentOptions = options.ToList();
+            _currentOptions = options.ToList();
             return this;
         }
 
@@ -71,7 +71,7 @@ namespace UnityXD.XDGUIEditor
             return this;
         }
 
-        public XDGUI Label(string label)
+        public XDGUI Text(string label)
         {
             CurrentLabel = label;
             CurrentContent.text = CurrentLabel;
@@ -95,20 +95,20 @@ namespace UnityXD.XDGUIEditor
         public XDGUI Size(int width, int height, int fieldWidth, int fieldHeight) {
             Width = width;
             Height = height;         
-            FieldWidth = fieldWidth;
-            FieldHeight = fieldHeight;
+            _fieldWidth = fieldWidth;
+            _fieldHeight = fieldHeight;
 
-            CurrentOptions.Add(GUILayout.Width(width));
-            CurrentOptions.Add(GUILayout.Height(height));
+            _currentOptions.Add(GUILayout.Width(width));
+            _currentOptions.Add(GUILayout.Height(height));
 
             if (fieldWidth > 0 && fieldHeight > 0)
             {
-                FieldOptions.Add(GUILayout.Width(fieldWidth));
-                FieldOptions.Add(GUILayout.Height(fieldHeight));
+                _fieldOptions.Add(GUILayout.Width(fieldWidth));
+                _fieldOptions.Add(GUILayout.Height(fieldHeight));
             }
             else
             {
-                FieldOptions.Add(GUILayout.Height(height));
+                _fieldOptions.Add(GUILayout.Height(height));
             }
 
             return this;
@@ -130,22 +130,22 @@ namespace UnityXD.XDGUIEditor
 
         #region Button
 
-        public  bool RenderButton()
+        public  bool Button()
         {          
-            return GUILayout.Button(CurrentContent, CurrentStyle, CurrentOptions.ToArray());
+            return GUILayout.Button(CurrentContent, CurrentStyle, _currentOptions.ToArray());
         }
 
-        public  bool RenderButton(ref bool field, bool isEnabled = true)
+        public  bool Button(ref bool field, bool isEnabled = true)
         {
             GUI.enabled = isEnabled;
-            return GUILayout.Button(CurrentContent, CurrentStyle, CurrentOptions.ToArray()) ? field = !field : field;
+            return GUILayout.Button(CurrentContent, CurrentStyle, _currentOptions.ToArray()) ? field = !field : field;
         }
 
         #endregion
 
         #region ToolBar - Alignment
 
-        public bool RenderAnchorToolBar()
+        public bool AnchorToolBar()
         {   
             var m_horizAlignment = _componentRef.CurrentAnchorAlignment.ToHorizontalAlignment();
             var m_vertAlignment = _componentRef.CurrentAnchorAlignment.ToVerticalAlignment();
@@ -191,29 +191,29 @@ namespace UnityXD.XDGUIEditor
             using (new XDGUIPanel(true, style, GUILayout.MaxWidth(256)))
             {
 
-                XDGUI.Create().Sprite(horizStretchSprite).Size(size).Style(style).RenderButton(ref m_isAnchorHStretched);
-                XDGUI.Create().Sprite(vertStretchSprite).Size(size).Style(style).RenderButton(ref m_isAnchorVStretched);
+                XDGUI.Create().Sprite(horizStretchSprite).Size(size).Style(style).Button(ref m_isAnchorHStretched);
+                XDGUI.Create().Sprite(vertStretchSprite).Size(size).Style(style).Button(ref m_isAnchorVStretched);
 
                 Spacer(8);
 
-                if (XDGUI.Create().Sprite(leftSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(leftSprite).Size(size).Style(style).Button())
                     m_horizAlignment = XDHorizontalAlignment.Left;
 
-                if (XDGUI.Create().Sprite(midHSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(midHSprite).Size(size).Style(style).Button())
                     m_horizAlignment = XDHorizontalAlignment.Center;
 
-                if (XDGUI.Create().Sprite(rightSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(rightSprite).Size(size).Style(style).Button())
                     m_horizAlignment = XDHorizontalAlignment.Right;
 
                 Spacer(8);
 
-                if (XDGUI.Create().Sprite(topSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(topSprite).Size(size).Style(style).Button())
                     m_vertAlignment = XDVerticalAlignment.Top;
 
-                if (XDGUI.Create().Sprite(midVSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(midVSprite).Size(size).Style(style).Button())
                     m_vertAlignment = XDVerticalAlignment.Center;
 
-                if (XDGUI.Create().Sprite(botSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(botSprite).Size(size).Style(style).Button())
                     m_vertAlignment = XDVerticalAlignment.Bottom;
             }
             if (GUI.changed)
@@ -237,111 +237,113 @@ namespace UnityXD.XDGUIEditor
 
         #endregion
 
-        public void RenderLabel()
+        #region Label
+        public void Label()
         {
-            GUILayout.Label(CurrentContent, CurrentStyle, CurrentOptions.ToArray());
+            GUILayout.Label(CurrentContent, CurrentStyle, _currentOptions.ToArray());
         }
+        #endregion
 
         #region TextFields
-        public void RenderTextField(ref double field, bool isSingleLine, bool isEnabled = true)
+        public void TextField(ref double field, bool isSingleLine, bool isEnabled = true)
         {
             GUI.enabled = isEnabled;
             using (new XDGUIPanel(isSingleLine) )
             {
                 if (isSingleLine)
                 {
-                    RenderLabel();
+                    Label();
                 }
                 else
                 {
                     FieldStyle.alignment = TextAnchor.MiddleCenter;
                 }
 
-                field = EditorGUILayout.DoubleField(field, FieldStyle, FieldOptions.ToArray());
-                RenderLine(XDVerticalAlignment.Bottom,0,XDColors.ChromeLight.ToColor());
+                field = EditorGUILayout.DoubleField(field, FieldStyle, _fieldOptions.ToArray());
+                DrawLine(XDVerticalAlignment.Bottom,0,XDColors.ChromeLight.ToColor());
 
                 if (!isSingleLine)
                 {
                     CurrentStyle.alignment = TextAnchor.MiddleCenter;
-                    RenderLabel();
+                    Label();
                 }
             }
             GUI.enabled = true;
         }
 
-        public void RenderTextField(ref string field, bool isSingleLine, bool isEnabled = true)
+        public void TextField(ref string field, bool isSingleLine, bool isEnabled = true)
         {            
             GUI.enabled = isEnabled;
             using (new XDGUIPanel(isSingleLine) )
             {
                 if (isSingleLine)
                 {
-                    RenderLabel();
+                    Label();
                 }
                 else
                 {
                     FieldStyle.alignment = TextAnchor.MiddleCenter;
                 }
 
-                field = EditorGUILayout.TextField(field, FieldStyle, FieldOptions.ToArray());
-                RenderLine(XDVerticalAlignment.Bottom,0,XDColors.ChromeLight.ToColor());
+                field = EditorGUILayout.TextField(field, FieldStyle, _fieldOptions.ToArray());
+                DrawLine(XDVerticalAlignment.Bottom,0,XDColors.ChromeLight.ToColor());
 
                 if (!isSingleLine)
                 {
                     CurrentStyle.alignment = TextAnchor.MiddleCenter;
-                    RenderLabel();
+                    Label();
                 }
             }
             GUI.enabled = true;
         }
 
-        public void RenderTextField(ref int field, bool isSingleLine, bool isEnabled = true)
+        public void TextField(ref int field, bool isSingleLine, bool isEnabled = true)
         {
             GUI.enabled = isEnabled;           
             using (new XDGUIPanel(isSingleLine) )
             {
                 if (isSingleLine)
                 {
-                    RenderLabel();
+                    Label();
                 }
                 else
                 {
                     FieldStyle.alignment = TextAnchor.MiddleCenter;
                 }
 
-                field = EditorGUILayout.IntField(field, FieldStyle, FieldOptions.ToArray());
-                RenderLine(XDVerticalAlignment.Bottom,0,XDColors.ChromeLight.ToColor());
+                field = EditorGUILayout.IntField(field, FieldStyle, _fieldOptions.ToArray());
+                DrawLine(XDVerticalAlignment.Bottom,0,XDColors.ChromeLight.ToColor());
                 if (!isSingleLine)
                 {
                     CurrentStyle.alignment = TextAnchor.MiddleCenter;
-                    RenderLabel();
+                    Label();
                 }
 
             }
             GUI.enabled = true;
         }
 
-        public void RenderTextField(ref float field, bool isSingleLine, bool isEnabled = true)
+        public void TextField(ref float field, bool isSingleLine, bool isEnabled = true)
         {
             GUI.enabled = isEnabled;
             using (new XDGUIPanel(isSingleLine) )
             {
                 if (isSingleLine)
                 {
-                    RenderLabel();
+                    Label();
                 }
                 else
                 {
                     FieldStyle.alignment = TextAnchor.MiddleCenter;
                 }
 
-                field = EditorGUILayout.FloatField(field, FieldStyle, FieldOptions.ToArray());
-                RenderLine(XDVerticalAlignment.Bottom,0,XDColors.ChromeLight.ToColor());
+                field = EditorGUILayout.FloatField(field, FieldStyle, _fieldOptions.ToArray());
+                DrawLine(XDVerticalAlignment.Bottom,0,XDColors.ChromeLight.ToColor());
 
                 if (!isSingleLine)
                 {
                     CurrentStyle.alignment = TextAnchor.MiddleCenter;
-                    RenderLabel();
+                    Label();
                 }
             }
 
@@ -350,7 +352,45 @@ namespace UnityXD.XDGUIEditor
 
         #endregion
 
-        public void RenderLine(XDVerticalAlignment alignment, int offset, Color color) {
+        public void SpriteField(ref Sprite field, bool isEnabled = true)
+        {
+            GUI.enabled = isEnabled;
+            using (new XDGUIPanel(true))
+            {
+                Label();                
+                using (new XDGUIPanel())
+                {
+                    GUILayout.Space(8);
+                    field = (Sprite) EditorGUILayout.ObjectField(field, typeof (Sprite), false);
+                    if (field != null)
+                    {
+                        var txt = SpriteUtility.GetSpriteTexture(field, false);
+                        if (txt != null)
+                        {
+                            //GUILayout.Label(txt, GUILayout.Width(32), GUILayout.Height(32));
+                            var txtureRect = GUILayoutUtility.GetLastRect();
+
+                            txtureRect.y += txtureRect.height+8;
+                            txtureRect.height = 32;
+                            txtureRect.width = 32;
+                           
+                            EditorGUI.DrawTextureAlpha(txtureRect, txt);
+                            DrawOutline(Color.black, txtureRect);
+                            GUILayout.Space(40);
+
+
+                        }
+                    }
+                }
+
+            }
+
+           
+            GUI.enabled = true;
+        }
+
+        #region Drawing Tool
+        public void DrawLine(XDVerticalAlignment alignment, int offset, Color color) {
             var rect = GUILayoutUtility.GetLastRect();
             rect.width -= offset;
             rect.x += offset/2;
@@ -358,7 +398,39 @@ namespace UnityXD.XDGUIEditor
         }
 
 
-        public void RenderSwatchPicker(ref UIComponent componentRef, bool fillEnabled, bool backFillEnabled) {
+        private void DrawOutline(Color color)
+        {
+            var pos = GUILayoutUtility.GetLastRect();
+            DrawOutline(color,pos);
+
+        }
+
+        private void DrawOutline(Color color, Rect pos)
+        {
+            
+            var leftRect = pos;
+            leftRect.width = 1;
+
+            var rightRect = leftRect;
+            rightRect.x += pos.width;
+
+            var topRect = pos;
+            topRect.height = 1;
+
+            var botRect = topRect;
+            botRect.y += pos.height;
+
+            EditorGUI.DrawRect(leftRect, color);
+            EditorGUI.DrawRect(rightRect, color);
+            EditorGUI.DrawRect(topRect, color);
+            EditorGUI.DrawRect(botRect, color);
+
+        }
+
+        #endregion
+
+        #region Swatchs
+        public void SwatchPicker(ref XDColors colorRef, string heading) {
             var groupStyle = XDGUIStyles.Instance.Panel;
 
             // Chrome Row
@@ -377,45 +449,67 @@ namespace UnityXD.XDGUIEditor
                 .Where (s => s.ToLower ().Contains (XDColorTypes.Accent.ToString ().ToLower ()))
                 .ToList ();
 
-
-            if (fillEnabled) {
-                XDGUIUtility.CreateSpacer (8);
-                XDGUI.Create().Label("Fill Color").Style(XDGUIStyles.Instance.Heading).RenderLabel();
-                using (new XDGUIPanel (true, groupStyle)) {
-                    // Preview Swatch.
-                    XDGUIUtility.CreateSwatch (componentRef.CurrentStyle.FrontFill.ToColor (), 48, true);
-                    XDGUIUtility.CreateSpacer (16);
-                    using (new XDGUIPanel (false)) {
-                        XDGUIUtility.CreateSwatchRow (AccentColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
-                        XDGUIUtility.CreateSwatchRow (BrandColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
-                        XDGUIUtility.CreateSwatchRow (ChromeColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
-                    }
-
+            XDGUIUtility.CreateSpacer(8);
+            XDGUI.Create().Text(heading).Style(XDGUIStyles.Instance.Heading).Label();
+            using (new XDGUIPanel(true, groupStyle))
+            {
+                
+                // Preview Swatch.styleRef
+                XDGUIUtility.CreateSwatch(colorRef.ToColor(), 48, true);
+                XDGUIUtility.CreateSpacer(16);
+                using (new XDGUIPanel(false))
+                {
+                    XDGUIUtility.CreateSwatchRow(AccentColors.ToArray(), 16, ref colorRef);
+                    XDGUIUtility.CreateSwatchRow(BrandColors.ToArray(), 16, ref colorRef);
+                    XDGUIUtility.CreateSwatchRow(ChromeColors.ToArray(), 16, ref colorRef);
                 }
 
-                XDGUIUtility.CreateSpacer (16);
             }
 
-            if (backFillEnabled) {
-                XDGUI.Create().Label("BackFill Color").Style(XDGUIStyles.Instance.Heading).RenderLabel();
-                using (new XDGUIPanel (true, groupStyle)) {
-                    // Preview Swatch.
-                    XDGUIUtility.CreateSwatch (componentRef.CurrentStyle.FrontFill.ToColor (), 48, true);
-                    XDGUIUtility.CreateSpacer (16);
-                    using (new XDGUIPanel (false)) {
-                        XDGUIUtility.CreateSwatchRow (AccentColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
-                        XDGUIUtility.CreateSwatchRow (BrandColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
-                        XDGUIUtility.CreateSwatchRow (ChromeColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
-                    }
+            XDGUIUtility.CreateSpacer(16);
 
-                }
-            }
 
-            
+
 
         }
+        #endregion
 
-        public void RenderEnumField<T>(ref T field, List<String> filters, bool isSingleLine, bool isEnabled = true) {
+        #region Checkbox
+        public void CheckBox(ref bool field, bool isEnabled = true)
+        {
+            var style = new GUIStyle(XDGUIStyles.Instance.Checkbox);
+            var fillEnabled = style.active.background.GetPixel(1, 1);
+            var fillDisabled = style.normal.background.GetPixel(1, 1);
+
+            var trueColor = XDColors.Brand.ToColor();
+            var falseColor = XDColors.ChromeLightest.ToColor();
+
+            style.normal.background = XDGUIUtility.CreateColoredTexture(field ? trueColor : falseColor);
+
+            using (new XDGUIPanel(true))
+            {
+                Label();
+                using (var checkBoxRec = new XDGUIPanel(true, GUILayout.Width(_fieldWidth), GUILayout.Height(_fieldHeight)))
+                {
+                   
+                    var fieldRect = checkBoxRec.Rect;
+
+                    fieldRect.y += Height / 2 - _fieldHeight / 2 + 5;
+                    XDGUIUtility.DrawRect(fieldRect, Color.black, (field ? trueColor : falseColor), style.border);
+                    if (GUI.Button(fieldRect, String.Empty, GUIStyle.none))
+                    {
+                        field = !field;
+                    }
+                    GUILayout.FlexibleSpace();
+                }
+
+            }
+
+        }
+        #endregion
+
+        #region ComboBox
+        public void ComboBox<T>(ref T field, List<String> filters, bool isSingleLine, bool isEnabled = true) {
             var rawValues = new Dictionary<Type, int[]>();
             var names = Enum.GetNames(typeof(T));
             var values = GetEnumValues<T>(rawValues);
@@ -438,7 +532,7 @@ namespace UnityXD.XDGUIEditor
             {
                 if (isSingleLine)
                 {
-                    RenderLabel();
+                    Label();
                 }
                 else
                 {
@@ -446,14 +540,14 @@ namespace UnityXD.XDGUIEditor
                 }
                 var selected = (int)(object)field;
 
-                var selectedIndex = EditorGUILayout.Popup(Array.IndexOf(values, selected), names,FieldStyle, FieldOptions.ToArray());
-                RenderOutline(XDColors.ChromeLight.ToColor());
+                var selectedIndex = EditorGUILayout.Popup(Array.IndexOf(values, selected), names,FieldStyle, _fieldOptions.ToArray());
+                DrawOutline(XDColors.ChromeLight.ToColor());
                 result = selectedIndex >= 0 && selectedIndex < values.Length ? values[selectedIndex] : selected;
 
                 if (!isSingleLine)
                 {
                     CurrentStyle.alignment = TextAnchor.MiddleCenter;
-                    RenderLabel();
+                    Label();
                 }
 
             }
@@ -466,69 +560,13 @@ namespace UnityXD.XDGUIEditor
          
         }
 
-        private void RenderOutline(Color color) {
-            var pos = GUILayoutUtility.GetLastRect();
-
-            var leftRect = pos;
-            leftRect.width = 1;
-
-            var rightRect = leftRect;
-            rightRect.x += pos.width;
-
-            var topRect = pos;
-            topRect.height = 1;
-
-            var botRect = topRect;
-            botRect.y += pos.height;
-
-            EditorGUI.DrawRect(leftRect, color);
-            EditorGUI.DrawRect(rightRect, color);
-            EditorGUI.DrawRect(topRect, color);
-            EditorGUI.DrawRect(botRect, color);
-
-        }
-
-
-        public void RenderCheckBox(ref bool field, bool isEnabled = true) {
-            var style = new GUIStyle(XDGUIStyles.Instance.Checkbox);
-            var fillEnabled = style.active.background.GetPixel(1, 1);
-            var fillDisabled = style.normal.background.GetPixel(1, 1);
-
-            var trueColor = XDColors.Brand.ToColor();
-            var falseColor = XDColors.ChromeLightest.ToColor();
-
-            style.normal.background = XDGUIUtility.CreateColoredTexture(field ? trueColor : falseColor);
-
-            using (new XDGUIPanel(true))
-            {
-                RenderLabel();
-                using (var checkBoxRec = new XDGUIPanel(true, GUILayout.Width(FieldWidth), GUILayout.Height(FieldHeight)))
-                {
-                    GUILayout.FlexibleSpace();
-                    var fieldRect = checkBoxRec.Rect;
-
-                    fieldRect.y += Height/2 - FieldHeight/2 + 2;
-                    XDGUIUtility.DrawRect(fieldRect, Color.black, (field ? trueColor : falseColor), style.border);
-                    if (GUI.Button(fieldRect, String.Empty, GUIStyle.none))
-                    {
-                        field = !field;
-                    }
-                }
-
-            }
-
-
-           
-
-
-        }
-
         private static int[] GetEnumValues<T>(Dictionary<Type, int[]> enumcache)
         {
             if (!enumcache.ContainsKey(typeof(T)))
                 enumcache[typeof(T)] = Enum.GetValues(typeof(T)).Cast<int>().ToArray();
             return enumcache[typeof(T)];
         }
+        #endregion
     }
 
    

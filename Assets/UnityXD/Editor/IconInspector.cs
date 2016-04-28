@@ -9,7 +9,7 @@ using UnityXD.Editor;
 using UnityXD.Styles;
 using UnityXD.XDGUIEditor;
 
-namespace UnityXD.Editor
+namespace UnityXD.XDGUIEditor
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(Icon))]
@@ -33,9 +33,7 @@ namespace UnityXD.Editor
             base.CreateDesignControls();
             using (new XDGUIPanel(false, groupStyle))
             {
-                XDGUI.Create().Label("Icon").Size(64, 22, 48).RenderEnumField(ref m_currentIcon,  null, true);
-
-
+                XDGUI.Create().Text("Icon").Size(64, 22, 48).ComboBox(ref m_currentIcon,  null, true);
             }
         }
 

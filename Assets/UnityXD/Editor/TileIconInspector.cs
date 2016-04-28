@@ -9,20 +9,16 @@ using UnityXD.Editor;
 using UnityXD.Styles;
 using UnityXD.XDGUIEditor;
 
-namespace UnityXD.Editor
+namespace UnityXD.XDGUIEditor
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(TileIcon))]
     public class TileIconInspector : UIComponentInspector
     {
         protected TileIcon _tileIconRef;
-        protected XDIcons m_currentIcon;
-        protected XDVerticalAlignment m_placement;
+
         protected override void Initialize()
         {
-            m_design_backfillEnabled = true;
-			m_design_labelAlignment = false;
-
             if (_tileIconRef == null)
             {
                 _tileIconRef = target as TileIcon;
@@ -40,45 +36,28 @@ namespace UnityXD.Editor
         {
             base.CreateDesignControls();
 
-            var placementList = new List<String>();
-            placementList.Add(XDVerticalAlignment.Top.ToString());
-            placementList.Add(XDVerticalAlignment.Bottom.ToString());
+            var placementList = new List<String>
+            {
+                XDVerticalAlignment.Top.ToString(),
+                XDVerticalAlignment.Bottom.ToString()
+            };
 
             using (new XDGUIPanel(false, groupStyle))
             {
-                XDGUI.Create().Label("Icon").Size(64, 22, 92).RenderEnumField(ref m_currentIcon,  null, true);
+                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _tileIconRef.CurrentIcon,  null, true);
                 EditorGUILayout.Space();
-                XDGUI.Create().Label("Placement").Size(64, 22, 64).RenderEnumField(ref m_placement, placementList, true);
-
+                XDGUI.Create().Text("Placement").Size(64, 22, 64).ComboBox(ref _tileIconRef.IconPlacement, placementList, true);
             }
+
 
             XDGUIStyleInspector.Create(ref _labelRef)
-                .DisplayHeading()
-                .DisplayText()
-                .DisplayAlignment()
-                .DisplayFontStyle();
-
-        }
-
-        protected override void CommitProperties()
-
-        {
-            m_layout_paddingEnabled = false;
-            
-			XDGUIUtility.Bind(ref _tileIconRef.CurrentIcon, ref m_currentIcon);
-            XDGUIUtility.Bind(ref _tileIconRef.CurrentStyle, ref m_style);
-            XDGUIUtility.Bind(ref _tileIconRef.IconPlacement, ref m_placement);
-
-            
-			base.CommitProperties();
-
-
-            if (GUI.changed)
-            {
-                _tileIconRef.SetIcon(m_currentIcon);
-            }
-
-           
+                .FillColor()
+                .BackFillColor()            
+                .Heading("Background")    
+                .Heading("Font Settings")
+                .LabelText()
+                .FontAlignment()
+                .FontStyle();
 
         }
     }

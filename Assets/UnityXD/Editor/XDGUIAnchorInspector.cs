@@ -9,12 +9,10 @@ using UnityXD.Styles;
 
 namespace UnityXD.XDGUIEditor
 {
-    public class XDGUIAnchorInspector
+    public class XDGUIAnchorInspector : XDGUIBaseInspector
     {
 
-        public GUIStyle PanelStyle = XDGUIStyles.Instance.Panel;
-        private int FieldHeight = 22;
-        private UIComponent _componentRef;
+       
 
         public static XDGUIAnchorInspector Create(ref UIComponent componentRef)
         {
@@ -36,21 +34,21 @@ namespace UnityXD.XDGUIEditor
             // SWITCHES.
             var wEnabled = _componentRef.CurrentStyle.Size == XDSizes.Custom && !isHStretched;
             var hEnabled = _componentRef.CurrentStyle.Size == XDSizes.Custom && !isVStretched && !isHeightDependentOnWidth;
-            var linkEnabled = wEnabled && !isHStretched && !isVStretched;
+            var linkEnabled = wEnabled && !isVStretched;
 
             using (new XDGUIPanel(false, PanelStyle))
             {
-                XDGUI.Create().Label("Size").Size(64, FieldHeight, 64).RenderEnumField(ref _componentRef.CurrentStyle.Size, null, true);
+                XDGUI.Create().Text("Size").Size(LabelMedium, FieldHeightSmall, FieldLarge).ComboBox(ref _componentRef.CurrentStyle.Size, null, true);
             }
 
             using (new XDGUIPanel(true, PanelStyle))
             {
-                using (new XDGUIPanel(false, GUILayout.MaxWidth(64)))
+                using (new XDGUIPanel(false, GUILayout.MaxWidth(FieldLarge)))
                 {
                     
-                    XDGUI.Create().Label("W").Size(16, FieldHeight, 48).RenderTextField(ref _componentRef.Width, true, wEnabled);
+                    XDGUI.Create().Text("W").Size(LabelSmall, FieldHeightSmall, FieldMedium).TextField(ref _componentRef.Width, true, wEnabled);
                     EditorGUILayout.Space();
-                    XDGUI.Create().Label("H").Size(16, FieldHeight, 48).RenderTextField(ref _componentRef.Height, true, hEnabled);                    
+                    XDGUI.Create().Text("H").Size(LabelSmall, FieldHeightSmall, FieldMedium).TextField(ref _componentRef.Height, true, hEnabled);                    
                 }
                 
 
@@ -62,16 +60,16 @@ namespace UnityXD.XDGUIEditor
                         .Sprite(isLinkSprite)
                         .Size(24, 48)
                         .Style(GUIStyle.none)
-                        .RenderButton(ref _componentRef.IsHeightDependantOnWidth, linkEnabled);
+                        .Button(ref _componentRef.IsHeightDependantOnWidth, linkEnabled);
                 }
 
                 GUILayout.FlexibleSpace();
 
                 using (new XDGUIPanel(false))
                 {
-                    XDGUI.Create().Label("X").Size(16, FieldHeight, 48).RenderTextField(ref _componentRef.X, true);
+                    XDGUI.Create().Text("X").Size(LabelSmall, FieldHeightSmall, FieldMedium).TextField(ref _componentRef.X, true);
                     EditorGUILayout.Space();
-                    XDGUI.Create().Label("Y").Size(16, FieldHeight, 48).RenderTextField(ref _componentRef.Y, true);
+                    XDGUI.Create().Text("Y").Size(LabelSmall, FieldHeightSmall, FieldMedium).TextField(ref _componentRef.Y, true);
                 }
             }
             return this;
@@ -125,29 +123,29 @@ namespace UnityXD.XDGUIEditor
             using (new XDGUIPanel(true, style, GUILayout.MaxWidth(256)))
             {
 
-                XDGUI.Create().Sprite(horizStretchSprite).Size(size).Style(style).RenderButton(ref horizontalStretchEnabled);
-                XDGUI.Create().Sprite(vertStretchSprite).Size(size).Style(style).RenderButton(ref isVeritcalStretchEnabled);
+                XDGUI.Create().Sprite(horizStretchSprite).Size(size).Style(style).Button(ref horizontalStretchEnabled);
+                XDGUI.Create().Sprite(vertStretchSprite).Size(size).Style(style).Button(ref isVeritcalStretchEnabled);
 
                 GUILayout.Space(8);
 
-                if (XDGUI.Create().Sprite(leftSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(leftSprite).Size(size).Style(style).Button())
                     horizontalAlignment = XDHorizontalAlignment.Left;
 
-                if (XDGUI.Create().Sprite(midHSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(midHSprite).Size(size).Style(style).Button())
                     horizontalAlignment = XDHorizontalAlignment.Center;
 
-                if (XDGUI.Create().Sprite(rightSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(rightSprite).Size(size).Style(style).Button())
                     horizontalAlignment = XDHorizontalAlignment.Right;
 
                 GUILayout.Space(8);
 
-                if (XDGUI.Create().Sprite(topSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(topSprite).Size(size).Style(style).Button())
                     vertAlignment = XDVerticalAlignment.Top;
 
-                if (XDGUI.Create().Sprite(midVSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(midVSprite).Size(size).Style(style).Button())
                     vertAlignment = XDVerticalAlignment.Center;
 
-                if (XDGUI.Create().Sprite(botSprite).Size(size).Style(style).RenderButton())
+                if (XDGUI.Create().Sprite(botSprite).Size(size).Style(style).Button())
                     vertAlignment = XDVerticalAlignment.Bottom;
             }
             if (GUI.changed)
@@ -164,17 +162,17 @@ namespace UnityXD.XDGUIEditor
             /*********************************************************************************
                   Padding
               *********************************************************************************/
-            XDGUI.Create().Label("Padding").Style(XDGUIStyles.Instance.Heading).RenderLabel();
+            XDGUI.Create().Text("Padding").Style(XDGUIStyles.Instance.Heading).Label();
             using (new XDGUIPanel(true, PanelStyle))
             {
                 var left = _componentRef.Padding.left;
                 var right = _componentRef.Padding.right;
                 var top = _componentRef.Padding.top;
                 var bot = _componentRef.Padding.bottom;
-                XDGUI.Create().Label("Left").RenderTextField(ref left, false);
-                XDGUI.Create().Label("Right").RenderTextField(ref right, false);
-                XDGUI.Create().Label("Top").RenderTextField(ref top, false);
-                XDGUI.Create().Label("Bottom").RenderTextField(ref bot, false);
+                XDGUI.Create().Text("Left").TextField(ref left, false);
+                XDGUI.Create().Text("Right").TextField(ref right, false);
+                XDGUI.Create().Text("Top").TextField(ref top, false);
+                XDGUI.Create().Text("Bottom").TextField(ref bot, false);
                 _componentRef.SetPadding(new RectOffset(left, right, top, bot));
             }
             EditorGUILayout.Space();
@@ -187,7 +185,7 @@ namespace UnityXD.XDGUIEditor
               Margin
           *********************************************************************************/
 
-            XDGUI.Create().Label("Margins").Style(XDGUIStyles.Instance.Heading).RenderLabel();
+            XDGUI.Create().Text("Margins").Style(XDGUIStyles.Instance.Heading).Label();
             using (new XDGUIPanel(true, PanelStyle))
             {
                 var left = _componentRef.Margin.left;
@@ -195,10 +193,10 @@ namespace UnityXD.XDGUIEditor
                 var top = _componentRef.Margin.top;
                 var bot = _componentRef.Margin.bottom;
                 
-                XDGUI.Create().Label("Left").RenderTextField(ref left, false);
-                XDGUI.Create().Label("Right").RenderTextField(ref right, false);
-                XDGUI.Create().Label("Top").RenderTextField(ref top, false);
-                XDGUI.Create().Label("Bottom").RenderTextField(ref bot, false);
+                XDGUI.Create().Text("Left").TextField(ref left, false);
+                XDGUI.Create().Text("Right").TextField(ref right, false);
+                XDGUI.Create().Text("Top").TextField(ref top, false);
+                XDGUI.Create().Text("Bottom").TextField(ref bot, false);
 
                 _componentRef.Margin = new RectOffset(left, right, top, bot);
 

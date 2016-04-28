@@ -12,7 +12,18 @@ namespace UnityXD.Components
 		protected override void CommitProperties ()
 		{
 			base.CommitProperties ();
+
 			ImageRef.color = CurrentStyle.FrontFill.ToColor();
+
+		    if (BackgroundSprite != null)
+		    {
+		        ImageRef.sprite = BackgroundSprite;
+		        ImageRef.preserveAspect = PreserveAspect;
+		    }
+		    else
+		    {
+		        ImageRef.sprite = null;
+		    }
 		}
 		
 	}

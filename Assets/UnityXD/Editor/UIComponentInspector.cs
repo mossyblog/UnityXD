@@ -161,10 +161,8 @@ namespace UnityXD.Editor
         }
 
         protected virtual void CreateDesignControls()
-        {
-            XDGUI.Create()
-                .RenderSwatchPicker(ref _componentRef, m_design_fillEnabled, m_design_backfillEnabled);
-            
+        {           
+                        
         }
         
         protected virtual void CreateBindingControls()
