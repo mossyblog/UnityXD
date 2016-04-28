@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityXD.Editor
+namespace UnityXD.XDGUIEditor
 {
     public enum XDGUISizes
     {

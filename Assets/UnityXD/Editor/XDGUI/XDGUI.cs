@@ -8,9 +8,9 @@ using UnityXD.Components;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UnityXD.Editor.Controls
-{
+namespace UnityXD.XDGUIEditor
 
+{
     public  class XDGUI
     {
         private String CurrentLabel;
@@ -145,7 +145,7 @@ namespace UnityXD.Editor.Controls
 
         #region ToolBar - Alignment
 
-        public bool RenderToolBar()
+        public bool RenderAnchorToolBar()
         {   
             var m_horizAlignment = _componentRef.CurrentAnchorAlignment.ToHorizontalAlignment();
             var m_vertAlignment = _componentRef.CurrentAnchorAlignment.ToVerticalAlignment();
@@ -358,8 +358,8 @@ namespace UnityXD.Editor.Controls
         }
 
 
-        public void RenderSwatchPicker(ref XDStyle fieldStyle, bool fillEnabled, bool backFillEnabled) {
-            var groupStyle = XDGUIStyles.Instance.Group;
+        public void RenderSwatchPicker(ref UIComponent componentRef, bool fillEnabled, bool backFillEnabled) {
+            var groupStyle = XDGUIStyles.Instance.Panel;
 
             // Chrome Row
             var ChromeColors = Enum.GetNames (typeof(XDColors))
@@ -377,17 +377,18 @@ namespace UnityXD.Editor.Controls
                 .Where (s => s.ToLower ().Contains (XDColorTypes.Accent.ToString ().ToLower ()))
                 .ToList ();
 
+
             if (fillEnabled) {
                 XDGUIUtility.CreateSpacer (8);
                 XDGUI.Create().Label("Fill Color").Style(XDGUIStyles.Instance.Heading).RenderLabel();
                 using (new XDGUIPanel (true, groupStyle)) {
                     // Preview Swatch.
-                    XDGUIUtility.CreateSwatch (fieldStyle.FrontFill.ToColor (), 48, true);
+                    XDGUIUtility.CreateSwatch (componentRef.CurrentStyle.FrontFill.ToColor (), 48, true);
                     XDGUIUtility.CreateSpacer (16);
                     using (new XDGUIPanel (false)) {
-                        XDGUIUtility.CreateSwatchRow (AccentColors.ToArray (), 16, ref fieldStyle.FrontFill);
-                        XDGUIUtility.CreateSwatchRow (BrandColors.ToArray (), 16, ref fieldStyle.FrontFill);
-                        XDGUIUtility.CreateSwatchRow (ChromeColors.ToArray (), 16, ref fieldStyle.FrontFill);
+                        XDGUIUtility.CreateSwatchRow (AccentColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
+                        XDGUIUtility.CreateSwatchRow (BrandColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
+                        XDGUIUtility.CreateSwatchRow (ChromeColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
                     }
 
                 }
@@ -399,16 +400,19 @@ namespace UnityXD.Editor.Controls
                 XDGUI.Create().Label("BackFill Color").Style(XDGUIStyles.Instance.Heading).RenderLabel();
                 using (new XDGUIPanel (true, groupStyle)) {
                     // Preview Swatch.
-                    XDGUIUtility.CreateSwatch (fieldStyle.BackFill.ToColor (), 48, true);
+                    XDGUIUtility.CreateSwatch (componentRef.CurrentStyle.FrontFill.ToColor (), 48, true);
                     XDGUIUtility.CreateSpacer (16);
                     using (new XDGUIPanel (false)) {
-                        XDGUIUtility.CreateSwatchRow (AccentColors.ToArray (), 16, ref fieldStyle.BackFill);
-                        XDGUIUtility.CreateSwatchRow (BrandColors.ToArray (), 16, ref fieldStyle.BackFill);
-                        XDGUIUtility.CreateSwatchRow (ChromeColors.ToArray (), 16, ref fieldStyle.BackFill);
+                        XDGUIUtility.CreateSwatchRow (AccentColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
+                        XDGUIUtility.CreateSwatchRow (BrandColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
+                        XDGUIUtility.CreateSwatchRow (ChromeColors.ToArray (), 16, ref componentRef.CurrentStyle.FrontFill);
                     }
 
                 }
             }
+
+            
+
         }
 
         public void RenderEnumField<T>(ref T field, List<String> filters, bool isSingleLine, bool isEnabled = true) {

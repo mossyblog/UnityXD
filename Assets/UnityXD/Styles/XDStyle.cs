@@ -15,5 +15,6 @@ namespace UnityXD.Styles
 		public XDColors FrontFill = XDColors.Chrome;
 		public XDColors BackFill = XDColors.ChromeLightest;
 		public XDFontStyle FontStyle = new XDFontStyle();
+       
 	}
 }

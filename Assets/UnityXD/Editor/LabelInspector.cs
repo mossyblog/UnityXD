@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityXD.Components;
 using UnityXD.Editor;
 using UnityXD.Styles;
+using UnityXD.XDGUIEditor;
 
 namespace UnityXD.Editor
 {
@@ -29,7 +30,14 @@ namespace UnityXD.Editor
         {
 
             base.CreateDesignControls();
-            CreateDesignLabelControls();
+
+            XDGUIStyleInspector.Create(ref _labelRef)
+                .DisplayHeading()
+                .DisplayText()
+                .DisplayAlignment()
+                .DisplayFontStyle();
+
+
         }
     }
 }

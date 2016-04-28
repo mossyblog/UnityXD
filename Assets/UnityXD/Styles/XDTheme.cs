@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UnityXD.Styles
 {
@@ -118,8 +119,9 @@ namespace UnityXD.Styles
             var fd = new XDFontStyle ();
             fd.StyleName = name;
             fd.FontSize = fontSize;
-            fd.Font = font;
-            fd.ActualFontSize = actualFontSize;
+            fd.FontData = new FontData();
+            fd.FontData.font = font;
+            fd.FontData.fontSize = actualFontSize;
             RegisterFontClass (fd);
         }
 

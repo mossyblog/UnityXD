@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 
-namespace UnityXD.Editor
+namespace UnityXD.XDGUIEditor
 {
     
 

@@ -32,12 +32,15 @@ namespace UnityXD.Components
             base.SetSize(w, h);
         }
 
+        public override void ApplyTheme(XDStyle xd)
+        {
+            xd.FontStyle = XDTheme.Instance.ResolveFontClass(xd.FontStyle.StyleName, xd.FontStyle.FontSize);
+            base.ApplyTheme(xd);
+        }
+
         public override void InvalidateDisplay()
         {
             base.InvalidateDisplay();
-
-           
-
             ApplyElipseSuffix();
         }
 
@@ -53,13 +56,14 @@ namespace UnityXD.Components
                 CurrentStyle.Size = XDSizes.Custom;
                 IsHeightDependantOnWidth = false;
             }
-
+            
             TextRef.text = Text;
-			//TextRef.font = CurrentStyle.FontStyle.Font;
-			//TextRef.fontSize = CurrentStyle.FontStyle.ActualFontSize;
+            TextRef.font = CurrentStyle.FontStyle.FontData.font;
+			TextRef.fontSize = CurrentStyle.FontStyle.FontData.fontSize;
             TextRef.color = CurrentStyle.FrontFill.ToColor();
             TextRef.alignment = Alignment;
 
+           
             if (AutoSize)
             {
                 TextRef.horizontalOverflow = IsHorizontalStretchEnabled ? HorizontalWrapMode.Wrap : HorizontalWrapMode.Overflow;
@@ -104,7 +108,6 @@ namespace UnityXD.Components
             TextRef.text = TruncateToFit ? updatedText : Text;
 
         }
-
        
         public void OnRectTransformDimensionsChange()
         {

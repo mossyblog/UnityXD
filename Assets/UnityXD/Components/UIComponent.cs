@@ -153,7 +153,7 @@ namespace UnityXD.Components
         /// </summary>
         protected virtual void CommitProperties()
         {
-           
+           ApplyTheme(CurrentStyle);
         }
 
         /// <summary>
@@ -433,7 +433,7 @@ namespace UnityXD.Components
 		/// <param name="xd">Xd.</param>
         public virtual void ApplyTheme(XDStyle xd)
         {
-           // CurrentStyle = xd;
+           CurrentStyle = xd;
         }
 				
 		/// <summary>

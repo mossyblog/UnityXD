@@ -6,7 +6,7 @@ using UnityEditor.Sprites;
 using UnityEngine;
 using UnityXD.Styles;
 
-namespace UnityXD.Editor
+namespace UnityXD.XDGUIEditor
 {
     public static class XDGUIUtility
     {

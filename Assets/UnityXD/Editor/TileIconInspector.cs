@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityXD.Components;
 using UnityXD.Editor;
 using UnityXD.Styles;
-using UnityXD.Editor.Controls;
+using UnityXD.XDGUIEditor;
 
 namespace UnityXD.Editor
 {
@@ -51,7 +51,12 @@ namespace UnityXD.Editor
                 XDGUI.Create().Label("Placement").Size(64, 22, 64).RenderEnumField(ref m_placement, placementList, true);
 
             }
-            CreateDesignLabelControls();
+
+            XDGUIStyleInspector.Create(ref _labelRef)
+                .DisplayHeading()
+                .DisplayText()
+                .DisplayAlignment()
+                .DisplayFontStyle();
 
         }
 

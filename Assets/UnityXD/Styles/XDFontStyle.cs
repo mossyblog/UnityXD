@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UnityXD.Styles
 {
@@ -8,19 +9,17 @@ namespace UnityXD.Styles
     {
         public XDFontSizes FontSize;
         public XDFontStyleNames StyleName;
-        public Font Font;
-        public int ActualFontSize;
+        public FontData FontData;
 
-        public XDFontStyle ()
-        {			
+        public XDFontStyle()
+        {            
         }
-
         public XDFontStyle (XDFontStyle data)
         {
             StyleName = data.StyleName;            
             FontSize = data.FontSize;
-            Font = data.Font;
-            ActualFontSize = data.ActualFontSize;		
+            FontData = data.FontData;
+
         }
 
     }

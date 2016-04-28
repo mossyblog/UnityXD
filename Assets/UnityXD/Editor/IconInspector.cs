@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityXD.Components;
 using UnityXD.Editor;
 using UnityXD.Styles;
-using UnityXD.Editor.Controls;
+using UnityXD.XDGUIEditor;
 
 namespace UnityXD.Editor
 {
