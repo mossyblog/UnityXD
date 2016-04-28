@@ -15,11 +15,14 @@ namespace Assets.UnityXD.Components
         public Sprite Selected;
         public Sprite Normal;
         public int Counter;
-
+        public bool IsSelected;
         private const string CounterRefName = "Counter";
 
         public Label CounterRef;
         private int _counterTransformSize = 24;
+
+        public XDColors PositiveColor;
+        public XDColors NegativeColor;
 
         protected override void ValidateHeirachy()
         {
@@ -49,13 +52,14 @@ namespace Assets.UnityXD.Components
             CounterRef.Text = Counter.ToString();
             CounterRef.CurrentStyle.FontStyle.StyleName = XDFontStyleNames.Label;
             CounterRef.CurrentStyle.FontStyle.FontSize = XDFontSizes.S;
-            CounterRef.CurrentStyle.FrontFill = LabelRef.CurrentStyle.FrontFill;
+            
             CounterRef.IgnoreParentPadding = true;
             CounterRef.CurrentStyle.Size = XDSizes.Custom;
-            CounterRef.SetSize(24, 24);                        
-            CounterRef.Dock(SpriteAlignment.BottomRight,false,false);
 
-            
+
+            ImageRef.sprite = Counter == 0 ? Empty : (IsSelected ? Selected : Normal);
+            CounterRef.CurrentStyle.FrontFill = Counter == 0 ? NegativeColor : (IsSelected ? XDColors.ChromeLightest : PositiveColor);
+
         }
 
         protected override void UpdateLayout()
@@ -67,12 +71,15 @@ namespace Assets.UnityXD.Components
 
             IconRef.SetSize(24,24);
             IconRef.Dock(SpriteAlignment.Center,true,true);
-            IconRef.SetMargin(new RectOffset(20, 20, 20, 20));
+            IconRef.SetMargin(new RectOffset(20, 20, 22, 24));
 
-            if (Counter == 0)
-            {
-                
-            }
+            ImageRef.color = Color.white;
+            CounterRef.SetSize(24, 24);            
+            CounterRef.Dock(SpriteAlignment.BottomRight, false, false);
+            CounterRef.SetMargin(new RectOffset(0, 4, 4, 2));
+
+            
+
 
             CounterRef.InvalidateDisplay();
             

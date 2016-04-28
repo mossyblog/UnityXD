@@ -35,6 +35,7 @@ namespace UnityXD.XDGUIEditor
             }
         }
 
+
         public bool IsHorizontal;
 
         public Rect Rect { get; protected set; }

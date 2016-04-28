@@ -34,7 +34,6 @@ namespace UnityXD.Components
         {
             base.CommitProperties();
 
-            
             if (LabelRef == null || IconRef == null)
             {
                 return;
@@ -45,25 +44,22 @@ namespace UnityXD.Components
             LabelRef.Dock(SpriteAlignment.Center, true, true);
             LabelRef.IsChildReadOnly = true;
 
-            if (IconPlacement == XDVerticalAlignment.Top)
+            switch (IconPlacement)
             {
-                LabelRef.Alignment = TextAnchor.LowerCenter;
-                IconRef.Dock(SpriteAlignment.TopCenter, false, false);
+                case XDVerticalAlignment.Top:
+                    LabelRef.Alignment = TextAnchor.LowerCenter;
+                    IconRef.Dock(SpriteAlignment.TopCenter, false, false);
+                    break;
+                default:
+                    LabelRef.Alignment = TextAnchor.UpperCenter;
+                    IconRef.Dock(SpriteAlignment.BottomCenter, false, false);
+                    break;
             }
-            else
-            {
-                LabelRef.Alignment = TextAnchor.UpperCenter;
-                IconRef.Dock(SpriteAlignment.BottomCenter, false, false);
-            }
-
 
             IconRef.CurrentIcon = CurrentIcon;
             IconRef.IsChildReadOnly = true;
             IconRef.CurrentStyle.FrontFill = CurrentStyle.FrontFill;
-
             ImageRef.color = CurrentStyle.BackFill.ToColor();
-
-          
         }
 
         protected override void UpdateLayout()
@@ -79,9 +75,8 @@ namespace UnityXD.Components
 
             IconRef.CurrentStyle.Size = XDSizes.Custom;
             IconRef.SetSize(CurrentIconSize, CurrentIconSize);
-            IconRef.SetMargin(new RectOffset(4, 4, 0, 8));
+            IconRef.SetMargin(new RectOffset(4, 4, 8, 8));
             LabelRef.SetMargin(new RectOffset(4, 4, 4, 4));
-
             LabelRef.InvalidateDisplay();
             IconRef.InvalidateDisplay();
             

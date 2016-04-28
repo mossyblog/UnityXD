@@ -51,7 +51,7 @@ namespace UnityXD.XDGUIEditor
         #region Core Styles
         public XDGUIStyleInspector FillColor()
         {
-            XDGUI.Create().SwatchPicker(ref _componentRef.CurrentStyle.FrontFill, "FrontFill Fill");
+            XDGUI.Create().SwatchPicker(ref _componentRef.CurrentStyle.FrontFill, "Front Fill");
             return this;
         }
         public XDGUIStyleInspector BackFillColor()

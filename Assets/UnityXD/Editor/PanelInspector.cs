@@ -18,8 +18,16 @@ namespace UnityXD.XDGUIEditor
 	    protected override void CreateDesignControls()
 	    {
 	        base.CreateDesignControls();
-	        XDGUIStyleInspector.Create(ref _componentRef)
-	            .FillColor();
+	        XDGUIStyleInspector.Create(ref _componentRef).FillColor();            
+	    }
+
+	    protected override void CreateBindingControls()
+	    {
+	        base.CreateBindingControls();
+	        XDGUIBindingInspector.Create(ref _componentRef)
+	            .Heading("States")
+	            .Aspect()
+	            .Sprite("Background", ref _componentRef.BackgroundSprite, false);
 	    }
 	}
 }

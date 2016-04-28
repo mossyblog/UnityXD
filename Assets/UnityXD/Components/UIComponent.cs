@@ -57,9 +57,7 @@ namespace UnityXD.Components
 
         public UIComponent()
         {
-            Padding = new RectOffset(0, 0, 0, 0);
-            Margin = new RectOffset(0, 0, 0, 0);
-            ParentPadding = new RectOffset(0, 0, 0, 0);
+
         }
 
 		/// <summary>
