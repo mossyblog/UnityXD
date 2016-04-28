@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityXD.Components;
 using UnityXD.Editor;
 using UnityXD.Styles;
+using UnityXD.Editor.Controls;
 
 namespace UnityXD.Editor
 {
@@ -30,9 +31,11 @@ namespace UnityXD.Editor
         protected override void CreateDesignControls()
         {
             base.CreateDesignControls();
-            using (new XDGUILayout(false, XDGUIStyles.Instance.Group))
+            using (new XDGUIPanel(false, groupStyle))
             {
-                XDGUIUtility.CreateEnumField("Icon", ref m_currentIcon, (int)m_currentIcon,128,null);
+                XDGUI.Create().Label("Icon").Size(64, 22, 48).RenderEnumField(ref m_currentIcon,  null, true);
+
+
             }
         }
 

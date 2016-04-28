@@ -1,21 +1,24 @@
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
 
 namespace UnityXD.Editor
 {
-    public class XDGUILayout : GUI.Scope
+    
+
+    public class XDGUIPanel : GUI.Scope
     {
-        public XDGUILayout(params GUILayoutOption[] options)
+        public XDGUIPanel(params GUILayoutOption[] options)
         {
             Rect = EditorGUILayout.BeginVertical(options);
         }
 
-        public XDGUILayout(bool isHorizontal, params GUILayoutOption[] options)
+        public XDGUIPanel(bool isHorizontal, params GUILayoutOption[] options)
         {
             Rect = isHorizontal ? EditorGUILayout.BeginHorizontal(options) : EditorGUILayout.BeginVertical(options);
         }
 
-        public XDGUILayout(bool isHorizontal, GUIStyle style, params GUILayoutOption[] options)
+        public XDGUIPanel(bool isHorizontal, GUIStyle style, params GUILayoutOption[] options)
         {
             Rect = isHorizontal ? EditorGUILayout.BeginHorizontal(style, options) : EditorGUILayout.BeginVertical(style, options);
         }
@@ -36,4 +39,5 @@ namespace UnityXD.Editor
 
         public Rect Rect { get; protected set; }
     }
+
 }

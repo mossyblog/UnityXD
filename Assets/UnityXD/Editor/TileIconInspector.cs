@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityXD.Components;
 using UnityXD.Editor;
 using UnityXD.Styles;
+using UnityXD.Editor.Controls;
 
 namespace UnityXD.Editor
 {
@@ -43,10 +44,12 @@ namespace UnityXD.Editor
             placementList.Add(XDVerticalAlignment.Top.ToString());
             placementList.Add(XDVerticalAlignment.Bottom.ToString());
 
-            using (new XDGUILayout(false, XDGUIStyles.Instance.Group))
+            using (new XDGUIPanel(false, groupStyle))
             {
-                XDGUIUtility.CreateEnumField("Icon", ref m_currentIcon, (int)m_currentIcon, 128, null);
-                XDGUIUtility.CreateEnumField("Placement", ref m_placement, (int)m_placement, 128, placementList.ToArray());
+                XDGUI.Create().Label("Icon").Size(64, 22, 92).RenderEnumField(ref m_currentIcon,  null, true);
+                EditorGUILayout.Space();
+                XDGUI.Create().Label("Placement").Size(64, 22, 64).RenderEnumField(ref m_placement, placementList, true);
+
             }
             CreateDesignLabelControls();
 
