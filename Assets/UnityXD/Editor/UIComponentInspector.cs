@@ -24,8 +24,21 @@ namespace UnityXD.Editor
         protected int Col3 = 56;
 
         protected int fieldH = 22;
+        protected int FieldSmall = 32;
+        protected int FieldMedium = 64;
+        protected int FieldLarge = 92;
+        protected int FieldXXL = 128;
 
-        protected GUIStyle groupStyle = XDGUIStyles.Instance.Panel;
+        protected int LabelSmall = 48;
+        protected int LabelMedium = 92;
+        protected int LabelLarge = 128;
+
+        protected int FieldHeightSmall = 22;
+        protected int FieldHeightMedium = 24;
+        protected int FieldHeightLarge = 48;
+
+        protected int CheckBoxSize = 16;
+        
         protected bool m_autosized;
         protected Rect m_bodyRect;
         protected string m_currentSelectedTab = m_labelLayout;

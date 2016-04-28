@@ -42,7 +42,7 @@ namespace UnityXD.XDGUIEditor
                 XDVerticalAlignment.Bottom.ToString()
             };
 
-            using (new XDGUIPanel(false, groupStyle))
+            using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
             {
                 XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _tileIconRef.CurrentIcon,  null, true);
                 EditorGUILayout.Space();
@@ -50,15 +50,24 @@ namespace UnityXD.XDGUIEditor
             }
 
 
-            XDGUIStyleInspector.Create(ref _labelRef)
-                .FillColor()
-                .BackFillColor()            
-                .Heading("Background")    
-                .Heading("Font Settings")
-                .LabelText()
-                .FontAlignment()
-                .FontStyle();
+            if (_labelRef != null)
+                XDGUIStyleInspector.Create(ref _labelRef)
+                    .FillColor()
+                    .BackFillColor()                               
+                    .Heading("Font Settings")
+                    .FontSettings()
+                    .FontAlignment()
+                    .FontStyle();
+        }
 
+        protected override void CreateBindingControls()
+        {
+            base.CreateBindingControls();
+
+            XDGUIBindingInspector.Create(ref _componentRef)
+                .Heading("References")
+                .References<Icon>("Icon", ref _tileIconRef.IconRef)
+                .References<Label>("Label", ref _tileIconRef.LabelRef);
         }
     }
 }

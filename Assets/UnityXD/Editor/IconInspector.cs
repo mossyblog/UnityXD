@@ -31,7 +31,7 @@ namespace UnityXD.XDGUIEditor
         protected override void CreateDesignControls()
         {
             base.CreateDesignControls();
-            using (new XDGUIPanel(false, groupStyle))
+            using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
             {
                 XDGUI.Create().Text("Icon").Size(64, 22, 48).ComboBox(ref m_currentIcon,  null, true);
             }

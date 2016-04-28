@@ -7,6 +7,7 @@ using UnityEditor.Sprites;
 using UnityXD.Components;
 using System.Collections.Generic;
 using System.Linq;
+using Object = System.Object;
 
 namespace UnityXD.XDGUIEditor
 
@@ -245,7 +246,7 @@ namespace UnityXD.XDGUIEditor
         #endregion
 
         #region TextFields
-        public void TextField(ref double field, bool isSingleLine, bool isEnabled = true)
+       public void TextField(ref double field, bool isSingleLine, bool isEnabled = true)
         {
             GUI.enabled = isEnabled;
             using (new XDGUIPanel(isSingleLine) )
@@ -352,7 +353,7 @@ namespace UnityXD.XDGUIEditor
 
         #endregion
 
-        public void SpriteField(ref Sprite field, bool isEnabled = true)
+        public void SpriteField(ref Sprite field, bool isEnabled = true, bool showPreview = true)
         {
             GUI.enabled = isEnabled;
             using (new XDGUIPanel(true))
@@ -362,7 +363,7 @@ namespace UnityXD.XDGUIEditor
                 {
                     GUILayout.Space(8);
                     field = (Sprite) EditorGUILayout.ObjectField(field, typeof (Sprite), false);
-                    if (field != null)
+                    if (field != null && showPreview)
                     {
                         var txt = SpriteUtility.GetSpriteTexture(field, false);
                         if (txt != null)
@@ -386,6 +387,24 @@ namespace UnityXD.XDGUIEditor
             }
 
            
+            GUI.enabled = true;
+        }
+
+        public void XDField<T>(ref UIComponent field, bool isEnabled = true)
+        {
+            GUI.enabled = isEnabled;
+            using (new XDGUIPanel(true))
+            {
+                Label();
+                using (new XDGUIPanel())
+                {
+                    GUILayout.Space(8);
+                    field = (UIComponent) EditorGUILayout.ObjectField(field, typeof(T), true);
+                }
+
+            }
+
+
             GUI.enabled = true;
         }
 

@@ -19,8 +19,7 @@ namespace UnityXD.XDGUIEditor
 	    {
 	        base.CreateDesignControls();
 	        XDGUIStyleInspector.Create(ref _componentRef)
-                .FillColor()                
-                .BackgroundSprite("Texture");
+	            .FillColor();
 	    }
 	}
 }

@@ -34,7 +34,7 @@ namespace UnityXD.XDGUIEditor
             XDGUIStyleInspector.Create(ref _labelRef)
                 .FillColor()
                 .Heading("Font Settings")
-                .LabelText()
+                .FontSettings()
                 .FontAlignment()
                 .FontStyle();
 

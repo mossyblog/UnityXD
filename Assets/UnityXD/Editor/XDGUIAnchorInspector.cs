@@ -46,9 +46,9 @@ namespace UnityXD.XDGUIEditor
                 using (new XDGUIPanel(false, GUILayout.MaxWidth(FieldLarge)))
                 {
                     
-                    XDGUI.Create().Text("W").Size(LabelSmall, FieldHeightSmall, FieldMedium).TextField(ref _componentRef.Width, true, wEnabled);
+                    XDGUI.Create().Text("W").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.Width, true, wEnabled);
                     EditorGUILayout.Space();
-                    XDGUI.Create().Text("H").Size(LabelSmall, FieldHeightSmall, FieldMedium).TextField(ref _componentRef.Height, true, hEnabled);                    
+                    XDGUI.Create().Text("H").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.Height, true, hEnabled);                    
                 }
                 
 
@@ -67,9 +67,9 @@ namespace UnityXD.XDGUIEditor
 
                 using (new XDGUIPanel(false))
                 {
-                    XDGUI.Create().Text("X").Size(LabelSmall, FieldHeightSmall, FieldMedium).TextField(ref _componentRef.X, true);
+                    XDGUI.Create().Text("X").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.X, true);
                     EditorGUILayout.Space();
-                    XDGUI.Create().Text("Y").Size(LabelSmall, FieldHeightSmall, FieldMedium).TextField(ref _componentRef.Y, true);
+                    XDGUI.Create().Text("Y").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.Y, true);
                 }
             }
             return this;
@@ -165,6 +165,11 @@ namespace UnityXD.XDGUIEditor
             XDGUI.Create().Text("Padding").Style(XDGUIStyles.Instance.Heading).Label();
             using (new XDGUIPanel(true, PanelStyle))
             {
+                if (_componentRef.Padding == null)
+                {
+                    _componentRef.Padding = new RectOffset(0, 0, 0, 0);
+                }
+
                 var left = _componentRef.Padding.left;
                 var right = _componentRef.Padding.right;
                 var top = _componentRef.Padding.top;
@@ -188,6 +193,10 @@ namespace UnityXD.XDGUIEditor
             XDGUI.Create().Text("Margins").Style(XDGUIStyles.Instance.Heading).Label();
             using (new XDGUIPanel(true, PanelStyle))
             {
+                if (_componentRef.Margin == null)
+                {
+                    _componentRef.Margin = new RectOffset(0, 0, 0, 0);
+                }
                 var left = _componentRef.Margin.left;
                 var right = _componentRef.Margin.right;
                 var top = _componentRef.Margin.top;

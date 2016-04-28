@@ -45,7 +45,7 @@ namespace UnityXD.Components
         /// <summary>
         /// Awake thee and strike forth!!
         /// </summary>
-        public void Awake()
+        public void OnEnable()
         {
             if (Padding == null)
             {
@@ -53,6 +53,13 @@ namespace UnityXD.Components
                 Margin = new RectOffset(0, 0, 0, 0);
                 ParentPadding = new RectOffset(0, 0, 0, 0);
             }
+        }
+
+        public UIComponent()
+        {
+            Padding = new RectOffset(0, 0, 0, 0);
+            Margin = new RectOffset(0, 0, 0, 0);
+            ParentPadding = new RectOffset(0, 0, 0, 0);
         }
 
 		/// <summary>

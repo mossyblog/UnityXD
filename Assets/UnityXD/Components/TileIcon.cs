@@ -18,27 +18,29 @@ namespace UnityXD.Components
         public XDIcons CurrentIcon = XDIcons.Cancel;
         public int CurrentIconSize;
         public XDVerticalAlignment IconPlacement;
-        
-        public Label LabelRef
-        {
-            get { return _labelRef ?? (_labelRef = GetOrCreateChild<Label>(LabelRefName)); }
-        }
 
-        public Icon IconRef
-        {
-            get { return _iconRef ?? (_iconRef = GetOrCreateChild<Icon>(IconRefName)); }
-        }
+        public Label LabelRef;
+
+        public Icon IconRef;
 
         protected override void ValidateHeirachy()
         {
             base.ValidateHeirachy();
-            ApplyChildNaming(LabelRef.gameObject, LabelRefName);
-            ApplyChildNaming(IconRef.gameObject, IconRefName);
+            if (LabelRef != null) ApplyChildNaming(LabelRef.gameObject, LabelRefName);
+            if (IconRef != null) ApplyChildNaming(IconRef.gameObject, IconRefName);
         }
 
         protected override void CommitProperties()
         {
             base.CommitProperties();
+
+            
+            if (LabelRef == null || IconRef == null)
+            {
+                return;
+            }
+
+
             LabelRef.CurrentStyle.FrontFill = CurrentStyle.FrontFill;
             LabelRef.Dock(SpriteAlignment.Center, true, true);
             LabelRef.IsChildReadOnly = true;
@@ -54,16 +56,14 @@ namespace UnityXD.Components
                 IconRef.Dock(SpriteAlignment.BottomCenter, false, false);
             }
 
+
             IconRef.CurrentIcon = CurrentIcon;
             IconRef.IsChildReadOnly = true;
             IconRef.CurrentStyle.FrontFill = CurrentStyle.FrontFill;
 
             ImageRef.color = CurrentStyle.BackFill.ToColor();
 
-            if (BackgroundSprite != null)
-            {
-                ImageRef.sprite = BackgroundSprite;
-            }
+          
         }
 
         protected override void UpdateLayout()
@@ -71,10 +71,20 @@ namespace UnityXD.Components
             ApplyTheme(CurrentStyle);
 
             base.UpdateLayout();
+
+            if (!(LabelRef != null & IconRef != null))
+            {
+                return;
+            }
+
             IconRef.CurrentStyle.Size = XDSizes.Custom;
             IconRef.SetSize(CurrentIconSize, CurrentIconSize);
-            IconRef.SetMargin(new RectOffset(4, 4, 4, 4));
+            IconRef.SetMargin(new RectOffset(4, 4, 0, 8));
             LabelRef.SetMargin(new RectOffset(4, 4, 4, 4));
+
+            LabelRef.InvalidateDisplay();
+            IconRef.InvalidateDisplay();
+            
         }
 
         protected override void Measure()
@@ -87,7 +97,11 @@ namespace UnityXD.Components
         public override void ApplyTheme(XDStyle xd)
         {
             base.ApplyTheme(xd);
-            LabelRef.ApplyTheme(CurrentStyle);
+            if (LabelRef != null)
+                LabelRef.ApplyTheme(CurrentStyle);
+
+            if(IconRef != null) 
+                IconRef.ApplyTheme(CurrentStyle);
         }
 
 

@@ -9,7 +9,7 @@ namespace UnityXD.Styles
     {
         public XDFontSizes FontSize;
         public XDFontStyleNames StyleName;
-        public FontData FontData;
+        public FontData FontData = new FontData();
 
         public XDFontStyle()
         {            

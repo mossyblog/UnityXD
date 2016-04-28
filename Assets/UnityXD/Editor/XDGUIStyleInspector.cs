@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityXD.Components;
 using UnityXD.Styles;
+using Object = System.Object;
 
 namespace UnityXD.XDGUIEditor
 {
@@ -58,38 +60,14 @@ namespace UnityXD.XDGUIEditor
             return this;
         }
 
-        public XDGUIStyleInspector BackgroundSprite(string label)
-        {
-            return Sprite(label, ref  _componentRef.BackgroundSprite);
-        }
-
-        public XDGUIStyleInspector Sprite(string label, ref Sprite spritefield)
-        {
-            XDGUI.Create()
-                .Text(label)
-                .Size(LabelMedium, FieldHeightSmall)
-                .SpriteField(ref spritefield, true);
-
-            EditorGUILayout.Space();
-            XDGUI.Create()
-                .Text("Aspect")
-                .Size(LabelMedium, FieldHeightSmall, CheckBoxSize, CheckBoxSize)
-                .CheckBox(ref _componentRef.PreserveAspect, false);
-
-            return this;
-        }
+      
         #endregion
 
         #region Label Styling
-        public XDGUIStyleInspector LabelText()
+        public XDGUIStyleInspector FontSettings()
         {
             if (_labelRef == null)
                 return this;
-
-            XDGUI.Create()
-                .Text("Text")
-                .Size(LabelMedium, FieldHeightSmall)
-                .TextField(ref _labelRef.Text, true);
 
             XDGUI.Create()
                 .Text("AutoSize")
@@ -105,6 +83,17 @@ namespace UnityXD.XDGUIEditor
             EditorGUILayout.Space();
             return this;
         }
+
+        public XDGUIStyleInspector Label()
+        {
+            XDGUI.Create()
+                .Text("Label")
+                .Size(LabelMedium, FieldHeightSmall)
+                .TextField(ref _labelRef.Text, true);
+            return this;
+        }
+
+
 
         public XDGUIStyleInspector FontAlignment()
         {
