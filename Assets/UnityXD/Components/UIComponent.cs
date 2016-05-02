@@ -281,6 +281,14 @@ namespace UnityXD.Components
         }
 
         /// <summary>
+        /// Sets the size.
+        /// </summary>
+        /// <param name="size">Size.</param>
+        public virtual void SetSize(XDSizes size) {
+            SetSize((int)size, (int)size);
+        }
+
+        /// <summary>
 		/// Sets the position.
 		/// </summary>
 		/// <param name="x">The x coordinate.</param>

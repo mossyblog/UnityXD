@@ -14,6 +14,8 @@ namespace UnityXD.Styles
         public XDFontStyle()
         {            
         }
+
+
         public XDFontStyle (XDFontStyle data)
         {
             StyleName = data.StyleName;            

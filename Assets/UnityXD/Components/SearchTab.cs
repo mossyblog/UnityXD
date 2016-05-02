@@ -17,10 +17,7 @@ namespace Assets.UnityXD.Components
         public int Counter;
         public bool IsSelected;
         private const string CounterRefName = "Counter";
-
         public Label CounterRef;
-        private int _counterTransformSize = 24;
-
         public XDColors PositiveColor;
         public XDColors NegativeColor;
 
@@ -34,7 +31,7 @@ namespace Assets.UnityXD.Components
         protected override void Measure()
         {
             base.Measure();
-
+            IconYOffset = -4;
 
         }
 
@@ -43,21 +40,17 @@ namespace Assets.UnityXD.Components
             base.CommitProperties();
             if (CounterRef == null || LabelRef == null)
                 return;
-
-            IconPlacement = XDVerticalAlignment.Bottom;
+            
+            IconPlacement = XDVerticalAlignment.Center;
             ImageRef.color = Color.clear;
-
+            ImageRef.sprite = Counter == 0 ? Empty : (IsSelected ? Selected : Normal);
             CounterRef.IsChildReadOnly = true;
             CounterRef.Alignment = TextAnchor.MiddleCenter;
             CounterRef.Text = Counter.ToString();
             CounterRef.CurrentStyle.FontStyle.StyleName = XDFontStyleNames.Label;
-            CounterRef.CurrentStyle.FontStyle.FontSize = XDFontSizes.S;
-            
+            CounterRef.CurrentStyle.FontStyle.FontSize = XDFontSizes.S;            
             CounterRef.IgnoreParentPadding = true;
             CounterRef.CurrentStyle.Size = XDSizes.Custom;
-
-
-            ImageRef.sprite = Counter == 0 ? Empty : (IsSelected ? Selected : Normal);
             CounterRef.CurrentStyle.FrontFill = Counter == 0 ? NegativeColor : (IsSelected ? XDColors.ChromeLightest : PositiveColor);
 
         }
@@ -68,23 +61,11 @@ namespace Assets.UnityXD.Components
 
             if (CounterRef == null)
                 return;
-
-            IconRef.SetSize(24,24);
-            IconRef.Dock(SpriteAlignment.Center,true,true);
-            IconRef.SetMargin(new RectOffset(20, 20, 22, 24));
-
             ImageRef.color = Color.white;
             CounterRef.SetSize(24, 24);            
             CounterRef.Dock(SpriteAlignment.BottomRight, false, false);
             CounterRef.SetMargin(new RectOffset(0, 4, 4, 2));
-
-            
-
-
             CounterRef.InvalidateDisplay();
-            
-
-
         }
     }
 }

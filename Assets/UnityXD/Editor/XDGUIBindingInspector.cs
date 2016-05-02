@@ -68,5 +68,10 @@ namespace UnityXD.XDGUIEditor
                 .CheckBox(ref _componentRef.PreserveAspect, false);
             return this;
         }
+
+        public XDGUIBindingInspector PropertyBinding() {
+            
+            return this;
+        }
     }
 }

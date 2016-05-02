@@ -8,7 +8,7 @@ using UnityXD.XDGUIEditor;
 namespace UnityXD.Editor
 {
     [CanEditMultipleObjects]
-    [CustomEditor(typeof (UIComponent))]
+    [CustomEditor(typeof(UIComponent))]
     public class UIComponentInspector : UnityEditor.Editor
     {
         // Inspector Tabs.
@@ -39,7 +39,6 @@ namespace UnityXD.Editor
 
         protected int CheckBoxSize = 16;
         
-        protected bool m_autosized;
         protected Rect m_bodyRect;
         protected string m_currentSelectedTab = m_labelLayout;
         protected XDSizes m_currentSize;
@@ -49,44 +48,19 @@ namespace UnityXD.Editor
         protected bool m_design_fillEnabled = true;
         protected bool m_design_labelAlignment = true;
         protected bool m_design_labelEnabled = false;
-        protected XDFontSizes m_fontSize;
-        protected XDFontStyleNames m_fontStyleName;
         protected int m_height;
         protected bool m_hidecomponents;
-        protected XDHorizontalAlignment m_horizAlignment;
-        protected bool m_isAnchorBottomEnabled;
-        protected bool m_isAnchorHStretched;
 
         // Anchor Alignment Config.
-        protected bool m_isAnchorLeftEnabled;
-        protected bool m_isAnchorMiddleHEnabled;
-        protected bool m_isAnchorMiddleVEnabled;
-        protected bool m_isAnchorRightEnabled;
-        protected bool m_isAnchorTopEnabled;
-        protected bool m_isAnchorVStretched;
-
-        protected bool m_isVisible;
-        protected bool m_isWLinkedToH;
-        protected bool m_layout_paddingEnabled = true;
-        protected bool m_layout_sizelistEnabled = true;
-        protected RectOffset m_margin;
-        protected RectOffset m_padding;
-        protected XDStyle m_style;
-        protected string[] m_tabs = {m_labelLayout, m_labelDesign, m_labelBinding};
-        protected string m_text;
+        protected string[] m_tabs = { m_labelLayout, m_labelDesign, m_labelBinding };
         protected TextAnchor m_textAlignment;
         protected bool m_truncate;
         protected XDVerticalAlignment m_vertAlignment;
 
-        // Anchor Metrics.
-        protected int m_width;
-        protected int m_x;
-        protected int m_y;
-
         public void OnEnable()
         {
             if (_componentRef == null)
-                _componentRef = (UIComponent) target;
+                _componentRef = (UIComponent)target;
 
             if (_labelRef == null)
             {
@@ -108,7 +82,7 @@ namespace UnityXD.Editor
         {
             Initialize();
             GeneratateInspector();
-            //CommitProperties();
+            CommitProperties();
         }
 
         protected virtual void Initialize()
@@ -119,7 +93,6 @@ namespace UnityXD.Editor
         {
             EditorUtility.SetDirty(target);
         }
-
 
         protected virtual void GeneratateInspector()
         {
@@ -151,7 +124,7 @@ namespace UnityXD.Editor
                     var sprite = Resources.Load<Sprite>("EditorChrome/ChildReadOnlyMode");
                     var pos = XDGUIUtility.CreateEmptyPlaceHolder(128, 128, false);
 
-                    pos.x = EditorGUIUtility.currentViewWidth/2 - 64;
+                    pos.x = EditorGUIUtility.currentViewWidth / 2 - 64;
                     XDGUIUtility.CreateSpritePreview(pos, sprite);
                 }
             }
@@ -174,17 +147,16 @@ namespace UnityXD.Editor
         }
 
         protected virtual void CreateDesignControls()
-        {           
-                        
+        {                                  
         }
-        
+
         protected virtual void CreateBindingControls()
         {
         }
 
         protected virtual void CreateDivider()
         {
-            XDGUIUtility.CreateDivider((int) m_bodyRect.width - (int) m_bodyRect.x);
+            XDGUIUtility.CreateDivider((int)m_bodyRect.width - (int)m_bodyRect.x);
         }
     }
 }

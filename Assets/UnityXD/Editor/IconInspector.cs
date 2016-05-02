@@ -16,7 +16,6 @@ namespace UnityXD.XDGUIEditor
     public class IconInspector : UIComponentInspector
     {
         protected Icon _iconRef;
-        protected XDIcons m_currentIcon;
 
         protected override void Initialize()
         {
@@ -33,23 +32,12 @@ namespace UnityXD.XDGUIEditor
             base.CreateDesignControls();
             using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
             {
-                XDGUI.Create().Text("Icon").Size(64, 22, 48).ComboBox(ref m_currentIcon,  null, true);
+                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _iconRef.CurrentIcon,  null, true);
+
+                XDGUIStyleInspector.Create(ref _componentRef)
+                    .FillColor();
             }
         }
 
-        protected override void CommitProperties()
-
-        {
-            m_layout_paddingEnabled = false;
-            XDGUIUtility.Bind(ref _iconRef.CurrentIcon, ref m_currentIcon);
-            XDGUIUtility.Bind(ref _iconRef.CurrentStyle, ref m_style);
-            base.CommitProperties();
-
-            if (GUI.changed)
-            {
-                _iconRef.SetIcon(m_currentIcon);
-            }
-
-        }
     }
 }

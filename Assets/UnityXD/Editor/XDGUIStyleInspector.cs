@@ -110,6 +110,8 @@ namespace UnityXD.XDGUIEditor
 
         public XDGUIStyleInspector FontStyle()
         {
+            var fontStyleClone = new XDFontStyle(_labelRef.CurrentStyle.FontStyle);
+
             if (_labelRef == null)
                 return this;
 
@@ -125,13 +127,15 @@ namespace UnityXD.XDGUIEditor
                 XDGUI.Create()
                     .Text("Size")
                     .Size(LabelMedium, FieldHeightSmall, FieldSmall)
-                    .ComboBox(ref _labelRef.CurrentStyle.FontStyle.FontSize, filterSizes, true);
+                    .ComboBox(ref fontStyleClone.FontSize, filterSizes, true);
 
                 XDGUI.Create()
                     .Text("Style")
                     .Size(LabelSmall, FieldHeightSmall, FieldMedium)
-                    .ComboBox(ref _labelRef.CurrentStyle.FontStyle.StyleName, null, true);
+                    .ComboBox(ref fontStyleClone.StyleName, null, true);
             }
+
+            _labelRef.CurrentStyle.FontStyle = fontStyleClone;
             return this;
         }
         #endregion    

@@ -39,26 +39,38 @@ namespace UnityXD.XDGUIEditor
             var placementList = new List<String>
             {
                 XDVerticalAlignment.Top.ToString(),
+                XDVerticalAlignment.Center.ToString(),
                 XDVerticalAlignment.Bottom.ToString()
             };
 
             using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
             {
-                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _tileIconRef.CurrentIcon,  null, true);
+                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _tileIconRef.CurrentIcon, null, true);
                 EditorGUILayout.Space();
                 XDGUI.Create().Text("Placement").Size(64, 22, 64).ComboBox(ref _tileIconRef.IconPlacement, placementList, true);
+                EditorGUILayout.Space();
+                XDGUI.Create().Text("Icon Size").Size(64, 22, 92).ComboBox(ref _tileIconRef.CurrentIconSize, null, true);
             }
 
 
             if (_labelRef != null)
+            {
                 XDGUIStyleInspector.Create(ref _labelRef)
                     .FillColor()
-                    .BackFillColor()                               
-                    .Label()
+                    .BackFillColor()    
+                    .Label();
+
+                XDGUI.Create().SwatchPicker(ref _tileIconRef.Foo, "Foo is Alive!");
+
+
+                XDGUIStyleInspector.Create(ref _labelRef)
                     .Heading("Font Settings")
                     .FontSettings()
                     .FontAlignment()
                     .FontStyle();
+            }
+
+
         }
 
         protected override void CreateBindingControls()

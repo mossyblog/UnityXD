@@ -47,6 +47,7 @@ namespace UnityXD.XDGUIEditor
             {
                 XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _SearchTabRef.CurrentIcon, null, true);
                 EditorGUILayout.Space();
+                XDGUI.Create().Text("Icon Size").Size(64, 22, 92).ComboBox(ref _SearchTabRef.CurrentIconSize,  null, true);
             }
 
 
