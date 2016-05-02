@@ -6,27 +6,34 @@ using UnityEditor;
 using UnityEngine;
 using UnityXD.Components;
 using UnityXD.Styles;
+using Object = System.Object;
 
 namespace UnityXD.XDGUIEditor
 {
-    public class XDGUIAnchorInspector : XDGUIBaseInspector
+    public class XDGUIInspector
     {
+        protected UIComponent _componentRef;
+        protected GUIStyle PanelStyle = XDGUIStyles.Instance.Panel;
+        protected int FieldSmall = 32;
+        protected int FieldMedium = 64;
+        protected int FieldLarge = 92;
+        protected int FieldXXL = 128;
+        protected int LabelSmall = 48;
+        protected int LabelMedium = 92;
+        protected int LabelLarge = 128;
+        protected int FieldHeightSmall = 22;
+        protected int FieldHeightMedium = 24;
+        protected int FieldHeightLarge = 48;
+        protected int CheckBoxSize = 16;
 
-       
-
-        public static XDGUIAnchorInspector Create(ref UIComponent componentRef)
+        public XDGUIInspector Context(ref UIComponent component)
         {
-            return new XDGUIAnchorInspector(ref componentRef);            
+            _componentRef = component;
+            return this;
         }
 
-        public XDGUIAnchorInspector(ref UIComponent componentRef)
+        public XDGUIInspector SizeAndPositioning()
         {
-            _componentRef = componentRef;
-        }
-        
-        public XDGUIAnchorInspector Metrics()
-        {
-    
             var isHeightDependentOnWidth = _componentRef.IsHeightDependantOnWidth;
             var isHStretched = _componentRef.IsHorizontalStretchEnabled;
             var isVStretched = _componentRef.IsVeritcalStretchEnabled;
@@ -45,12 +52,12 @@ namespace UnityXD.XDGUIEditor
             {
                 using (new XDGUIPanel(false, GUILayout.MaxWidth(FieldLarge)))
                 {
-                    
+
                     XDGUI.Create().Text("W").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.Width, true, wEnabled);
                     EditorGUILayout.Space();
-                    XDGUI.Create().Text("H").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.Height, true, hEnabled);                    
+                    XDGUI.Create().Text("H").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.Height, true, hEnabled);
                 }
-                
+
 
                 using (new XDGUIPanel(false, GUILayout.Width(24)))
                 {
@@ -75,7 +82,7 @@ namespace UnityXD.XDGUIEditor
             return this;
         }
 
-        public XDGUIAnchorInspector AnchorToolBar()
+        public XDGUIInspector AnchorToolbar()
         {
             var horizontalAlignment = _componentRef.CurrentAnchorAlignment.ToHorizontalAlignment();
             var vertAlignment = _componentRef.CurrentAnchorAlignment.ToVerticalAlignment();
@@ -113,9 +120,10 @@ namespace UnityXD.XDGUIEditor
             var horizStretchSprite = Resources.Load<Sprite>(path + "StretchHoriz_" + (horizontalStretchEnabled ? onState : offState));
             var vertStretchSprite = Resources.Load<Sprite>(path + "StretchVert_" + (isVeritcalStretchEnabled ? onState : offState));
             const int size = 24;
+
             var style = new GUIStyle(GUIStyle.none)
             {
-                normal = {background = XDGUIUtility.CreateColoredTexture(Color.white)},
+                normal = { background = XDGUIUtility.CreateColoredTexture(Color.white) },
                 alignment = TextAnchor.MiddleCenter,
                 margin = new RectOffset(3, 3, 3, 3)
             };
@@ -153,65 +161,111 @@ namespace UnityXD.XDGUIEditor
                 var align = XDThemeUtility.ToAlignment(horizontalAlignment, vertAlignment);
                 _componentRef.Dock(align, horizontalStretchEnabled, isVeritcalStretchEnabled);
             }
-
             return this;
         }
 
-        public XDGUIAnchorInspector Padding()
+        public XDGUIInspector Swatch(string heading, ref XDColors field)
         {
-            /*********************************************************************************
-                  Padding
-              *********************************************************************************/
-            XDGUI.Create().Text("Padding").Style(XDGUIStyles.Instance.Heading).Label();
-            using (new XDGUIPanel(true, PanelStyle))
-            {
-                if (_componentRef.Padding == null)
-                {
-                    _componentRef.Padding = new RectOffset(0, 0, 0, 0);
-                }
+            XDGUI.Create().SwatchPicker(ref field, heading);
+            return this;
+        }
 
-                var left = _componentRef.Padding.left;
-                var right = _componentRef.Padding.right;
-                var top = _componentRef.Padding.top;
-                var bot = _componentRef.Padding.bottom;
-                XDGUI.Create().Text("Left").TextField(ref left, false);
-                XDGUI.Create().Text("Right").TextField(ref right, false);
-                XDGUI.Create().Text("Top").TextField(ref top, false);
-                XDGUI.Create().Text("Bottom").TextField(ref bot, false);
-                _componentRef.SetPadding(new RectOffset(left, right, top, bot));
+        public XDGUIInspector Margin()
+        {
+            XDGUI.Create().RectOffsetField(ref _componentRef.Margin, "Margin");
+            if (GUI.changed)
+            {
+                _componentRef.SetMargin(_componentRef.Margin);
             }
+            return this;
+        }
+
+        public XDGUIInspector Padding()
+        {
+            XDGUI.Create().RectOffsetField(ref _componentRef.Padding, "Padding");
+            if (GUI.changed)
+            {
+                _componentRef.SetPadding(_componentRef.Padding);
+            }
+            return this;
+        }
+
+        public XDGUIInspector Heading(string label)
+        {
+            EditorGUILayout.Space();
+
+            XDGUI.Create().Text(label).Style(XDGUIStyles.Instance.Heading).Label();
+
+            EditorGUILayout.Space();
+            return this;
+            
+        }
+
+        public XDGUIInspector LabelAlignment(ref TextAnchor field, string prefix) 
+        {
+            XDGUI.Create()
+               .Text(prefix)
+               .Size(LabelMedium, FieldHeightSmall, FieldXXL)
+               .ComboBox(ref field, null, true);
             EditorGUILayout.Space();
             return this;
         }
 
-        public XDGUIAnchorInspector Margins()
+        public XDGUIInspector Sprite(string prefix, ref Sprite field)
         {
-            /*********************************************************************************
-              Margin
-          *********************************************************************************/
-
-            XDGUI.Create().Text("Margins").Style(XDGUIStyles.Instance.Heading).Label();
-            using (new XDGUIPanel(true, PanelStyle))
-            {
-                if (_componentRef.Margin == null)
-                {
-                    _componentRef.Margin = new RectOffset(0, 0, 0, 0);
-                }
-                var left = _componentRef.Margin.left;
-                var right = _componentRef.Margin.right;
-                var top = _componentRef.Margin.top;
-                var bot = _componentRef.Margin.bottom;
-                
-                XDGUI.Create().Text("Left").TextField(ref left, false);
-                XDGUI.Create().Text("Right").TextField(ref right, false);
-                XDGUI.Create().Text("Top").TextField(ref top, false);
-                XDGUI.Create().Text("Bottom").TextField(ref bot, false);
-
-                _componentRef.Margin = new RectOffset(left, right, top, bot);
-
-            }
+            XDGUI.Create()
+               .Text(prefix)
+               .Size(LabelMedium, FieldHeightSmall)
+               .SpriteField(ref field, true, false);
             return this;
         }
 
+        public XDGUIInspector Bind<T>(string label, ref T field)
+        {
+            var arg = field as UIComponent;
+
+            XDGUI.Create()
+                .Text(label)
+                .Size(LabelMedium, FieldHeightSmall)
+                .XDField<T>(ref arg, true);
+            field = (T)(Object)arg;
+            return this;
+        }
+
+        public XDGUIInspector Icon(ref XDIcons iconField, ref XDVerticalAlignment iconAlignment)
+        {
+            using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
+            {
+                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref iconField, null, true);
+                EditorGUILayout.Space();
+                XDGUI.Create().Text("Placement").Size(64, 22, 64).ComboBox(ref iconAlignment, null, true);                
+            }
+
+            return this;
+        }
+
+        public XDGUIInspector Icon(ref XDIcons iconField)
+        {
+            XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref iconField, null, true);
+            return this;
+        }
+
+        public XDGUIInspector TextField(ref String field, string prefix)
+        {
+            XDGUI.Create()
+               .Text(prefix)
+               .Size(LabelMedium, FieldHeightSmall)
+               .TextField(ref field, true);
+            return this;
+        }
+
+        public XDGUIInspector CheckBox(string prefix, ref bool isSelected)
+        {
+            XDGUI.Create()
+                .Text(prefix)
+                .Size(LabelMedium, FieldHeightSmall,CheckBoxSize,CheckBoxSize)
+                .CheckBox(ref isSelected, true);
+            return this;
+        }
     }
 }

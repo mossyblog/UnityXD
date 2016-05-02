@@ -50,49 +50,55 @@ namespace UnityXD.XDGUIEditor
                 XDGUI.Create().Text("Icon Size").Size(64, 22, 92).ComboBox(ref _SearchTabRef.CurrentIconSize,  null, true);
             }
 
-
-            if (_labelRef != null)
-                XDGUIStyleInspector.Create(ref _labelRef)
-                    .Heading("Labels")
-                    .Label();
-
-            XDGUI.Create()
-                .Text("Counter")
-                .Size(LabelMedium, FieldHeightSmall)
-                .TextField(ref _SearchTabRef.Counter, true);
+            new XDGUIInspector()
+                .TextField(ref _labelRef.Text, "Label")
+                .Swatch("Normal", ref _SearchTabRef.PositiveColor)
+                .Swatch("Empty", ref _SearchTabRef.NegativeColor)
+                .CheckBox("Selected", ref _SearchTabRef.IsSelected);
 
 
-            XDGUI.Create().SwatchPicker(ref _SearchTabRef.PositiveColor, "Positive");            
-            XDGUI.Create().SwatchPicker(ref _SearchTabRef.NegativeColor, "Negative");
 
-            XDGUI.Create()
-                .Text("Selected")
-                .Size(LabelMedium, FieldHeightSmall,CheckBoxSize,CheckBoxSize)
-                .CheckBox(ref _SearchTabRef.IsSelected, true);
-
-            XDGUIStyleInspector.Create(ref _labelRef)
-                .Heading("Font Settings")
-                .FontSettings()
-                .FontAlignment()
-                .FontStyle();
+//
+//            if (_labelRef != null)
+//                XDGUIStyleInspector.Create(ref _labelRef)
+//                    .Heading("Labels")
+//                    .Label();
+//
+//            XDGUI.Create()
+//                .Text("Counter")
+//                .Size(LabelMedium, FieldHeightSmall)
+//                .TextField(ref _SearchTabRef.Counter, true);
+//
+//
+//            XDGUI.Create().SwatchPicker(ref _SearchTabRef.PositiveColor, "Positive");            
+//            XDGUI.Create().SwatchPicker(ref _SearchTabRef.NegativeColor, "Negative");
+//
+//            XDGUI.Create()
+//                .Text("Selected")
+//                .Size(LabelMedium, FieldHeightSmall,CheckBoxSize,CheckBoxSize)
+//                .CheckBox(ref _SearchTabRef.IsSelected, true);
+//
+//            XDGUIStyleInspector.Create(ref _labelRef)
+//                .Heading("Font Settings")
+//                .FontSettings()
+//                .FontAlignment()
+//                .FontStyle();
         }
 
 
         protected override void CreateBindingControls()
         {
             base.CreateBindingControls();
-
-            XDGUIBindingInspector.Create(ref _componentRef)
-                .Heading("References")
-                .References("Icon", ref _SearchTabRef.IconRef)
-                .References("Label", ref _SearchTabRef.LabelRef)
-                .References("Counter", ref _SearchTabRef.CounterRef)
-                .Heading("States")
-                .Aspect()
-                .Sprite("Selected", ref _SearchTabRef.Selected, false)
-                .Sprite("Normal", ref _SearchTabRef.Normal, false)
-                .Sprite("Empty", ref _SearchTabRef.Empty, false)
-                .Sprite("Disabled", ref _SearchTabRef.Disabled, false);
+            new XDGUIInspector()
+                .Heading("Skins")
+                .Sprite("Selected", ref _SearchTabRef.Selected)
+                .Sprite("Normal", ref _SearchTabRef.Normal)
+                .Sprite("Empty", ref _SearchTabRef.Empty)
+                .Sprite("Disabled", ref _SearchTabRef.Disabled)
+                .Heading("Local References")
+                .Bind<Icon>("Icon", ref _SearchTabRef.IconRef)
+                .Bind<Label>("Label", ref _SearchTabRef.LabelRef)
+                .Bind<Label>("Counter", ref _SearchTabRef.CounterRef);
         }
     }
 }

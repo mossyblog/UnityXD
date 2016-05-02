@@ -30,13 +30,18 @@ namespace UnityXD.XDGUIEditor
         protected override void CreateDesignControls()
         {
             base.CreateDesignControls();
-            using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
-            {
-                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _iconRef.CurrentIcon,  null, true);
+            new XDGUIInspector()
+                .Icon(ref _iconRef.CurrentIcon)
+                .Swatch("Fill Color",ref  _componentRef.CurrentStyle.FrontFill);
 
-                XDGUIStyleInspector.Create(ref _componentRef)
-                    .FillColor();
-            }
+
+//            using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
+//            {
+//                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _iconRef.CurrentIcon,  null, true);
+//
+//                XDGUIStyleInspector.Create(ref _componentRef)
+//                    .FillColor();
+//            }
         }
 
     }

@@ -368,18 +368,13 @@ namespace UnityXD.XDGUIEditor
                         var txt = SpriteUtility.GetSpriteTexture(field, false);
                         if (txt != null)
                         {
-                            //GUILayout.Label(txt, GUILayout.Width(32), GUILayout.Height(32));
                             var txtureRect = GUILayoutUtility.GetLastRect();
-
                             txtureRect.y += txtureRect.height+8;
                             txtureRect.height = 32;
                             txtureRect.width = 32;
-                           
                             EditorGUI.DrawTextureAlpha(txtureRect, txt);
                             DrawOutline(Color.black, txtureRect);
                             GUILayout.Space(40);
-
-
                         }
                     }
                 }
@@ -586,6 +581,27 @@ namespace UnityXD.XDGUIEditor
             return enumcache[typeof(T)];
         }
         #endregion
+
+        public void RectOffsetField(ref RectOffset field, string heading, bool isEnabled = true)
+        {
+            XDGUI.Create().Text(heading).Style(XDGUIStyles.Instance.Heading).Label();
+            using (new XDGUIPanel(true, XDGUIStyles.Instance.Panel))
+            {               
+                var left = field.left;
+                var right = field.right;
+                var top = field.top;
+                var bot = field.bottom;
+
+                XDGUI.Create().Text("Left").TextField(ref left, false);
+                XDGUI.Create().Text("Right").TextField(ref right, false);
+                XDGUI.Create().Text("Top").TextField(ref top, false);
+                XDGUI.Create().Text("Bottom").TextField(ref bot, false);
+
+                field = new RectOffset(left,right,top,bot);               
+            }
+            EditorGUILayout.Space();
+        }
+
     }
 
    

@@ -35,52 +35,26 @@ namespace UnityXD.XDGUIEditor
         protected override void CreateDesignControls()
         {
             base.CreateDesignControls();
-
-            var placementList = new List<String>
-            {
-                XDVerticalAlignment.Top.ToString(),
-                XDVerticalAlignment.Center.ToString(),
-                XDVerticalAlignment.Bottom.ToString()
-            };
-
-            using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
-            {
-                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _tileIconRef.CurrentIcon, null, true);
-                EditorGUILayout.Space();
-                XDGUI.Create().Text("Placement").Size(64, 22, 64).ComboBox(ref _tileIconRef.IconPlacement, placementList, true);
-                EditorGUILayout.Space();
-                XDGUI.Create().Text("Icon Size").Size(64, 22, 92).ComboBox(ref _tileIconRef.CurrentIconSize, null, true);
-            }
-
+            new XDGUIInspector()
+                .Icon(ref _tileIconRef.CurrentIcon, ref _tileIconRef.IconPlacement);
 
             if (_labelRef != null)
             {
-                XDGUIStyleInspector.Create(ref _labelRef)
-                    .FillColor()
-                    .BackFillColor()    
-                    .Label();
+                new XDGUIInspector()
+                    .TextField(ref _tileIconRef.LabelRef.Text, "Label")
+                    .Swatch("Foreground", ref _tileIconRef.CurrentStyle.FrontFill)
+                    .Swatch("Background", ref _tileIconRef.CurrentStyle.BackFill);
 
-                XDGUI.Create().SwatchPicker(ref _tileIconRef.Foo, "Foo is Alive!");
-
-
-                XDGUIStyleInspector.Create(ref _labelRef)
-                    .Heading("Font Settings")
-                    .FontSettings()
-                    .FontAlignment()
-                    .FontStyle();
             }
-
-
         }
 
         protected override void CreateBindingControls()
         {
             base.CreateBindingControls();
 
-            XDGUIBindingInspector.Create(ref _componentRef)
-                .Heading("References")
-                .References<Icon>("Icon", ref _tileIconRef.IconRef)
-                .References<Label>("Label", ref _tileIconRef.LabelRef);
+            new XDGUIInspector().Heading("Local References")
+                .Bind<Icon>("Icon", ref _tileIconRef.IconRef)
+                .Bind<Label>("Label", ref _tileIconRef.LabelRef);
         }
     }
 }

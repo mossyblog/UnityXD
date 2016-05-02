@@ -67,15 +67,15 @@ namespace UnityXD.Editor
                 _labelRef = target as Label;
             }
 
-            m_hidecomponents = EditorPrefs.GetBool("hidecomponents_" + _componentRef.GetInstanceID(), true);
-            m_currentSelectedTab = EditorPrefs.GetString("currentTab_" + _componentRef.GetInstanceID(),
+            m_hidecomponents = EditorPrefs.GetBool("hidecomponents_", true);
+            m_currentSelectedTab = EditorPrefs.GetString("currentTab_",
                 m_currentSelectedTab);
         }
 
         public void OnDestroy()
         {
-            EditorPrefs.SetBool("hidecomponents_" + _componentRef.GetInstanceID(), m_hidecomponents);
-            EditorPrefs.SetString("currentTab_" + _componentRef.GetInstanceID(), m_currentSelectedTab);
+            EditorPrefs.SetBool("hidecomponents_", m_hidecomponents);
+            EditorPrefs.SetString("currentTab_", m_currentSelectedTab);
         }
 
         public override void OnInspectorGUI()
@@ -104,8 +104,10 @@ namespace UnityXD.Editor
                 m_bodyRect = body;
 
             CreateTabBar();
-            using (var rect = new XDGUIPanel(false, XDGUIStyles.Instance.Body))
+           
+            using (new XDGUIPanel(false, XDGUIStyles.Instance.Body))
             {
+                EditorGUILayout.Space();
                 if (!_componentRef.IsChildReadOnly)
                 {
                     if (m_currentSelectedTab == m_labelLayout)
@@ -139,11 +141,12 @@ namespace UnityXD.Editor
 
         protected virtual void CreateLayoutControls()
         {
-            XDGUIAnchorInspector.Create(ref _componentRef)
-                .AnchorToolBar()
-                .Metrics()
-                .Padding()
-                .Margins();
+            new XDGUIInspector()
+                .Context(ref _componentRef)
+                .AnchorToolbar()
+                .SizeAndPositioning()
+                .Margin()
+                .Padding();
         }
 
         protected virtual void CreateDesignControls()
