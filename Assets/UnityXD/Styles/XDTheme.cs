@@ -9,7 +9,8 @@ namespace UnityXD.Styles
     public class XDTheme
     {
         private Dictionary<string,XDFontStyle> m_FontClasses = new Dictionary<string,XDFontStyle> ();
-        private List<XDStyle> m_styles = new List<XDStyle> ();
+        private Dictionary<string,XDStyle> m_styles = new Dictionary<string,XDStyle> ();
+
         private static XDTheme _xdTheme;
         private Font m_font_regular;
         private Font m_font_light;
@@ -22,12 +23,10 @@ namespace UnityXD.Styles
         /// <value>The instance.</value>
         public static XDTheme Instance { 
 
-            get { 
-				
+            get { 				
                 if (_xdTheme == null) {
                     _xdTheme = new XDTheme ();
-                }
-				
+                }			
                 return _xdTheme;
             } 
         }
@@ -46,109 +45,124 @@ namespace UnityXD.Styles
         /// </summary>
         public void InitializeDefaultStyles ()
         {
+            m_FontClasses.Clear();
+            m_styles.Clear();
 			
             m_font_regular = (Font)Resources.Load ("Fonts/Roboto-Regular");
             m_font_light = (Font)Resources.Load ("Fonts/Roboto-Light");
             m_font_medium = (Font)Resources.Load ("Fonts/Roboto-Medium");
             m_font_bold = (Font)Resources.Load ("Fonts/Roboto-Bold");
 	
-            // CAPTION
-            RegisterFontClass (XDFontStyleNames.Caption, XDFontSizes.S, m_font_regular);
-            RegisterFontClass (XDFontStyleNames.Caption, XDFontSizes.M, m_font_light);
-            RegisterFontClass (XDFontStyleNames.Caption, XDFontSizes.L, m_font_light);
+            // TITLE.
+            var fd =  new FontData();
+            fd.font = m_font_regular;
+            fd.bestFit = true;
+            fd.minSize = 18;
+            fd.maxSize = 24;
+            RegisterFontClass (XDFontStyleNames.Title, fd);
 
-            // BODY
-            RegisterFontClass (XDFontStyleNames.Body, XDFontSizes.S, m_font_regular, XDFontSizes.XS);
-            RegisterFontClass (XDFontStyleNames.Body, XDFontSizes.M, m_font_regular, XDFontSizes.S);
-            RegisterFontClass (XDFontStyleNames.Body, XDFontSizes.L, m_font_regular, XDFontSizes.M);
+            // Subheading
+           
+           
+            fd = new FontData();
+            fd.font = m_font_regular;
+            fd.bestFit = true;
+            fd.minSize = 12;
+            fd.maxSize = 24;
+            RegisterFontClass (XDFontStyleNames.SubTitle, fd);
 
-            // LABEL
-            RegisterFontClass (XDFontStyleNames.Label, XDFontSizes.S, m_font_regular, XDFontSizes.XS);
-            RegisterFontClass (XDFontStyleNames.Label, XDFontSizes.M, m_font_bold, XDFontSizes.S);
-            RegisterFontClass (XDFontStyleNames.Label, XDFontSizes.L, m_font_bold, XDFontSizes.M);
+            // INPUT          
+            fd = new FontData();
+            fd.font = m_font_light;
+            fd.bestFit = true;
+            fd.minSize = 12;
+            fd.maxSize = 24;
 
-            // INPUT
-            RegisterFontClass (XDFontStyleNames.Input, XDFontSizes.S, m_font_regular);
-            RegisterFontClass (XDFontStyleNames.Input, XDFontSizes.M, m_font_light);
-            RegisterFontClass (XDFontStyleNames.Input, XDFontSizes.L, m_font_light);
+            RegisterFontClass (XDFontStyleNames.Input, fd);
 
-            // HEADING
-            RegisterFontClass (XDFontStyleNames.Heading, XDFontSizes.S, m_font_regular, XDFontSizes.L);
-            RegisterFontClass (XDFontStyleNames.Heading, XDFontSizes.M, m_font_light, XDFontSizes.XL);
-            RegisterFontClass (XDFontStyleNames.Heading, XDFontSizes.L, m_font_light, XDFontSizes.XXL);
+            // Label (passive etc).
+            fd = new FontData();
+            fd.font = m_font_light;
+            fd.bestFit = true;
+            fd.minSize = 12;
+            fd.maxSize = 24;
+            RegisterFontClass (XDFontStyleNames.Button1, fd);
 
-            RegisterFontClass (XDFontStyleNames.Title, XDFontSizes.M, m_font_bold, XDFontSizes.L);
-            RegisterFontClass (XDFontStyleNames.SubTitle, XDFontSizes.M, m_font_bold);
+
+            // TILEICON         
+            fd = new FontData();
+            fd.font = m_font_bold;
+            fd.bestFit = true;
+            fd.minSize = 10;
+            fd.maxSize = 24;
+            RegisterFontClass (XDFontStyleNames.Button2, fd);
+
+
+            var themeStyle = new XDStyle();
+            themeStyle.Size = XDSizes.L;
+            themeStyle.FontStyle = new XDFontStyle(XDFontStyleNames.Button2, fd);
+            themeStyle.BackFill = XDColors.Brand;
+            themeStyle.FrontFill = XDColors.ChromeLightest;
+            themeStyle.Padding = new RectOffset(8, 8, 8, 8);
+            themeStyle.StyleName = XDThemeStyleNames.TileIcon;
+            RegisterThemeStyle(themeStyle);
+
+            // Label (passive etc).      
+            fd = new FontData();
+            fd.font = m_font_regular;
+            fd.bestFit = true;
+            fd.minSize = 12;
+            fd.maxSize = 24;
+            RegisterFontClass (XDFontStyleNames.Body1, fd);
+
+            // Headers, Form Prefixes, etc.          
+            fd = new FontData();
+            fd.font = m_font_bold;
+            fd.bestFit = true;
+            fd.minSize = 12;
+            fd.maxSize = 24;
+            RegisterFontClass (XDFontStyleNames.Body2, fd);
+
 
 
         }
 
-        /// <summary>
-        /// Registers the font class.
-        /// </summary>
-        /// <param name="name">Name.</param>
-        /// <param name="fontSize">Font size.</param>
-        /// <param name="font">Font.</param>
-        private void RegisterFontClass (XDFontStyleNames name, XDFontSizes fontSize, Font font)
-        {
-            RegisterFontClass (name, fontSize, font, (int)fontSize);
+
+        public XDStyle ResolveThemeStyle(XDThemeStyleNames name) {
+            var key = name.ToString();
+            if (m_styles.ContainsKey(key))
+            {
+                return m_styles[key];
+            }            
+            return null;
         }
 
-
-        /// <summary>
-        /// Registers the font class.
-        /// </summary>
-        /// <param name="name">Name.</param>
-        /// <param name="fontSize">Font size.</param>
-        /// <param name="font">Font.</param>
-        /// <param name="actualFontSize">Actual font size.</param>
-        private void RegisterFontClass (XDFontStyleNames name, XDFontSizes fontSize, Font font, XDFontSizes actualFontSize)
-        {
-            RegisterFontClass (name, fontSize, font, (int)actualFontSize);
-        }
-
-        /// <summary>
-        /// Registers the font class.
-        /// </summary>
-        /// <param name="name">Name.</param>
-        /// <param name="fontSize">Font size.</param>
-        /// <param name="font">Font.</param>
-        /// <param name="actualFontSize">Actual font size.</param>
-        private void RegisterFontClass (XDFontStyleNames name, XDFontSizes fontSize, Font font, int actualFontSize)
-        {
-            var fd = new XDFontStyle ();
-            fd.StyleName = name;
-            fd.FontSize = fontSize;
-            fd.FontData = new FontData();
-            fd.FontData.font = font;
-            fd.FontData.fontSize = actualFontSize;
-            RegisterFontClass (fd);
+        public XDFontStyle ResolveFontStyle(XDFontStyleNames name) {
+            var key = name.ToString();
+            if (m_FontClasses.ContainsKey(key))
+            {
+                return m_FontClasses[key];
+            }            
+            return null;
         }
 
         /// <summary>
         /// Registers the font class.
         /// </summary>
         /// <param name="fontClass">Font class.</param>
-        public void RegisterFontClass (XDFontStyle fontClass)
+        public void RegisterFontClass (XDFontStyleNames name, FontData fd)
         {
-            var key = fontClass.StyleName.ToString () + fontClass.FontSize.ToString ();
-            m_FontClasses [key] = fontClass;
+            var fs = new XDFontStyle (name,fd);          
+            var key = name.ToString();
+            m_FontClasses [key] = fs;
         }
 
-        public XDFontStyle ResolveFontClass (XDFontStyleNames styleName, XDFontSizes FontSize)
+        public void RegisterThemeStyle (XDStyle style)
         {
-
-            // The Intended ThemeFontClasses style should be paired with size.
-            var key = styleName.ToString () + FontSize.ToString ();
-
-            if (m_FontClasses.ContainsKey (key)) {
-                return m_FontClasses [key];
-            } else {
-                RegisterFontClass (styleName, FontSize, m_font_regular);
-                return m_FontClasses [key];
-            }
-				
+            var key = style.StyleName.ToString();
+            m_styles [key] = style;
         }
+
 
     }
 }

@@ -29,24 +29,22 @@ namespace UnityXD.Components
             else {
                 Math.Max((int)TextRef.preferredHeight, h);
             }
-            base.SetSize(w, h);
-        }
 
-        public override void ApplyTheme(XDStyle xd)
-        {
-            xd.FontStyle = XDTheme.Instance.ResolveFontClass(xd.FontStyle.StyleName, xd.FontStyle.FontSize);
-            base.ApplyTheme(xd);
+            base.SetSize(w, h);
         }
 
         public override void InvalidateDisplay()
         {
             base.InvalidateDisplay();
-            ApplyElipseSuffix();
+            //ApplyElipseSuffix();
         }
 
         protected override void Measure()
         {
-            Height = Math.Max(Height, (int)TextRef.preferredHeight);
+            if (CurrentStyle.FontStyle != null)
+            {
+                Height = Math.Max(Height, CurrentStyle.FontStyle.FontData.minSize);
+            }
         }
         
         protected override void CommitProperties()
@@ -56,12 +54,25 @@ namespace UnityXD.Components
                 CurrentStyle.Size = XDSizes.Custom;
                 IsHeightDependantOnWidth = false;
             }
-            
+
+            //XDTheme.Instance.InitializeDefaultStyles();
+
             TextRef.text = Text;
-            TextRef.font = CurrentStyle.FontStyle.FontData.font;
-			TextRef.fontSize = CurrentStyle.FontStyle.FontData.fontSize;
+
+            if (CurrentStyle.FontStyle != null)
+            {
+                TextRef.font = CurrentStyle.FontStyle.FontData.font;
+                TextRef.resizeTextForBestFit = CurrentStyle.FontStyle.FontData.bestFit;
+                TextRef.resizeTextMinSize = CurrentStyle.FontStyle.FontData.minSize;
+                TextRef.resizeTextMaxSize = CurrentStyle.FontStyle.FontData.maxSize;
+            }
+            else
+            {
+                TextRef.resizeTextForBestFit = false;
+            }
             TextRef.color = CurrentStyle.FrontFill.ToColor();
             TextRef.alignment = Alignment;
+
 
            
             if (AutoSize)
@@ -112,7 +123,7 @@ namespace UnityXD.Components
         public void OnRectTransformDimensionsChange()
         {
             // May need to truncate according to new dimensions.
-            ApplyElipseSuffix();
+            //ApplyElipseSuffix();
         }
     }
 }

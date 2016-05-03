@@ -17,31 +17,8 @@ namespace UnityXD.Editor
         protected const string m_labelBinding = "Binding";
         protected UIComponent _componentRef;
 
-        // LABEL SPECIFIC
-        protected Label _labelRef;
-        protected int Col1 = 56;
-        protected int Col2 = 56;
-        protected int Col3 = 56;
-
-        protected int fieldH = 22;
-        protected int FieldSmall = 32;
-        protected int FieldMedium = 64;
-        protected int FieldLarge = 92;
-        protected int FieldXXL = 128;
-
-        protected int LabelSmall = 48;
-        protected int LabelMedium = 92;
-        protected int LabelLarge = 128;
-
-        protected int FieldHeightSmall = 22;
-        protected int FieldHeightMedium = 24;
-        protected int FieldHeightLarge = 48;
-
-        protected int CheckBoxSize = 16;
-        
         protected Rect m_bodyRect;
         protected string m_currentSelectedTab = m_labelLayout;
-        protected XDSizes m_currentSize;
 
         // Inspector Show / Hide Switches.
         protected bool m_design_backfillEnabled;
@@ -53,20 +30,12 @@ namespace UnityXD.Editor
 
         // Anchor Alignment Config.
         protected string[] m_tabs = { m_labelLayout, m_labelDesign, m_labelBinding };
-        protected TextAnchor m_textAlignment;
-        protected bool m_truncate;
-        protected XDVerticalAlignment m_vertAlignment;
 
         public void OnEnable()
         {
             if (_componentRef == null)
                 _componentRef = (UIComponent)target;
-
-            if (_labelRef == null)
-            {
-                _labelRef = target as Label;
-            }
-
+            
             m_hidecomponents = EditorPrefs.GetBool("hidecomponents_", true);
             m_currentSelectedTab = EditorPrefs.GetString("currentTab_",
                 m_currentSelectedTab);
@@ -141,12 +110,7 @@ namespace UnityXD.Editor
 
         protected virtual void CreateLayoutControls()
         {
-            new XDGUIInspector()
-                .Context(ref _componentRef)
-                .AnchorToolbar()
-                .SizeAndPositioning()
-                .Margin()
-                .Padding();
+
         }
 
         protected virtual void CreateDesignControls()

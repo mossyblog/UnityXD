@@ -22,7 +22,6 @@ namespace UnityXD.Components
         public bool IsHeightDependantOnWidth;
         public bool IsVisible;
         public Sprite BackgroundSprite = null;
-        public bool PreserveAspect;
         public RectOffset Padding;
         public RectOffset Margin;
         public RectOffset ParentPadding;
@@ -50,8 +49,12 @@ namespace UnityXD.Components
             if (Padding == null)
             {
                 Padding = new RectOffset(0, 0, 0, 0);
-                Margin = new RectOffset(0, 0, 0, 0);
                 ParentPadding = new RectOffset(0, 0, 0, 0);
+            }
+
+            if (Margin == null)
+            {
+                Margin = new RectOffset(0, 0, 0, 0);
             }
         }
 
@@ -160,6 +163,14 @@ namespace UnityXD.Components
         /// </summary>
         protected virtual void CommitProperties()
         {
+
+         
+
+            if (CurrentStyle.Size != XDSizes.Custom)
+            {
+                IsHeightDependantOnWidth = true;
+            }
+
            ApplyTheme(CurrentStyle);
         }
 
@@ -280,6 +291,15 @@ namespace UnityXD.Components
             Height = h;
         }
 
+        public virtual void SetSize(int w, int h, bool isCustom) {
+            if (isCustom)
+            {
+                CurrentStyle.Size = XDSizes.Custom;
+                IsHeightDependantOnWidth = false;
+            }
+            SetSize(w, h);
+        }
+
         /// <summary>
         /// Sets the size.
         /// </summary>
@@ -300,7 +320,6 @@ namespace UnityXD.Components
 
             var min = RectTransformRef.offsetMin;
             var max = RectTransformRef.offsetMax;
-            var apos = RectTransformRef.anchoredPosition;
 
             var oMaxX = 0;
             var oMaxY = 0;
@@ -448,9 +467,36 @@ namespace UnityXD.Components
 		/// <param name="xd">Xd.</param>
         public virtual void ApplyTheme(XDStyle xd)
         {
-           CurrentStyle = xd;
+            if (CurrentStyle.StyleName != XDThemeStyleNames.Unknown)
+            {
+                CurrentStyle = new XDStyle(xd);
+            }
         }
-				
+		
+        public void ApplyDefaultTheme(XDThemeStyleNames name) {
+
+            if (name == XDThemeStyleNames.Unknown)
+                return;
+
+            var defaultTheme = XDTheme.Instance.ResolveThemeStyle(name);
+            CurrentStyle = new XDStyle(defaultTheme);
+            CurrentStyle.FontStyle = new XDFontStyle(defaultTheme.FontStyle);
+
+            if (defaultTheme.Padding != null)
+            {
+                Padding = CurrentStyle.Padding;
+            }
+
+            if (defaultTheme.Margin != null)
+            {
+                Margin = CurrentStyle.Margin;
+            }
+        }
+
+        public void ResetTheme() {
+            ApplyDefaultTheme(CurrentStyle.StyleName);
+        }
+
 		/// <summary>
 		/// Gets the or create child.
 		/// </summary>

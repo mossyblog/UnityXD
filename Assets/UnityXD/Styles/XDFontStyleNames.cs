@@ -5,12 +5,26 @@ namespace UnityXD.Styles
     [Serializable]
     public enum XDFontStyleNames
     {
-        Body,
+        Unknown,
         Caption,
-        Label,
-        Heading,
+        Body1,
+        Body2,       
         Input,
+        Button1,
+        Button2,
         Title,
         SubTitle,
+    }
+
+    public enum XDThemeStyleNames {
+        Unknown,
+        TileIcon,
+        Button,
+        SearchTextInput,
+        SearchTab,
+        Password
+
+
+
     }
 }

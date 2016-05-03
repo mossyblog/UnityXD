@@ -5,6 +5,8 @@ namespace UnityXD.Styles
     [Serializable]
     public enum XDColors
     {
+        Uknown = 0,
+
         // BRAND
         BrandLightest = 0xDFEEE6,
         BrandLighter = 0xC0DCCE,

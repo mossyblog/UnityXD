@@ -18,7 +18,7 @@ namespace UnityXD.Components
 		    if (BackgroundSprite != null)
 		    {
 		        ImageRef.sprite = BackgroundSprite;
-		        ImageRef.preserveAspect = PreserveAspect;
+		        ImageRef.preserveAspect = true;
 		    }
 		    else
 		    {

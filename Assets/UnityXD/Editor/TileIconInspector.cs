@@ -16,6 +16,7 @@ namespace UnityXD.XDGUIEditor
     public class TileIconInspector : UIComponentInspector
     {
         protected TileIcon _tileIconRef;
+        protected Label _labelRef;
 
         protected override void Initialize()
         {
@@ -32,20 +33,49 @@ namespace UnityXD.XDGUIEditor
             base.Initialize();
         }
 
+        protected override void CreateLayoutControls()
+        {
+            base.CreateLayoutControls();
+            new XDGUIInspector()
+                .Context(ref _componentRef)
+                .AnchorToolbar()
+                .SizeAndPositioning()
+                .Sizing("Size", ref _componentRef.CurrentStyle.Size)
+                .Margin()
+                .Padding();
+        }
+
         protected override void CreateDesignControls()
         {
             base.CreateDesignControls();
+
+            var labelText = _labelRef == null ? String.Empty : _labelRef.Text;
+            var resetTheme = false;
+            var autobind = false;
+
             new XDGUIInspector()
-                .Icon(ref _tileIconRef.CurrentIcon, ref _tileIconRef.IconPlacement);
+                .Icon(ref _tileIconRef.CurrentIcon, ref _tileIconRef.IconPlacement)
+                .TextField(ref labelText, "Label")
+                .Swatch("Foreground", ref _tileIconRef.CurrentStyle.FrontFill)
+                .Swatch("Background", ref _tileIconRef.CurrentStyle.BackFill)
+                .Button("Reset Style", ref resetTheme, XDHorizontalAlignment.Left)
+                .Button("AutoBind", ref autobind, XDHorizontalAlignment.Left);
+
+            if (resetTheme)
+            {
+                _tileIconRef.ResetTheme();
+            }
+
+            if (autobind)
+            {
+                _tileIconRef.AutoBind();
+            }
 
             if (_labelRef != null)
             {
-                new XDGUIInspector()
-                    .TextField(ref _tileIconRef.LabelRef.Text, "Label")
-                    .Swatch("Foreground", ref _tileIconRef.CurrentStyle.FrontFill)
-                    .Swatch("Background", ref _tileIconRef.CurrentStyle.BackFill);
-
+                _labelRef.Text = labelText;
             }
+
         }
 
         protected override void CreateBindingControls()

@@ -16,6 +16,7 @@ namespace UnityXD.XDGUIEditor
 
     public class LabelInspector : UIComponentInspector
     {
+        protected Label _labelRef;
        
         protected override void Initialize()
         {            
@@ -26,6 +27,16 @@ namespace UnityXD.XDGUIEditor
             base.Initialize();
         }
 
+        protected override void CreateLayoutControls()
+        {
+            base.CreateLayoutControls();
+            new XDGUIInspector()
+                .Context(ref _componentRef)
+                .AnchorToolbar()
+                .SizeAndPositioning()
+                .Sizing("Size", ref _componentRef.CurrentStyle.Size)
+                .Margin();
+        }
         protected override void CreateDesignControls()
         {
 

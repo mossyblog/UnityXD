@@ -21,9 +21,7 @@ namespace UnityXD.XDGUIEditor
         protected int LabelSmall = 48;
         protected int LabelMedium = 92;
         protected int LabelLarge = 128;
-        protected int FieldHeightSmall = 22;
-        protected int FieldHeightMedium = 24;
-        protected int FieldHeightLarge = 48;
+        protected int FieldHeight = 22;
         protected int CheckBoxSize = 16;
 
         public XDGUIInspector Context(ref UIComponent component)
@@ -43,26 +41,21 @@ namespace UnityXD.XDGUIEditor
             var hEnabled = _componentRef.CurrentStyle.Size == XDSizes.Custom && !isVStretched && !isHeightDependentOnWidth;
             var linkEnabled = wEnabled && !isVStretched;
 
-            using (new XDGUIPanel(false, PanelStyle))
-            {
-                XDGUI.Create().Text("Size").Size(LabelMedium, FieldHeightSmall, FieldLarge).ComboBox(ref _componentRef.CurrentStyle.Size, null, true);
-            }
 
             using (new XDGUIPanel(true, PanelStyle))
             {
                 using (new XDGUIPanel(false, GUILayout.MaxWidth(FieldLarge)))
                 {
-
-                    XDGUI.Create().Text("W").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.Width, true, wEnabled);
+                    XDGUI.Create().Text("W").Size(LabelSmall, FieldHeight, FieldSmall).TextField(ref _componentRef.Width, true, wEnabled);
                     EditorGUILayout.Space();
-                    XDGUI.Create().Text("H").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.Height, true, hEnabled);
+                    XDGUI.Create().Text("H").Size(LabelSmall, FieldHeight, FieldSmall).TextField(ref _componentRef.Height, true, hEnabled);
                 }
 
 
                 using (new XDGUIPanel(false, GUILayout.Width(24)))
                 {
                     GUILayout.Space(8);
-                    var isLinkSprite = Resources.Load<Sprite>("Icons/Editor/SizeLink_" + (!isHeightDependentOnWidth ? "On" : "Off"));
+                    var isLinkSprite = Resources.Load<Sprite>("Icons/Editor/SizeLink_" + (isHeightDependentOnWidth ? "On" : "Off"));
                     XDGUI.Create()
                         .Sprite(isLinkSprite)
                         .Size(24, 48)
@@ -74,11 +67,12 @@ namespace UnityXD.XDGUIEditor
 
                 using (new XDGUIPanel(false))
                 {
-                    XDGUI.Create().Text("X").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.X, true);
+                    XDGUI.Create().Text("X").Size(LabelSmall, FieldHeight, FieldSmall).TextField(ref _componentRef.X, true);
                     EditorGUILayout.Space();
-                    XDGUI.Create().Text("Y").Size(LabelSmall, FieldHeightSmall, FieldSmall).TextField(ref _componentRef.Y, true);
+                    XDGUI.Create().Text("Y").Size(LabelSmall, FieldHeight, FieldSmall).TextField(ref _componentRef.Y, true);
                 }
             }
+            XDGUI.Create().Divider(XDVerticalAlignment.Center);
             return this;
         }
 
@@ -156,12 +150,17 @@ namespace UnityXD.XDGUIEditor
                 if (XDGUI.Create().Sprite(botSprite).Size(size).Style(style).Button())
                     vertAlignment = XDVerticalAlignment.Bottom;
             }
+
+            XDGUI.Create().Divider(XDVerticalAlignment.Center);
+
             if (GUI.changed)
             {
                 var align = XDThemeUtility.ToAlignment(horizontalAlignment, vertAlignment);
                 _componentRef.Dock(align, horizontalStretchEnabled, isVeritcalStretchEnabled);
             }
             return this;
+
+           
         }
 
         public XDGUIInspector Swatch(string heading, ref XDColors field)
@@ -205,7 +204,7 @@ namespace UnityXD.XDGUIEditor
         {
             XDGUI.Create()
                .Text(prefix)
-               .Size(LabelMedium, FieldHeightSmall, FieldXXL)
+               .Size(LabelMedium, FieldHeight, FieldXXL)
                .ComboBox(ref field, null, true);
             EditorGUILayout.Space();
             return this;
@@ -215,7 +214,7 @@ namespace UnityXD.XDGUIEditor
         {
             XDGUI.Create()
                .Text(prefix)
-               .Size(LabelMedium, FieldHeightSmall)
+               .Size(LabelMedium, FieldHeight)
                .SpriteField(ref field, true, false);
             return this;
         }
@@ -226,9 +225,42 @@ namespace UnityXD.XDGUIEditor
 
             XDGUI.Create()
                 .Text(label)
-                .Size(LabelMedium, FieldHeightSmall)
+                .Size(LabelMedium, FieldHeight)
                 .XDField<T>(ref arg, true);
             field = (T)(Object)arg;
+            return this;
+        }
+       
+        public XDGUIInspector Sizing(string label, ref XDSizes field) {
+           
+            using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
+            {
+                XDGUI.Create().Text(label).Size(LabelSmall, FieldHeight, FieldMedium).ComboBox(ref field, null, true);
+            }
+            return this;
+        }
+
+        public XDGUIInspector Button(string label, ref bool field, XDHorizontalAlignment alignment) {
+
+            using (new XDGUIPanel(true, XDGUIStyles.Instance.Panel))
+            {
+                if (alignment == XDHorizontalAlignment.Right || alignment == XDHorizontalAlignment.Center)
+                {
+                    GUILayout.FlexibleSpace();
+                    EditorGUILayout.Space();
+                }
+                XDGUI.Create()
+                .Text(label)
+                .Size(LabelMedium, FieldHeight)
+                .Style(XDGUIStyles.Instance.Button)
+                .Button(ref field, true);
+                
+                EditorGUILayout.Space();
+                if (alignment == XDHorizontalAlignment.Center)
+                {
+                    GUILayout.FlexibleSpace();
+                }
+            }
             return this;
         }
 
@@ -236,26 +268,51 @@ namespace UnityXD.XDGUIEditor
         {
             using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
             {
-                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref iconField, null, true);
+                using (new XDGUIPanel(true))
+                {
+                    XDGUI.Create().Text("Icon").Size(LabelMedium, FieldHeight, FieldLarge).ComboBox(ref iconField, null, true);
+                    XDGUI.Create().Icon(ref iconField, XDSizes.XS);
+                }
                 EditorGUILayout.Space();
-                XDGUI.Create().Text("Placement").Size(64, 22, 64).ComboBox(ref iconAlignment, null, true);                
+                XDGUI.Create().Text("Placement").Size(LabelMedium, FieldHeight, FieldMedium).ComboBox(ref iconAlignment, null, true);                
             }
-
             return this;
         }
 
+
         public XDGUIInspector Icon(ref XDIcons iconField)
         {
-            XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref iconField, null, true);
+            XDGUI.Create().Text("Icon").Size(LabelMedium, FieldHeight, FieldLarge).ComboBox(ref iconField, null, true);
             return this;
         }
 
         public XDGUIInspector TextField(ref String field, string prefix)
         {
-            XDGUI.Create()
+            using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
+            {
+                XDGUI.Create()
                .Text(prefix)
-               .Size(LabelMedium, FieldHeightSmall)
+               .Size(LabelMedium, FieldHeight)
                .TextField(ref field, true);
+            }
+            return this;
+        }
+
+        public XDGUIInspector TextField(ref int field, string prefix)
+        {
+            XDGUI.Create()
+                .Text(prefix)
+                .Size(LabelMedium, FieldHeight)
+                .TextField(ref field, true);
+            return this;
+        }
+
+        public XDGUIInspector TextField(ref double field, string prefix)
+        {
+            XDGUI.Create()
+                .Text(prefix)
+                .Size(LabelMedium, FieldHeight)
+                .TextField(ref field, true);
             return this;
         }
 
@@ -263,9 +320,10 @@ namespace UnityXD.XDGUIEditor
         {
             XDGUI.Create()
                 .Text(prefix)
-                .Size(LabelMedium, FieldHeightSmall,CheckBoxSize,CheckBoxSize)
+                .Size(LabelMedium, FieldHeight,CheckBoxSize,CheckBoxSize)
                 .CheckBox(ref isSelected, true);
             return this;
         }
+
     }
 }

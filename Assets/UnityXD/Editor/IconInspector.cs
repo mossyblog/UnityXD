@@ -26,7 +26,16 @@ namespace UnityXD.XDGUIEditor
 
             base.Initialize();
         }
-
+        protected override void CreateLayoutControls()
+        {
+            base.CreateLayoutControls();
+            new XDGUIInspector()
+                .Context(ref _componentRef)
+                .AnchorToolbar()
+                .SizeAndPositioning()
+                .Sizing("Size", ref _componentRef.CurrentStyle.Size)
+                .Margin();
+        }
         protected override void CreateDesignControls()
         {
             base.CreateDesignControls();

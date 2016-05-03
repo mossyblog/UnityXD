@@ -492,9 +492,6 @@ namespace UnityXD.XDGUIEditor
         public void CheckBox(ref bool field, bool isEnabled = true)
         {
             var style = new GUIStyle(XDGUIStyles.Instance.Checkbox);
-            var fillEnabled = style.active.background.GetPixel(1, 1);
-            var fillDisabled = style.normal.background.GetPixel(1, 1);
-
             var trueColor = XDColors.Brand.ToColor();
             var falseColor = XDColors.ChromeLightest.ToColor();
 
@@ -582,6 +579,24 @@ namespace UnityXD.XDGUIEditor
         }
         #endregion
 
+        #region Icon
+        public void Icon(ref XDIcons icon, XDSizes size) {
+
+            using (var panel = new XDGUIPanel(true, XDGUIStyles.Instance.Panel))
+            { 
+                var txt = SpriteUtility.GetSpriteTexture(icon.ResolveSprite(), false);
+                if (txt != null)
+                {
+                    var panelRect = panel.Rect;
+                    panelRect.height = (int)size;
+                    panelRect.width = (int)size;
+                    EditorGUI.DrawTextureAlpha(panelRect, txt);
+                    GUILayout.Space((int)size);
+                }
+            }
+        }
+        #endregion
+
         public void RectOffsetField(ref RectOffset field, string heading, bool isEnabled = true)
         {
             XDGUI.Create().Text(heading).Style(XDGUIStyles.Instance.Heading).Label();
@@ -599,6 +614,12 @@ namespace UnityXD.XDGUIEditor
 
                 field = new RectOffset(left,right,top,bot);               
             }
+            EditorGUILayout.Space();
+        }
+
+        public void Divider(XDVerticalAlignment align = XDVerticalAlignment.Bottom) {
+            EditorGUILayout.Space();
+            XDGUI.Create().DrawLine(align, 0, XDColors.ChromeLight.ToColor());
             EditorGUILayout.Space();
         }
 

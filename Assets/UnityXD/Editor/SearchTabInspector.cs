@@ -12,6 +12,7 @@ namespace UnityXD.XDGUIEditor
     {
         protected Label _counterRef;
         protected SearchTab _SearchTabRef;
+        protected Label _labelRef;
 
         protected override void Initialize()
         {
@@ -37,54 +38,25 @@ namespace UnityXD.XDGUIEditor
         {
             base.CreateDesignControls();
 
-            var placementList = new List<string>
-            {
-                XDVerticalAlignment.Top.ToString(),
-                XDVerticalAlignment.Bottom.ToString()
-            };
-
-            using (new XDGUIPanel(false, XDGUIStyles.Instance.Panel))
-            {
-                XDGUI.Create().Text("Icon").Size(64, 22, 92).ComboBox(ref _SearchTabRef.CurrentIcon, null, true);
-                EditorGUILayout.Space();
-                XDGUI.Create().Text("Icon Size").Size(64, 22, 92).ComboBox(ref _SearchTabRef.CurrentIconSize,  null, true);
-            }
-
             new XDGUIInspector()
                 .TextField(ref _labelRef.Text, "Label")
+                .TextField(ref _SearchTabRef.Counter, "Counter")
+                .Icon(ref _SearchTabRef.CurrentIcon, ref _SearchTabRef.IconPlacement)
+                .CheckBox("Selected", ref _SearchTabRef.IsSelected)            
                 .Swatch("Normal", ref _SearchTabRef.PositiveColor)
-                .Swatch("Empty", ref _SearchTabRef.NegativeColor)
-                .CheckBox("Selected", ref _SearchTabRef.IsSelected);
-
-
-
-//
-//            if (_labelRef != null)
-//                XDGUIStyleInspector.Create(ref _labelRef)
-//                    .Heading("Labels")
-//                    .Label();
-//
-//            XDGUI.Create()
-//                .Text("Counter")
-//                .Size(LabelMedium, FieldHeightSmall)
-//                .TextField(ref _SearchTabRef.Counter, true);
-//
-//
-//            XDGUI.Create().SwatchPicker(ref _SearchTabRef.PositiveColor, "Positive");            
-//            XDGUI.Create().SwatchPicker(ref _SearchTabRef.NegativeColor, "Negative");
-//
-//            XDGUI.Create()
-//                .Text("Selected")
-//                .Size(LabelMedium, FieldHeightSmall,CheckBoxSize,CheckBoxSize)
-//                .CheckBox(ref _SearchTabRef.IsSelected, true);
-//
-//            XDGUIStyleInspector.Create(ref _labelRef)
-//                .Heading("Font Settings")
-//                .FontSettings()
-//                .FontAlignment()
-//                .FontStyle();
+                .Swatch("Empty", ref _SearchTabRef.NegativeColor);
         }
 
+        protected override void CreateLayoutControls()
+        {
+            base.CreateLayoutControls();
+
+            new XDGUIInspector()
+                .Context(ref _componentRef)
+                .AnchorToolbar()
+                .SizeAndPositioning()
+                .Sizing("Size", ref _componentRef.CurrentStyle.Size);
+        }
 
         protected override void CreateBindingControls()
         {

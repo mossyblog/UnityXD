@@ -15,6 +15,7 @@ namespace UnityXD.Components
         private const string IconRefName = "Icon";
         private Icon _iconRef;
         private Label _labelRef;
+       
         public XDIcons CurrentIcon = XDIcons.Cancel;
         public XDSizes CurrentIconSize;
         public XDVerticalAlignment IconPlacement = XDVerticalAlignment.Center;
@@ -22,7 +23,8 @@ namespace UnityXD.Components
         public Icon IconRef;
         public XDColors Foo;
 
-        protected int IconYOffset;
+        protected int LabelSize;
+        protected int IconSize;
         private int ChildrenPadding;
 
         protected override void ValidateHeirachy()
@@ -40,76 +42,83 @@ namespace UnityXD.Components
             {
                 return;
             }
+
+
+
             LabelRef.CurrentStyle.FrontFill = CurrentStyle.FrontFill;
-            LabelRef.IsChildReadOnly = true;
+            LabelRef.IsChildReadOnly = false;
             LabelRef.IgnoreParentPadding = false;
 
             IconRef.CurrentIcon = CurrentIcon;
-            IconRef.IsChildReadOnly = true;
+            IconRef.IsChildReadOnly = false;
             IconRef.CurrentStyle.FrontFill = CurrentStyle.FrontFill;
+            IconRef.IgnoreParentPadding = false;
+
             ImageRef.color = CurrentStyle.BackFill.ToColor();
-
-
-
         }
 
         protected override void UpdateLayout()
-        {
-            ApplyTheme(CurrentStyle);
-
+        {            
             base.UpdateLayout();
-
             if (!(LabelRef != null & IconRef != null))
             {
                 return;
             }
+
+            LabelRef.SetSize(Width, LabelSize, true);
+            LabelRef.Alignment = TextAnchor.MiddleCenter;
+            IconRef.SetSize(IconSize, IconSize,true);
+
             switch (IconPlacement)
             {
                 case XDVerticalAlignment.Top:
-                    LabelRef.Alignment = TextAnchor.LowerCenter;
-                    IconRef.Dock(SpriteAlignment.TopCenter, false, false);
-                    break;
-                case XDVerticalAlignment.Center:
-                    LabelRef.Alignment = TextAnchor.UpperCenter;
-
+                    LabelRef.Dock(SpriteAlignment.BottomCenter, false, false);
+                    IconRef.Y = -LabelSize/2;
                     IconRef.Dock(SpriteAlignment.Center, false, false);
                     break;
-                default:
-                    LabelRef.Alignment = TextAnchor.UpperCenter;
-                    IconRef.Dock(SpriteAlignment.BottomCenter, false, false);
+
+                case XDVerticalAlignment.Center:
+                default:                   
+                    LabelRef.Dock(SpriteAlignment.TopCenter, false, false);
+                    IconRef.Dock(SpriteAlignment.Center, false, false);
                     break;
             }
 
-            IconRef.CurrentStyle.Size = XDSizes.Custom;
-            IconRef.SetSize(CurrentIconSize);           
-            IconRef.Y = IconYOffset;
-
-
-            LabelRef.Dock(SpriteAlignment.Center, true, true);
-
-            LabelRef.InvalidateDisplay();
             IconRef.InvalidateDisplay();
-            
+            LabelRef.InvalidateDisplay();
         }
 
         protected override void Measure()
         {
             // Split by Thirds.    
-            IconYOffset = -((Height / 3) - (int)CurrentIconSize/2 - (Padding.top + Padding.bottom));
-
+            //IconYOffset = -((Height / 3) - (int)CurrentIconSize/2 - (Padding.top + Padding.bottom));
+            LabelSize = CurrentStyle.FontStyle.FontData.maxSize/2;
+            var scaleFactor = (Height/2) / 24;
+            IconSize = 24 * scaleFactor; 
             base.Measure();
         }
 
+        public void AutoBind() {               
+            LabelRef = GetComponentInChildren<Label>();
+            IconRef = GetComponentInChildren<Icon>();
+        }
+
+       
         public override void ApplyTheme(XDStyle xd)
-        {
+        {       
             base.ApplyTheme(xd);
+
+            if (CurrentStyle.StyleName == XDThemeStyleNames.Unknown)
+            {
+                ApplyDefaultTheme(XDThemeStyleNames.TileIcon);
+            }
+
             if (LabelRef != null)
-                LabelRef.ApplyTheme(CurrentStyle);
+                LabelRef.ApplyDefaultTheme(XDThemeStyleNames.TileIcon);
 
             if(IconRef != null) 
                 IconRef.ApplyTheme(CurrentStyle);
         }
-
 
         public void SetIcon(XDIcons icon)
         {

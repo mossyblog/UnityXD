@@ -15,10 +15,22 @@ namespace UnityXD.XDGUIEditor
 	        base.Initialize();
 	    }
 
+        protected override void CreateLayoutControls()
+        {
+            base.CreateLayoutControls();
+            new XDGUIInspector()
+                .Context(ref _componentRef)
+                .AnchorToolbar()
+                .SizeAndPositioning()
+                .Sizing("Size", ref _componentRef.CurrentStyle.Size)
+                .Margin()
+                .Padding();
+        }
+
 	    protected override void CreateDesignControls()
 	    {
 	        base.CreateDesignControls();
-	        new XDGUIInspector()
+                new XDGUIInspector()
                 .Swatch("Fill Color", ref _componentRef.CurrentStyle.FrontFill);
 	    }
 

@@ -5,16 +5,39 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System;
 using UnityEngine.UI;
+using UnityEngine;
 
 namespace UnityXD.Styles
 {
     [Serializable]
 	public class XDStyle
 	{
-		public XDSizes Size = XDSizes.M;
-		public XDColors FrontFill = XDColors.Chrome;
-		public XDColors BackFill = XDColors.ChromeLightest;
-		public XDFontStyle FontStyle = new XDFontStyle();
-       
+        public XDSizes Size;
+        public XDColors FrontFill;
+        public XDColors BackFill;
+        public XDFontStyle FontStyle;
+        public RectOffset Padding;
+        public RectOffset Margin;
+        public XDThemeStyleNames StyleName;
+
+        public XDStyle() {
+            
+        }
+
+
+        public XDStyle(XDStyle inboundStyle) {
+
+            if (inboundStyle.StyleName == XDThemeStyleNames.Unknown)
+                return;
+            
+            Size = inboundStyle.Size;
+            FrontFill = inboundStyle.FrontFill;
+            BackFill = inboundStyle.BackFill;
+            FontStyle = inboundStyle.FontStyle;
+            Margin = inboundStyle.Margin;
+            Padding = inboundStyle.Padding;
+            StyleName = inboundStyle.StyleName;
+
+        }
 	}
 }

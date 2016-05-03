@@ -7,22 +7,18 @@ namespace UnityXD.Styles
     [Serializable]
     public class XDFontStyle
     {
-        public XDFontSizes FontSize;
         public XDFontStyleNames StyleName;
-        public FontData FontData = new FontData();
-
-        public XDFontStyle()
-        {            
-        }
-
-
-        public XDFontStyle (XDFontStyle data)
+        public FontData FontData;
+      
+        public XDFontStyle (XDFontStyleNames name, FontData data)
         {
-            StyleName = data.StyleName;            
-            FontSize = data.FontSize;
-            FontData = data.FontData;
-
+            StyleName = name;
+            FontData = data;
         }
 
+        public XDFontStyle(XDFontStyle inbound) {
+            StyleName = inbound.StyleName;
+            FontData = inbound.FontData;
+        }
     }
 }

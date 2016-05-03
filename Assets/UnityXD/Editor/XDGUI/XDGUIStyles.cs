@@ -17,21 +17,21 @@ namespace UnityXD.XDGUIEditor
         public GUIStyle Checkbox;
         public Color Disabled = Color.grey;
         public Color Divider = Color.black.Alpha(0.2F);
-
+        public Color Highlight = XDColors.Brand.ToColor(0.1f);
+        public Color InputBackground = XDColors.Brand.ToColor();
+        public Color ButtonForeground = XDColors.ChromeLightest.ToColor();
         public GUIStyle Field;
         public Color FieldBackground = XDColors.ChromeLightest.ToColor();
         public GUIStyle Panel;
         public GUIStyle Heading;
-        public Color Highlight = XDColors.Brand.ToColor(0.1f);
         private GUIStyle Horiz_Large;
         private GUIStyle Horiz_Medium;
         private GUIStyle Horiz_Small;
-        public Color InputBackground = XDColors.Brand.ToColor();
         public GUIStyle Label;
 
         // Foregrounds
         public Color Normal = EditorGUIUtility.isProSkin ? XDColors.ChromeDarker.ToColor() : XDColors.Chrome.ToColor();
-        public Color PressedBackground = XDColors.Brand.ToColor();
+        public Color PressedBackground = XDColors.BrandLighter.ToColor();
         public Color PressedForeground = XDColors.ChromeLightest.ToColor();
         public Color Selected = XDColors.BrandLighter.ToColor();
         public Color SelectedBorder = Color.black;
@@ -133,16 +133,15 @@ namespace UnityXD.XDGUIEditor
 
 
             Checkbox = new GUIStyle();
-            Checkbox.fixedWidth = 16;
-            Checkbox.fixedHeight = 16;
+ 
             Checkbox.normal.background = XDGUIUtility.CreateColoredTexture(Background);
             Checkbox.active.background = XDGUIUtility.CreateColoredTexture(Highlight);
             Checkbox.border = new RectOffset(1, 1, 1, 1);
 
             Button = new GUIStyle(Checkbox);
-            Button.fixedHeight = 24;
+        
             Button.alignment = TextAnchor.MiddleCenter;
-            Button.normal.textColor = Normal;
+            Button.normal.textColor = ButtonForeground;
             Button.normal.background = XDGUIUtility.CreateColoredTexture(InputBackground);
             Button.active.textColor = PressedForeground;
             Button.active.background = XDGUIUtility.CreateColoredTexture(PressedBackground);

@@ -28,10 +28,11 @@ namespace Assets.UnityXD.Components
                 ApplyChildNaming(CounterRef.gameObject, CounterRefName);
         }
 
+
         protected override void Measure()
         {
             base.Measure();
-            IconYOffset = -4;
+            IconSize = -4;
 
         }
 
@@ -42,17 +43,18 @@ namespace Assets.UnityXD.Components
                 return;
             
             IconPlacement = XDVerticalAlignment.Center;
-            ImageRef.color = Color.clear;
+
+            ImageRef.color = Color.white;
             ImageRef.sprite = Counter == 0 ? Empty : (IsSelected ? Selected : Normal);
+            ImageRef.preserveAspect = true;
+
             CounterRef.IsChildReadOnly = true;
             CounterRef.Alignment = TextAnchor.MiddleCenter;
             CounterRef.Text = Counter.ToString();
-            CounterRef.CurrentStyle.FontStyle.StyleName = XDFontStyleNames.Label;
-            CounterRef.CurrentStyle.FontStyle.FontSize = XDFontSizes.S;            
-            CounterRef.IgnoreParentPadding = true;
+            CounterRef.CurrentStyle.FontStyle.StyleName = XDFontStyleNames.Button2;
             CounterRef.CurrentStyle.Size = XDSizes.Custom;
             CounterRef.CurrentStyle.FrontFill = Counter == 0 ? NegativeColor : (IsSelected ? XDColors.ChromeLightest : PositiveColor);
-
+            CounterRef.IgnoreParentPadding = true;
         }
 
         protected override void UpdateLayout()
@@ -60,8 +62,7 @@ namespace Assets.UnityXD.Components
             base.UpdateLayout();
 
             if (CounterRef == null)
-                return;
-            ImageRef.color = Color.white;
+                return;            
             CounterRef.SetSize(24, 24);            
             CounterRef.Dock(SpriteAlignment.BottomRight, false, false);
             CounterRef.SetMargin(new RectOffset(0, 4, 4, 2));
