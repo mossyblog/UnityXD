@@ -25,14 +25,11 @@ public interface IXDFlexiSpace : IXDWidget
 
         }
 
-        public override void OnGUI()
+        public override void Render()
         {
             GUILayout.FlexibleSpace();
         }
 
-        internal override void BindViewModel(object viewModel)
-        {
 
-        }
     }
 }

@@ -1,88 +1,160 @@
-﻿using Assets.UnityXD.Core;
+﻿using System.Collections.Generic;
+using Assets.UnityXD.Core;
+using UnityEditor.Sprites;
 using UnityEngine;
 
 namespace Assets.UnityXD.XDEditor.XDCore
 {
     /// <summary>
-    /// Abstract class that all other widgets must implement.
+    ///     Abstract class that all other widgets must implement.
     /// </summary>
-    internal abstract class XDWidget : IXDWidget
+    public abstract class XDWidget : IXDWidget
     {
-        private readonly PropertyBinding<string, IXDWidget> tooltipProperty;
-        private readonly PropertyBinding<int, IXDWidget> widthProperty;
-        private readonly PropertyBinding<int, IXDWidget> heightProperty;
-        
-        protected string tooltip = string.Empty;
+        protected readonly IXDLayout parent;
+        protected GUIContent content = new GUIContent();
         protected int height = -1;
+        protected GUIStyle style = new GUIStyle();
+        protected string tooltip = string.Empty;
         protected int width = -1;
-        protected GUIStyle _style;
+        protected RectOffset margin;
+        protected RectOffset padding;
+        protected Color foreground;
+        protected Color background;
+        protected bool OverrideStyle;
 
-        /// <summary>
-        /// Needed in order to get back to the parent via the End() method.
-        /// </summary>
-        private IXDLayout parent;
-
-
-        public IXDWidget Tooltip(string value)
+        protected XDWidget(IXDLayout parent)
         {
-            return tooltipProperty.Value(value);
+            this.parent = parent;
         }
 
-        public IXDWidget Width(int value)
-        {
-            return widthProperty.Value(value);
-        }
         public IXDWidget Height(int value)
         {
-            return heightProperty.Value(value);
+            height = value;
+            return this;
         }
 
         public IXDWidget Style(GUIStyle style)
         {
-            _style = style;
+            this.style = style;
+            OverrideStyle = true;
             return this;
         }
-        
-        /// <summary>
-        /// Creates the widget and sets its parent.
-        /// </summary>
-        protected XDWidget(IXDLayout parent)
+
+        public IXDWidget Content(string value)
         {
-            this.parent = parent;
-            tooltipProperty = new PropertyBinding<string, IXDWidget>(this, value => tooltip = value);
-            widthProperty = new PropertyBinding<int, IXDWidget>(this, value => width = value);
-            heightProperty = new PropertyBinding<int, IXDWidget>(this, value => height = value);
+            content.text = value;
+            return this;
         }
 
-        /// <summary>
-        /// Updates this widget and all children (if it is a layout)
-        /// </summary>
-        public abstract void OnGUI();
-
-        /// <summary>
-        /// Binds the properties and events in this widget to corrosponding ones in the supplied view model.
-        /// </summary>
-        internal virtual void BindViewModel(object viewModel)
+        public IXDWidget Content(Sprite value)
         {
-            tooltipProperty.BindViewModel(viewModel);
-            widthProperty.BindViewModel(viewModel);
-            heightProperty.BindViewModel(viewModel);
+            content.image = SpriteUtility.GetSpriteTexture(value, false);
+            return this;
         }
 
-        /// <summary>
-        /// Fluent API for getting the layout containing this widget.
-        /// </summary>
+        public IXDWidget Content(string value, Sprite sprite)
+        {
+            content.text = value;
+            content.image = SpriteUtility.GetSpriteTexture(sprite, false);
+            return this;
+        }
+
+
+        public List<GUILayoutOption> GetLayoutOptions()
+        {
+            var layoutOptions = new List<GUILayoutOption>();
+
+            
+            if (height > 0)
+                layoutOptions.Add(GUILayout.Height(height));
+
+            if (width > 0)
+                layoutOptions.Add(GUILayout.Width(width));
+
+            return layoutOptions;
+        }
+
         public IXDLayout End()
         {
             return parent;
         }
 
+        public IXDWidget Tooltip(string value)
+        {
+            content.tooltip = value;
+            tooltip = value;
+            return this;
+        }
 
-        public  Texture2D CreateColoredTexture(Color col)
+        public IXDWidget Width(int value)
+        {
+            width = value;
+            return this;
+        }
+
+        public IXDWidget Background(Color color)
+        {
+            background = color;
+            if (style != null) style.normal.background = CreateColoredTexture(color);
+            return this;
+        }
+
+        public IXDWidget Foreground(Color color)
+        {
+            foreground = color;
+            if (style != null) style.normal.textColor = color;
+            return this;
+        }
+
+        public IXDWidget Padding(int amt)
+        {
+            return Padding(amt,amt,amt,amt);
+        }
+
+        public IXDWidget Padding(int left, int right, int top, int bottom)
+        {            
+            padding = new RectOffset(left, right, top, bottom);
+            if (style != null) style.padding = padding;
+            return this;
+
+        }
+
+        public IXDWidget Margin(int amt)
+        {
+            return Margin(amt, amt, amt, amt);
+        }
+
+        public IXDWidget Margin(int left, int right, int top, int bottom)
+        {
+            margin = new RectOffset(left, right, top, bottom);
+            if (style != null) style.margin = margin;
+            return this;
+        }
+
+        public virtual IXDWidget Size(int amt)
+        {
+            width = amt;
+            height = amt;
+            return this;
+        }
+
+        public IXDWidget LoadResource(string path)
+        {
+            Sprite sprite = Resources.Load<Sprite>(path);
+
+            if (sprite == null)
+                Debug.LogErrorFormat("Cannot find {0}" , path);
+            else
+                Content(sprite);
+            return this;
+        }
+
+
+        public Texture2D CreateColoredTexture(Color col)
         {
             var width = 10;
             var height = 10;
-            var pix = new Color[width * height];
+            var pix = new Color[width*height];
 
             for (var i = 0; i < pix.Length; i++)
                 pix[i] = col;
@@ -93,6 +165,7 @@ namespace Assets.UnityXD.XDEditor.XDCore
 
             return result;
         }
-    }
 
+        public abstract void Render();
+    }
 }

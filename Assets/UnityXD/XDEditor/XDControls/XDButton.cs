@@ -1,78 +1,110 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using Assets.UnityXD.Core;
 using Assets.UnityXD.XDEditor.XDCore;
+using UnityEditor;
 using UnityEngine;
 
 namespace Assets.UnityXD.XDEditor.XDControls
 {
     /// <summary>
-    /// Clickable push button widget.
+    ///     Clickable push button widget.
     /// </summary>
     public interface IXDButton : IXDWidget
     {
-        /// <summary>
-        /// Text to be displayed on the button.
-        /// </summary>
-        IPropertyBinding<string, IXDButton> Text { get; }
 
-        /// <summary>
-        /// Event invoked when the button is clicked.
-        /// </summary>
         IEventBinding<IXDButton> Click { get; }
+
+        IXDButton Clicked(Action action);
+
+        IXDButton Decals(List<XDDecals> decals);
     }
 
+
+    public class XDDecals
+    {
+        public string path;
+        public Color tintColor { get; set; }
+    }
+
+
     /// <summary>
-    /// Clickable push button widget.
+    ///     Clickable push button widget.
     /// </summary>
     internal class XDButton : XDWidget, IXDButton
     {
-        // Private members
-        private string text = String.Empty;
-
         // Concrete property bindings
-        private PropertyBinding<string, IXDButton> textProperty;
-        private EventBinding<IXDButton> clickEvent;
+        private Action _clickAction;
+        private bool _boolField;
+        private List<XDDecals> decals;
 
-        // Public interfaces for getting PropertyBindings
-        public IPropertyBinding<string, IXDButton> Text { get { return textProperty; } }
+        private EventBinding<IXDButton> clickEvent;
         public IEventBinding<IXDButton> Click { get { return clickEvent; } }
 
         internal XDButton(IXDLayout parent) : base(parent)
         {
-            textProperty = new PropertyBinding<string, IXDButton>(
-                this,
-                value => this.text = value
-            );
-
             clickEvent = new EventBinding<IXDButton>(this);
         }
 
-        public override void OnGUI()
+        public void Bind(object viewModel)
         {
-            var layoutOptions = new List<GUILayoutOption>();
-            if (width >= 0)
-            {
-                layoutOptions.Add(GUILayout.Width(width));
-            }
-            if (height >= 0)
-            {
-                layoutOptions.Add(GUILayout.Height(height));
-            }
-
-            if (GUILayout.Button(new GUIContent(text, tooltip), layoutOptions.ToArray()))
-            {
-                clickEvent.Invoke();
-            }
-        }
-
-        internal override void BindViewModel(object viewModel)
-        {
-            base.BindViewModel(viewModel);
-            textProperty.BindViewModel(viewModel);
             clickEvent.BindViewModel(viewModel);
         }
+
+        public IXDButton Clicked(Action action)
+        {
+            _clickAction = action;
+            return this;
+        }
+
+        public IXDButton Decals(List<XDDecals> value)
+        {
+            decals = value;
+
+            return this;
+        }
+
+        public override void Render()
+        {
+
+            if (!OverrideStyle)
+            {
+                style = new GUIStyle(GUI.skin.button);
+                style.alignment = TextAnchor.MiddleCenter;
+            }
+
+            if (GUILayout.Button(content.text, style, GetLayoutOptions().ToArray()))
+            {
+                clickEvent.Invoke();
+                _clickAction.Invoke();
+            }
+            
+            RenderDecals();
+          
+        }
+
+        public virtual void RenderDecals()
+        {
+            var rect = GUILayoutUtility.GetLastRect();
+            var currentColor = GUI.color;
+            if (decals != null)
+            {
+                foreach (var decal in decals)
+                {
+
+                    var decalStyle = new GUIStyle();
+                    if (Event.current.type != EventType.repaint)
+                        return;
+
+                    decalStyle.normal.background = Resources.Load<Sprite>(decal.path).texture;
+                    GUI.color = decal.tintColor;
+                    decalStyle.Draw(rect, GUIContent.none, false, false, false, false);
+                    GUI.color = currentColor;
+                }
+            }
+        }
     }
+
 }

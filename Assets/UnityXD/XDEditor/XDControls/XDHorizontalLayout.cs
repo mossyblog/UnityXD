@@ -7,23 +7,27 @@ using UnityEngine;
 
 namespace Assets.UnityXD.XDEditor.XDControls
 {
-    internal class HorizontalLayout : XDLayout
+    internal class XDHorizontalLayout : XDLayout
     {
-        public HorizontalLayout(IXDLayout parent) : base(parent)
+        public XDHorizontalLayout(IXDLayout parent) : base(parent)
         {
         }
 
-        public override void OnGUI()
+        public override void Render()
         {
             if (!enabled)
             {
                 return;
             }
-            var pStyle = new GUIStyle();
-            pStyle.padding = new RectOffset(4, 4, 4, 4);
-            pStyle.margin = new RectOffset(4, 4, 4, 8);
-            GUILayout.BeginHorizontal(pStyle);
-            base.OnGUI();
+            if (style == null)
+            {
+                style = new GUIStyle();
+                style.padding = new RectOffset(4, 4, 4, 4);
+                style.margin = new RectOffset(4, 4, 4, 8);
+            } 
+
+            GUILayout.BeginHorizontal(style);
+            base.Render();
             GUILayout.EndHorizontal();
         }
     }

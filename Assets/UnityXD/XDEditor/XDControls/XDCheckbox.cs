@@ -66,7 +66,7 @@ namespace Assets.UnityXD.XDEditor.XDControls
             return labelProperty.Value(text);
         }
 
-        public override void OnGUI()
+        public override void Render()
         {
             if (boxChecked != (boxChecked = EditorGUILayout.Toggle(label, boxChecked)))
             {
@@ -74,11 +74,6 @@ namespace Assets.UnityXD.XDEditor.XDControls
             }
         }
 
-        internal override void BindViewModel(object viewModel)
-        {
-            base.BindViewModel(viewModel);
-            boxCheckedProperty.BindViewModel(viewModel);
-            labelProperty.BindViewModel(viewModel);
-        }
+     
     }
 }

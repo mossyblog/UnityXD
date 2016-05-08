@@ -56,7 +56,7 @@ namespace Assets.UnityXD.XDEditor.XDControls
 
         }
 
-        public override void OnGUI()
+        public override void Render()
         {
             var layoutOptions = new List<GUILayoutOption>();
             if (width >= 0)
@@ -90,10 +90,6 @@ namespace Assets.UnityXD.XDEditor.XDControls
             }
         }
 
-        internal override void BindViewModel(object viewModel)
-        {
-            dateProperty.BindViewModel(viewModel);
 
-        }
     }
 }

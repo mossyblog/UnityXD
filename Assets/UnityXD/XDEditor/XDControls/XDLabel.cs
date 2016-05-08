@@ -13,20 +13,6 @@ namespace Assets.UnityXD.XDEditor.XDControls
     /// </summary>
     public interface IXDLabel : IXDWidget
     {
-        /// <summary>
-        ///     Whether or not the label should be displayed in bold (default is false).
-        /// </summary>
-        IPropertyBinding<bool, IXDLabel> Bold { get; }
-
-        /// <summary>
-        ///     XDLabel text.
-        /// </summary>
-        IXDLabel Text(string value);
-
-        /// <summary>
-        ///     XDLabel text.
-        /// </summary>
-        IXDLabel Text(Expression<Func<string>> propertyExpression);
     }
 
     /// <summary>
@@ -34,50 +20,19 @@ namespace Assets.UnityXD.XDEditor.XDControls
     /// </summary>
     internal class XDLabel : XDWidget, IXDLabel
     {
-        private readonly PropertyBinding<bool, IXDLabel> boldProperty;
-        private readonly PropertyBinding<string, IXDLabel> textProperty;
-
-        private bool _bold;
-        private string _text = string.Empty;
-
         internal XDLabel(IXDLayout parent) : base(parent)
         {
-            textProperty = new PropertyBinding<string, IXDLabel>(this, value => _text = value);
-            boldProperty = new PropertyBinding<bool, IXDLabel>(this, value => _bold = value);
         }
 
-        public IXDLabel Text(string value)
-        {
-            return textProperty.Value(value);
-        }
 
-        public IXDLabel Text(Expression<Func<string>> propertyExpression)
+        public override void Render()
         {
-            return textProperty.BindTo(propertyExpression);
-        }
-
-        public IPropertyBinding<bool, IXDLabel> Bold
-        {
-            get { return boldProperty; }
-        }
-
-        public override void OnGUI()
-        {
-            var guiContent = new GUIContent(_text, tooltip);
-            if (_style == null)
+            if (style == null)
             {
-                _style = _bold ? new GUIStyle(EditorStyles.boldLabel) : new GUIStyle(EditorStyles.label);
-            }
-            else
-            {
-                if (_bold)
-                {
-                    _style = new GUIStyle(_style) {fontStyle = FontStyle.Bold};
-                }
+                style = new GUIStyle(EditorStyles.label);
             }
 
             var layoutOptions = new List<GUILayoutOption>();
-
             if (width >= 0)
             {
                 layoutOptions.Add(GUILayout.Width(width));
@@ -88,14 +43,9 @@ namespace Assets.UnityXD.XDEditor.XDControls
                 layoutOptions.Add(GUILayout.Height(height));
             }
 
-            GUILayout.Label(guiContent, _style, layoutOptions.ToArray());
+            GUILayout.Label(content, style, layoutOptions.ToArray());
         }
 
-        internal override void BindViewModel(object viewModel)
-        {
-            base.BindViewModel(viewModel);
-            textProperty.BindViewModel(viewModel);
-            boldProperty.BindViewModel(viewModel);
-        }
+
     }
 }

@@ -18,12 +18,14 @@ namespace Assets.UnityXD.XDEditor.XDControls
         /// <summary>
         /// Editable text.
         /// </summary>
-        IPropertyBinding<string, IXDTextBox> Text { get; }
+        IXDTextBox Field(Action<string> action, string fieldValue);
+        IXDTextBox Field (Action<int> action, int fieldValue);
+        IXDTextBox Field(Action<double> action, double fieldValue);
 
-        IXDTextBox Label(string label, int labelW);
-        IXDTextBox FormValue(Expression<Func<string>> expr);
-        IXDTextBox FormValue(Expression<Func<int>> expr);
-        IXDTextBox FormValue(Expression<Func<double>> expr);
+        IXDTextBox Label(GUIStyle style);
+        IXDTextBox Label(string text);
+        IXDTextBox Label(String text, GUIStyle style);
+        IXDTextBox Label(String text, int labelW, GUIStyle style);
     }
 
     /// <summary>
@@ -36,53 +38,68 @@ namespace Assets.UnityXD.XDEditor.XDControls
         private int textI;
         private string _label = string.Empty;
 
-        private PropertyBinding<string, IXDTextBox> textProperty;
-        private PropertyBinding<int, IXDTextBox> intProperty;
-        private PropertyBinding<double, IXDTextBox> doubleProperty;
-
-        public IPropertyBinding<string, IXDTextBox> Text { get { return textProperty; } }
-        public IPropertyBinding<int, IXDTextBox> TextInt { get { return intProperty; } }
-        public IPropertyBinding<double, IXDTextBox> TextDouble { get { return doubleProperty; } }
-
         private bool isText;
-        private bool isInt;
-        private bool isDouble;
         private int _labelW;
+        private Action<string> actionString;
+        private Action<int> actionInt;
+        private Action<double> actionDouble;
+
+        private GUIStyle labelStyle;
 
         internal XDTextBox(IXDLayout parent) : base(parent)
         {
-            textProperty = new PropertyBinding<string, IXDTextBox>(this,value => text = value ?? string.Empty);
-            intProperty = new PropertyBinding<int, IXDTextBox>(this, value => textI = value);
-            doubleProperty = new PropertyBinding<double, IXDTextBox>(this, value => textD = value);
 
         }
 
-        public IXDTextBox FormValue(Expression<Func<string>> expr)
+        public IXDTextBox Field(Action<string> callback, string fieldValue)
         {
-            isText = true;
-            return textProperty.BindTo(expr);
+            text = fieldValue;
+            actionString = callback;
+            return this;
         }
 
-        public IXDTextBox FormValue(Expression<Func<double>> expr)
+        public IXDTextBox Field(Action<int> callback, int fieldValue)
         {
-            isDouble = true;
-            return doubleProperty.BindTo(expr);
+            textI = fieldValue;
+            actionInt = callback;
+            return this;
         }
 
-        public IXDTextBox FormValue(Expression<Func<int>> expr)
+        public IXDTextBox Field(Action<double> callback, double fieldValue)
         {
-            isInt = true;
-            return intProperty.BindTo(expr);
+            textD = fieldValue;
+            actionDouble = callback;
+            return this;
         }
 
-        public IXDTextBox Label(string label, int labelW = -1)
+        public IXDTextBox Label(GUIStyle style)
         {
-            _label = label;
+            labelStyle = style;
+            return this;
+        }
+
+        public IXDTextBox Label(string text)
+        {
+            content.text = text;
+            return this;
+        }
+
+
+        public IXDTextBox Label(string text, GUIStyle style)
+        {
+            labelStyle = style;
+            content.text = text;
+            return this;
+        }
+        public IXDTextBox Label(string text, int labelW, GUIStyle style)
+        {
+            labelStyle = style;
+            content.text = text;
             _labelW = labelW;
             return this;
         }
 
-        public override void OnGUI()
+        public override void Render()
         {
             var layoutOptions = new List<GUILayoutOption>();
             if (width >= 0)
@@ -95,53 +112,57 @@ namespace Assets.UnityXD.XDEditor.XDControls
                 layoutOptions.Add(GUILayout.Height(height));
             }
 
+            
  
 
-            var content = new GUIContent(_label);
             using (new EditorGUILayout.HorizontalScope())
             {
 
-                if(_labelW >0)
-                    GUILayout.Label(content, GUILayout.Width(_labelW));
-                else
-                    GUILayout.Label(content);
-
-
-                GUILayout.Space(8);
-                if (isText)
+                if (labelStyle == null)
                 {
-                    string newText = height >= 0 // Use TextField if height isn't specified, otherwise use TextArea
-                        ? GUILayout.TextArea(text, layoutOptions.ToArray())
-                        : GUILayout.TextField(text, layoutOptions.ToArray());
+                    labelStyle = new GUIStyle(GUI.skin.label);
+                }
 
+                if(_labelW >0)
+                    GUILayout.Label(content, labelStyle, GUILayout.Width(_labelW));
+                else
+                    GUILayout.Label(content, labelStyle);
+
+
+                if (!OverrideStyle)
+                {
+                    style = new GUIStyle(GUI.skin.textField);
+                }
+
+                if (actionString != null)
+                {
+                    var newText = height >= 0 ? GUILayout.TextArea(text, layoutOptions.ToArray()) : GUILayout.TextField(text, layoutOptions.ToArray());
                     if (newText != text)
                     {
-                        text = newText;
-                        textProperty.UpdateView(newText);
+                        actionString.DynamicInvoke(newText);
                     }
                 }
 
-                if (isDouble)
+                if (actionInt != null)
                 {
-
-                    textD = EditorGUILayout.DoubleField(textD);
-                    doubleProperty.UpdateView(textD);
+                    var newtext = EditorGUILayout.IntField(textI, style, layoutOptions.ToArray());
+                    if (newtext != textI)
+                    {
+                        actionInt.DynamicInvoke(newtext);
+                    }
                 }
 
-                if (isInt)
+                if (actionDouble != null)
                 {
-                    textI = EditorGUILayout.IntField(textI, layoutOptions.ToArray());
-                    intProperty.UpdateView(textI);
+                    var newtext = EditorGUILayout.DoubleField(textI, style, layoutOptions.ToArray());
+                    if (newtext != textI)
+                    {
+                        actionDouble.DynamicInvoke(newtext);
+                    }
                 }
+
             }
         }
 
-        internal override void BindViewModel(object viewModel)
-        {
-            doubleProperty.BindViewModel(viewModel);
-            intProperty.BindViewModel(viewModel);
-            textProperty.BindViewModel(viewModel);
-  
-        }
     }
 }

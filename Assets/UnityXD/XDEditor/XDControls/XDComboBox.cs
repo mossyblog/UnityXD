@@ -32,6 +32,7 @@ namespace Assets.UnityXD.XDEditor.XDControls
 
         IXDComboBox Selected(Expression<Func<object>> propertyExpression);
         IXDComboBox Options(object[] items);
+        IXDComboBox Bind(object viewModel);
     }
 
     /// <summary>
@@ -80,7 +81,7 @@ namespace Assets.UnityXD.XDEditor.XDControls
             labelProperty = new PropertyBinding<string, IXDComboBox>(this,value => this.label = value);
         }
 
-        public override void OnGUI()
+        public override void Render()
         {
             var itemStrings = items != null ? items.Select(i => i.ToString()).ToArray() : new string[] { };
             var guiContent = itemStrings.Select(m => new GUIContent(m, tooltip)).ToArray();
@@ -105,12 +106,11 @@ namespace Assets.UnityXD.XDEditor.XDControls
             }
         }
 
-        internal override void BindViewModel(object viewModel)
+        public IXDComboBox Bind(object viewModel)
         {
-            base.BindViewModel(viewModel);
             selectedItemProperty.BindViewModel(viewModel);
-            itemsProperty.BindViewModel(viewModel);
-            labelProperty.BindViewModel(viewModel);
+            return this;
         }
+
     }
 }

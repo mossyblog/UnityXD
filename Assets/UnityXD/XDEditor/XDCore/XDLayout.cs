@@ -1,14 +1,57 @@
 ﻿using System.Collections.Generic;
 using Assets.UnityXD.Core;
+using Assets.UnityXD.XDEditor.XDComponents;
 using Assets.UnityXD.XDEditor.XDControls;
 using UnityEngine;
 
 namespace Assets.UnityXD.XDEditor.XDCore
 {
+
+    public interface IXDLayout : IXDWidget
+    {
+
+        // COMPONENTS
+        IXDAnchorToolbar AnchorToolbar();
+        IXDLayoutMetrics LayoutMetrics();
+
+
+        // CONTROLS
+        IXDTabBar TabBar();
+
+        IXDButton Button();
+
+        IXDLabel Label();
+
+        IXDToolBar ToolBar();
+
+        IXDTextBox TextBox();
+
+        IXDDateTimePicker DateTimePicker();
+
+        IXDComboBox ComboBox();
+
+        IXDCheckbox Checkbox();
+
+        IXDLayout Spacer();
+
+        IXDLayout Spacer(int atm);
+
+        IXDLayout FlexiSpace();
+
+        IXDLayout VerticalLayout();
+        IXDLayout VerticalLayout(GUIStyle style);
+
+        IXDLayout HorizontalLayout(GUIStyle style);
+        IXDLayout HorizontalLayout();
+
+        IPropertyBinding<bool, IXDLayout> Enabled { get; }
+
+    }
+
     /// <summary>
     /// Layouts are widgets that can contain other child widgets. All layouts should inherit from XDLayout.
     /// </summary>
-    internal abstract class XDLayout : XDWidget, IXDLayout
+    public abstract class XDLayout : XDWidget, IXDLayout
     {
         protected bool enabled = true;
 
@@ -19,22 +62,16 @@ namespace Assets.UnityXD.XDEditor.XDCore
         /// </summary>
         public IPropertyBinding<bool, IXDLayout> Enabled { get { return enabledProperty; } }
 
-        private List<XDWidget> children = new List<XDWidget>();
+        public List<XDWidget> Children = new List<XDWidget>();
 
         protected XDLayout(IXDLayout parent) : base(parent)
         {
             enabledProperty = new PropertyBinding<bool, IXDLayout>(this,value => this.enabled = value);
         }
 
-        public override void OnGUI()
+        public override void Render()
         {
-            children.ForEach(child => child.OnGUI());
-        }
-
-        internal override void BindViewModel(object viewModel)
-        {
-            enabledProperty.BindViewModel(viewModel);
-            children.ForEach(child => child.BindViewModel(viewModel));
+            Children.ForEach(child => child.Render());
         }
 
         /// <summary>
@@ -43,8 +80,21 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDAnchorToolbar AnchorToolbar()
         {
             var newtoolbar = new XDAnchorToolbar(this);
-            children.Add(newtoolbar);
+            Children.Add(newtoolbar);
             return newtoolbar;
+        }
+        public IXDTabBar TabBar()
+        {
+            var comp = new XDTabBar(this);
+            Children.Add(comp);
+            return comp;
+        }
+
+        public IXDLayoutMetrics LayoutMetrics()
+        {
+            var comp = new XDLayoutMetrics(this);
+            Children.Add(comp);
+            return comp;
         }
 
         /// <summary>
@@ -53,8 +103,15 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDButton Button()
         {
             var newButton = new XDButton(this);
-            children.Add(newButton);
+            Children.Add(newButton);
             return newButton;
+        }
+
+        public IXDToolBar ToolBar()
+        {
+            var newtoolbar = new XDToolBar(this);
+            Children.Add(newtoolbar);
+            return newtoolbar;
         }
 
         /// <summary>
@@ -63,7 +120,7 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDLabel Label()
         {
             var newLabel = new XDLabel(this);
-            children.Add(newLabel);
+            Children.Add(newLabel);
             return newLabel;
         }
 
@@ -73,7 +130,7 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDTextBox TextBox()
         {
             var newTextBox = new XDTextBox(this);
-            children.Add(newTextBox);
+            Children.Add(newTextBox);
             return newTextBox;
         }
 
@@ -83,7 +140,7 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDDateTimePicker DateTimePicker()
         {
             var newDateTimePicker = new XDDateTimePicker(this);
-            children.Add(newDateTimePicker);
+            Children.Add(newDateTimePicker);
             return newDateTimePicker;
         }
 
@@ -93,7 +150,7 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDComboBox ComboBox()
         {
             var newDropdownBox = new XDComboBox(this);
-            children.Add(newDropdownBox);
+            Children.Add(newDropdownBox);
             return newDropdownBox;
         }
 
@@ -103,29 +160,11 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDCheckbox Checkbox()
         {
             var newCheckbox = new XDCheckbox(this);
-            children.Add(newCheckbox);
+            Children.Add(newCheckbox);
             return newCheckbox;
         }
 
-        /// <summary>
-        /// Creates a Vector3 field with X, Y and Z entry boxes.
-        /// </summary>
-        public IXDVector3Field Vector3Field()
-        {
-            var newVector3Field = new XDVector3Field(this);
-            children.Add(newVector3Field);
-            return newVector3Field;
-        }
 
-        /// <summary>
-        /// Creates a widget for editing layer masks.
-        /// </summary>
-        public IXDLayerPicker LayerPicker()
-        {
-            var newLayerPicker = new XDLayerPicker(this);
-            children.Add(newLayerPicker);
-            return newLayerPicker;
-        }
 
         /// <summary>
         /// Inserts a space between other widgets.
@@ -133,7 +172,7 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDLayout Spacer()
         {
             var newSpacer = new XDSpacer(this, -1);
-            children.Add(newSpacer);
+            Children.Add(newSpacer);
             return this;
         }
 
@@ -143,7 +182,7 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDLayout Spacer(int amt = -1)
         {
             var newSpacer = new XDSpacer(this, amt);
-            children.Add(newSpacer);
+            Children.Add(newSpacer);
             return this;
         }
 
@@ -153,7 +192,7 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDLayout FlexiSpace()
         {
             var newSpacer = new XDFlexiSpace(this);
-            children.Add(newSpacer);
+            Children.Add(newSpacer);
             return this;
         }
 
@@ -162,22 +201,38 @@ namespace Assets.UnityXD.XDEditor.XDCore
         /// </summary>
         public IXDLayout VerticalLayout()
         {
+            return VerticalLayout(null);
+        }
+        public IXDLayout VerticalLayout(GUIStyle pStyle)
+        {
             var newLayout = new XDVerticalLayout(this);
-            children.Add(newLayout);
+            if (pStyle != null)
+            {
+                newLayout.Style(pStyle);
+            }
+            Children.Add(newLayout);
             return newLayout;
         }
 
         /// <summary>
         /// Creates a horizontal layout and adds it to this layout.
         /// </summary>
-        public IXDLayout HorizontalLayout()
+        public IXDLayout HorizontalLayout(GUIStyle pStyle)
         {
-         
 
-            var newLayout = new HorizontalLayout(this);
-            children.Add(newLayout);
+            
+            var newLayout = new XDHorizontalLayout(this);
+            if (pStyle != null)
+            {
+                newLayout.Style(pStyle);
+            }
+            Children.Add(newLayout);
             return newLayout;
         }
 
+        public IXDLayout HorizontalLayout()
+        {
+            return HorizontalLayout(null);
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace Assets.UnityXD.XDEditor.XDControls
             _amt = amt;
         }
 
-        public override void OnGUI()
+        public override void Render()
         {
             if (_amt > 0)
             {
@@ -42,9 +42,6 @@ namespace Assets.UnityXD.XDEditor.XDControls
             
         }
 
-        internal override void BindViewModel(object viewModel)
-        {
 
-        }
     }
 }
