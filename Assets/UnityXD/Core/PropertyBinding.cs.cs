@@ -51,8 +51,7 @@ namespace Assets.UnityXD.Core
                 _boundProperty = viewModelType.GetProperty(_boundPropertyName);
                 if (_boundProperty == null)
                 {
-                    throw new ApplicationException("Expected property " + _boundPropertyName + " not found on type " +
-                                                   viewModelType.Name + ".");
+                    throw new ApplicationException(string.Format( "Expected property {0} not found on type {1} ({2}).", _boundPropertyName, viewModelType.Name, viewModelType ));
                 }
 
                 // Update the widget with the initial value from the bound property.

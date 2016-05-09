@@ -7,5 +7,6 @@ namespace Assets.UnityXD.Styles
     public class FontClass : FontData
     {
         public string StyleName { get; set; }
+        public bool AutoSize {get; set;}
     }
 }

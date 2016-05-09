@@ -9,42 +9,23 @@ namespace Assets.UnityXD.Core
     public abstract class BaseControl : MonoBindable
     {
         [SerializeField] private int _height;
-
         [SerializeField] private bool _ignoreParentPadding;
-
         [NonSerialized] private Image _imageRef;
-
         [SerializeField] private bool _isHeightDependantOnWidth;
-
         [SerializeField] private bool _isVisible;
-
         [SerializeField] private RectOffset _margin;
-
         [SerializeField] private RectOffset _padding;
-
         [SerializeField] private RectOffset _parentPadding;
-
         [NonSerialized] private RectTransform _rectTransformRef;
-
         [NonSerialized] private Text _textRef;
-
         [SerializeField] private int _width;
-
         [SerializeField] private int _x;
-
         [SerializeField] private int _y;
-        [SerializeField]
-        private SpriteAlignment _currentPivotAlignment;
-        [SerializeField]
-        private SpriteAlignment _currentAnchorAlignment;
-        [SerializeField]
-        private Style _currentStyle;
-
-        [SerializeField]
-        private bool _isHorizontalStretchEnabled;
-
-        [SerializeField]
-        private bool _isVeritcalStretchEnabled;
+        [SerializeField] private SpriteAlignment _currentPivotAlignment;
+        [SerializeField] private SpriteAlignment _currentAnchorAlignment;
+        [SerializeField] private Style _currentStyle;
+        [SerializeField] private bool _isHorizontalStretchEnabled;
+        [SerializeField] private bool _isVeritcalStretchEnabled;
 
 
         private bool HasInitialized;
@@ -57,81 +38,82 @@ namespace Assets.UnityXD.Core
             get { return _currentStyle; }
             protected internal set
             {
-                NotifyOfPropertyChange(value, () => CurrentStyle, ref _currentStyle);
+                NotifyOfPropertyChange( value, () => CurrentStyle, ref _currentStyle );
             }
         }
 
         public SpriteAlignment CurrentAnchorAlignment
         {
             get { return _currentAnchorAlignment; }
-            set { NotifyOfPropertyChange(value, () => CurrentAnchorAlignment, ref _currentAnchorAlignment); }
+            set { NotifyOfPropertyChange( value, () => CurrentAnchorAlignment, ref _currentAnchorAlignment ); }
         }
 
         public SpriteAlignment CurrentPivotAlignment
         {
             get { return _currentPivotAlignment; }
-            set { NotifyOfPropertyChange(value, () => CurrentPivotAlignment, ref _currentPivotAlignment); }
+            set { NotifyOfPropertyChange( value, () => CurrentPivotAlignment, ref _currentPivotAlignment ); }
         }
 
         public int Width
         {
             get { return _width; }
-            set { NotifyOfPropertyChange(value, () => Width, ref _width); }
+            set { NotifyOfPropertyChange( value, () => Width, ref _width ); }
         }
 
         public int Height
         {
             get { return _height; }
-            set { NotifyOfPropertyChange(value, () => Height, ref _height); }
+            set { NotifyOfPropertyChange( value, () => Height, ref _height ); }
         }
 
         public int X
         {
             get { return _x; }
-            set { NotifyOfPropertyChange(value, () => X, ref _x); }
+            set { NotifyOfPropertyChange( value, () => X, ref _x ); }
         }
 
         public int Y
         {
             get { return _y; }
-            set { NotifyOfPropertyChange(value, () => Y, ref _y); }
+            set { NotifyOfPropertyChange( value, () => Y, ref _y ); }
         }
 
         public bool IsHeightDependantOnWidth
         {
             get { return _isHeightDependantOnWidth; }
-            set { NotifyOfPropertyChange(value, () => IsHeightDependantOnWidth, ref _isHeightDependantOnWidth); }
+            set { NotifyOfPropertyChange( value, () => IsHeightDependantOnWidth, ref _isHeightDependantOnWidth ); }
         }
 
         public bool IsVisible
         {
             get { return _isVisible; }
-            set { NotifyOfPropertyChange(value, () => IsVisible, ref _isVisible); }
+            set { NotifyOfPropertyChange( value, () => IsVisible, ref _isVisible ); }
         }
 
         public RectOffset Padding
         {
             get { return _padding; }
-            set { NotifyOfPropertyChange(value, () => Padding, ref _padding); }
+            set { NotifyOfPropertyChange( value, () => Padding, ref _padding ); }
         }
 
         public RectOffset Margin
         {
             get { return _margin; }
-            set { NotifyOfPropertyChange(value, () => Margin, ref _margin); }
+            set { NotifyOfPropertyChange( value, () => Margin, ref _margin ); }
         }
 
         public RectOffset ParentPadding
         {
             get { return _parentPadding; }
-            set { NotifyOfPropertyChange(value, () => ParentPadding, ref _parentPadding); }
+            set { NotifyOfPropertyChange( value, () => ParentPadding, ref _parentPadding ); }
         }
 
         public bool IgnoreParentPadding
         {
             get { return _ignoreParentPadding; }
-            set { NotifyOfPropertyChange(value, () => IgnoreParentPadding, ref _ignoreParentPadding); }
+            set { NotifyOfPropertyChange( value, () => IgnoreParentPadding, ref _ignoreParentPadding ); }
         }
+
         #endregion
 
         #region Internal References.
@@ -142,7 +124,7 @@ namespace Assets.UnityXD.Core
         /// <value>The rect transform reference.</value>
         public RectTransform RectTransformRef
         {
-            get { return _rectTransformRef ?? (_rectTransformRef = GetComponent<RectTransform>()); }
+            get { return _rectTransformRef ?? (_rectTransformRef = GetComponent<RectTransform>( )); }
         }
 
         /// <summary>
@@ -151,7 +133,7 @@ namespace Assets.UnityXD.Core
         /// <value>The rect transform reference.</value>
         public Image ImageRef
         {
-            get { return _imageRef ?? (_imageRef = GetComponent<Image>()); }
+            get { return _imageRef ?? (_imageRef = GetComponent<Image>( )); }
         }
 
         /// <summary>
@@ -160,7 +142,7 @@ namespace Assets.UnityXD.Core
         /// <value>The text reference.</value>
         public Text TextRef
         {
-            get { return _textRef ?? (_textRef = GetComponent<Text>()); }
+            get { return _textRef ?? (_textRef = GetComponent<Text>( )); }
         }
 
         #endregion
@@ -184,7 +166,7 @@ namespace Assets.UnityXD.Core
         public bool IsHorizontalStretchEnabled
         {
             get { return _isHorizontalStretchEnabled; }
-            set { NotifyOfPropertyChange(value, () => IsHorizontalStretchEnabled, ref _isHorizontalStretchEnabled); }
+            set { NotifyOfPropertyChange( value, () => IsHorizontalStretchEnabled, ref _isHorizontalStretchEnabled ); }
         }
 
         /// <summary>
@@ -194,7 +176,7 @@ namespace Assets.UnityXD.Core
         public bool IsVeritcalStretchEnabled
         {
             get { return _isVeritcalStretchEnabled; }
-            set { NotifyOfPropertyChange(value, () => IsVeritcalStretchEnabled, ref _isVeritcalStretchEnabled); }
+            set { NotifyOfPropertyChange( value, () => IsVeritcalStretchEnabled, ref _isVeritcalStretchEnabled ); }
         }
 
         #endregion
@@ -205,14 +187,14 @@ namespace Assets.UnityXD.Core
         {
             var min = RectTransformRef.anchorMin;
             var max = RectTransformRef.anchorMax;
-            return !min.Equals(max) && min.x == 0 && max.x == 1;
+            return !min.Equals( max ) && min.x == 0 && max.x == 1;
         }
 
         private bool IsVertical()
         {
             var min = RectTransformRef.anchorMin;
             var max = RectTransformRef.anchorMax;
-            return !min.Equals(max) && min.y == 0 && max.y == 1;
+            return !min.Equals( max ) && min.y == 0 && max.y == 1;
         }
 
         /// <summary>
@@ -260,30 +242,30 @@ namespace Assets.UnityXD.Core
             {
                 if (IsHorizontalStretchEnabled)
                 {
-                    max.x = -mR + oMaxX + X*2;
+                    max.x = -mR + oMaxX + X * 2;
                     min.x = mL + oMinX;
                 }
                 else
                 {
                     max.x = 0;
-                    min.x = X*2;
+                    min.x = X * 2;
                 }
 
                 if (IsVeritcalStretchEnabled)
                 {
-                    max.y = -mT + oMaxY + -Y*2;
+                    max.y = -mT + oMaxY + -Y * 2;
                     min.y = mB + oMinY;
                 }
                 else
                 {
                     min.y = 0;
-                    max.y = -Y*2;
+                    max.y = -Y * 2;
                 }
             }
 
             RectTransformRef.offsetMin = min;
             RectTransformRef.offsetMax = max;
-            SetSize(Width, Height);
+            SetSize( Width, Height );
         }
 
         /// <summary>
@@ -292,7 +274,9 @@ namespace Assets.UnityXD.Core
         /// <param name="alignment"></param>
         /// <param name="horizStretch"></param>
         /// <param name="vertStretch"></param>
-        public void Dock(SpriteAlignment alignment, bool horizStretch, bool vertStretch)
+        public void Dock(SpriteAlignment alignment,
+                         bool horizStretch,
+                         bool vertStretch)
         {
             var min = RectTransformRef.anchorMin;
             var max = RectTransformRef.anchorMax;
@@ -304,8 +288,8 @@ namespace Assets.UnityXD.Core
             // Only manipulate the Min/Max anchor settings if they aren't Custom.
             if (alignment != SpriteAlignment.Custom)
             {
-                min = alignment.ToVector();
-                max = alignment.ToVector();
+                min = alignment.ToVector( );
+                max = alignment.ToVector( );
                 CurrentAnchorAlignment = alignment;
                 CurrentPivotAlignment = alignment;
             }
@@ -349,14 +333,23 @@ namespace Assets.UnityXD.Core
                 h = w;
             }
 
-            if (!IsHorizontalStretchEnabled)
-                RectTransformRef.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
-
-            if (!IsVeritcalStretchEnabled)
-                RectTransformRef.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
-
             Width = w;
             Height = h;
+
+            // Style can override the intended sizes.
+
+            if (CurrentStyle != null)
+            {
+                Width = CurrentStyle != null && CurrentStyle.Width > 0 ? CurrentStyle.Width : w;
+                Height = CurrentStyle != null && CurrentStyle.Height > 0 ? CurrentStyle.Height : h;
+            }
+
+            if (!IsHorizontalStretchEnabled)
+                RectTransformRef.SetSizeWithCurrentAnchors( RectTransform.Axis.Horizontal, Width );
+
+            if (!IsVeritcalStretchEnabled)
+                RectTransformRef.SetSizeWithCurrentAnchors( RectTransform.Axis.Vertical, Height );
+            
         }
 
         /// <summary>
@@ -366,14 +359,14 @@ namespace Assets.UnityXD.Core
         public void SetPadding(RectOffset padding)
         {
             Padding = padding;
-            var children = GetComponentsInChildren<BaseControl>();
+            var children = GetComponentsInChildren<BaseControl>( );
 
             // Tell the Children of the new padding.
             foreach (var child in children)
             {
                 if (child != this)
                 {
-                    child.SetParentPadding(Padding);
+                    child.SetParentPadding( Padding );
                 }
             }
         }
@@ -423,7 +416,8 @@ namespace Assets.UnityXD.Core
         {
             if (!HasInitialized)
             {
-                Initialize(); ;
+                Initialize( );
+                ;
             }
         }
 
@@ -431,7 +425,8 @@ namespace Assets.UnityXD.Core
         {
             if (!HasInitialized)
             {
-                Initialize();;
+                Initialize( );
+                ;
             }
         }
 
@@ -439,51 +434,54 @@ namespace Assets.UnityXD.Core
         {
             if (!HasInitialized)
             {
-                Initialize(); ;
+                Initialize( );
             }
+            ValidateHeirachy( );
         }
 
         private void Initialize()
         {        
-            Debug.Log("Initialzing Component");
-            CacheComponentReferences();
-            RegisterBindings();
-            ValidateHeirachy();
-            InvalidateComponent();
-
+            CacheComponentReferences( );
+            RegisterBindings( );
+            ValidateHeirachy( );
+            InvalidateComponent( );
             HasInitialized = true;
         }
 
-        public virtual void InvalidateLayout()
+        public void InvalidateLayout()
         {
-            Dock(CurrentAnchorAlignment, IsHorizontalStretchEnabled, IsVeritcalStretchEnabled);
-            SetPadding(Padding);
-            SetMargin(Margin);
-            SetSize(Width, Height);
-            SetPosition(X, Y);
+            Dock( CurrentAnchorAlignment, IsHorizontalStretchEnabled, IsVeritcalStretchEnabled );
+            SetPadding( Padding );
+            SetMargin( Margin );
+            SetSize( Width, Height );
+            SetPosition( X, Y );
                   
         }
 
         public virtual void SetStyle(Style style)
         {
             // TODO : Determine how to handle "isPadding/Margin Dirty" in that should an inbound style overwrite existing settings?          
-            if (style.Padding != null & Padding == null)
-            {
-                SetPadding(style.Padding);
-            }
-
-            if (style.Margin != null & Margin == null)
-            {
-                SetPadding(style.Padding);
-            }
+            CurrentStyle = style;
         }
 
-        public abstract void InvalidateComponent();
+        public void InvalidateComponent()
+        {
+            InvalidateControl( );
+            InvalidateLayout( );
+        }
+
+        public abstract void InvalidateControl();
+
         public abstract void CacheComponentReferences();
 
         public virtual void ValidateHeirachy()
         {
-            
+            var prefix = this.GetType( ).Name;
+            // Help keep it tidy...
+            if (!name.StartsWith( prefix, true, null ))
+            {
+                name = prefix + name;
+            }
         }
     }
 }

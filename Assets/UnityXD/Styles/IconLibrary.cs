@@ -5,6 +5,7 @@ namespace Assets.UnityXD.Styles
     [Serializable]
     public enum IconLibrary
     {
+        Unknown,
         Alarm,
         AlarmCancel,
         AlarmRing,

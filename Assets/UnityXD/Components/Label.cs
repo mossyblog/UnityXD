@@ -12,7 +12,6 @@ namespace Assets.UnityXD.Components
     {
 
         public Text TextRef { get; set; }
-        private PropertyBinding<string, Text> _textCompToVm;
 
         [SerializeField]
         private string _text;
@@ -27,15 +26,26 @@ namespace Assets.UnityXD.Components
         {
             base.SetStyle(style);
             CurrentStyle = style;
-
         }
 
         private void OnTextChanged()
         {
-            Text = TextRef.text;
+            Text = TextRef.text;          
         }
 
-        public override void InvalidateComponent()
+        public override void SetSize(int w, int h)
+        {
+            if (CurrentStyle != null)
+            {
+                if (CurrentStyle.Font.AutoSize)
+                {
+                    w = (int)TextRef.preferredWidth;
+                }
+            }
+            base.SetSize(w, h);
+        }
+
+        public override void InvalidateControl()
         {
             if (CurrentStyle != null)
             {
@@ -44,6 +54,7 @@ namespace Assets.UnityXD.Components
                 TextRef.resizeTextMinSize = CurrentStyle.Font.minSize;
                 TextRef.resizeTextMaxSize = CurrentStyle.Font.maxSize;
                 TextRef.color = CurrentStyle.Foreground.ToColor();
+                TextRef.alignment = CurrentStyle.Font.alignment;
             }
 
             if (!TextRef.text.Equals(Text))
@@ -51,7 +62,6 @@ namespace Assets.UnityXD.Components
                 TextRef.text = Text;
             }
 
-            InvalidateLayout();
         }
 
         public override void CacheComponentReferences()
@@ -60,28 +70,11 @@ namespace Assets.UnityXD.Components
             TextRef.RegisterDirtyLayoutCallback(OnTextChanged);            
         }
 
-        public override void ValidateHeirachy()
-        {
-            base.ValidateHeirachy();
-            
-            // Help keep it tidy...
-            if (!name.StartsWith("label", true, null))
-            {
-                name = "Label" + name;
-            }
-        }
-
-        public void DoSomething()
-        {
-            Dock(SpriteAlignment.BottomCenter, true, true);
-            SetStyle(ZuQAPI.Controller.Instance().Theme().FetchStyle<Label>("Default"));
-        }
+      
 
         internal override void RegisterBindings()
         {
-            _textCompToVm = new PropertyBinding<string, Text>(TextRef, e => TextRef.text = e);
-            _textCompToVm.BindTo(() => Text);
-            _textCompToVm.BindViewModel(this);
+            
         }
     }
 }

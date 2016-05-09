@@ -32,6 +32,8 @@ namespace Assets.UnityXD.XDEditor.XDCore
 
         IXDCheckbox Checkbox();
 
+        IXDRectOffset RectOffset();
+
         IXDLayout Spacer();
 
         IXDLayout Spacer(int atm);
@@ -39,10 +41,12 @@ namespace Assets.UnityXD.XDEditor.XDCore
         IXDLayout FlexiSpace();
 
         IXDLayout VerticalLayout();
+
         IXDLayout VerticalLayout(GUIStyle style);
 
-        IXDLayout HorizontalLayout(GUIStyle style);
         IXDLayout HorizontalLayout();
+
+        IXDLayout HorizontalLayout(GUIStyle style);          
 
         IPropertyBinding<bool, IXDLayout> Enabled { get; }
 
@@ -86,6 +90,13 @@ namespace Assets.UnityXD.XDEditor.XDCore
         public IXDTabBar TabBar()
         {
             var comp = new XDTabBar(this);
+            Children.Add(comp);
+            return comp;
+        }
+
+        public IXDRectOffset RectOffset()
+        {
+            var comp = new XDRectOffset(this);
             Children.Add(comp);
             return comp;
         }

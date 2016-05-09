@@ -7,6 +7,7 @@ using Assets.UnityXD.Core;
 using Assets.UnityXD.XDEditor.XDCore;
 using UnityEditor;
 using UnityEngine;
+using Assets.UnityXD.Styles;
 
 namespace Assets.UnityXD.XDEditor.XDControls
 {
@@ -30,7 +31,8 @@ namespace Assets.UnityXD.XDEditor.XDControls
         /// </summary>
         IPropertyBinding<string, IXDComboBox> Label { get; }
 
-        IXDComboBox Selected(Expression<Func<object>> propertyExpression);
+        //IXDComboBox Selected(Expression<Func<object>> propertyExpression);
+        IXDComboBox Selected<T>(Expression<Func<T>> propertyExpression);
         IXDComboBox Options(object[] items);
         IXDComboBox Bind(object viewModel);
     }
@@ -44,6 +46,8 @@ namespace Assets.UnityXD.XDEditor.XDControls
         private object selectedItem;
         private object[] items;
         private string label;
+        private Type EnumType;
+        private bool isEnum;
 
         private PropertyBinding<object, IXDComboBox> selectedItemProperty;
         private PropertyBinding<object[], IXDComboBox> itemsProperty;
@@ -54,11 +58,19 @@ namespace Assets.UnityXD.XDEditor.XDControls
             return itemsProperty.Value(items);
         }
 
-        public IXDComboBox Selected(Expression<Func<object>> propertyExpression)
+        public IXDComboBox Selected<T>(Expression<Func<T>> propertyExpression)
         {
-            return selectedItemProperty.BindTo(propertyExpression);
-        }
+            
+            EnumType = typeof(T);
+            isEnum = EnumType.IsEnum;
 
+            var expression = (MemberExpression)propertyExpression.Body;
+            var propertyName = expression.Member.Name;
+
+            selectedItem = propertyExpression;
+            selectedItemProperty.BindTo(propertyName);
+            return this;
+        }
 
         public IPropertyBinding<object, IXDComboBox> SelectedItem { get { return selectedItemProperty; } }
         public IPropertyBinding<object[], IXDComboBox> Items { get { return itemsProperty; } }
@@ -87,6 +99,7 @@ namespace Assets.UnityXD.XDEditor.XDControls
             var guiContent = itemStrings.Select(m => new GUIContent(m, tooltip)).ToArray();
             int newIndex;
 
+           
             if (!string.IsNullOrEmpty(label))
             {
                 newIndex = EditorGUILayout.Popup(new GUIContent(label), selectedIndex, guiContent);
@@ -97,12 +110,19 @@ namespace Assets.UnityXD.XDEditor.XDControls
                 newIndex = EditorGUILayout.Popup(selectedIndex, guiContent);
             }
                 
-
-            if (newIndex != selectedIndex)
+            if (!isEnum)
             {
-                selectedIndex = newIndex;
-                selectedItem = items[selectedIndex];
-                selectedItemProperty.UpdateView(selectedItem);
+                if (newIndex != selectedIndex)
+                {
+                    selectedIndex = newIndex;
+                    selectedItem = items[selectedIndex];
+                    selectedItemProperty.UpdateView( selectedItem );
+                }
+            }
+            else
+            {
+                var newSelection = Enum.Parse(EnumType,items[newIndex].ToString());
+                selectedItemProperty.UpdateView(newSelection);
             }
         }
 

@@ -25,7 +25,8 @@ namespace Assets.UnityXD.Editor
 
         public override void OnTabLayout(XDGUI gui)
         {
-            var options = ZuQAPI.Controller.Instance().Theme().FetchStyles<Label>().ToArray();
+            var options = ZuQAPI.Controller.Instance().Theme().FetchStyles().ToArray();
+
             gui.VerticalLayout(PanelDefault).TextBox().Field((s) => { _labelRef.Text = s; }, _labelRef.Text).Label("Text", LabelDefault).Width(172).End();
             gui.Spacer(8);
 
@@ -42,10 +43,7 @@ namespace Assets.UnityXD.Editor
         {
         }
 
-        public override void OnCustomInspector()
-        {
 
-        }
     }
 
 }

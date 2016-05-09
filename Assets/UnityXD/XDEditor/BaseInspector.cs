@@ -53,7 +53,7 @@ namespace Assets.UnityXD.XDEditor
 
 
             var guiFinish = new XDGUI();
-            guiFinish.Background(ColorLibrary.ChromeLightest.ToColor());
+            guiFinish.Background(ColorLibrary.ChromeDarker.ToColor());
             guiFinish.FlexiSpace();
             guiFinish.Render();
 
@@ -87,8 +87,7 @@ namespace Assets.UnityXD.XDEditor
 
             CustomGUI = new XDGUI();
             CustomGUI.Background(ColorLibrary.ChromeDarker.ToColor());
-            OnTabLayout(CustomGUI);
-
+            OnTabLayout(CustomGUI);          
             CustomGUI.Render();
 
 
@@ -101,10 +100,8 @@ namespace Assets.UnityXD.XDEditor
 
 
         public abstract void OnTabLayout(XDGUI gui);
+
         public abstract void OnTabBinding(XDGUI gui);
-
-
-        public abstract void OnCustomInspector();
 
         public override bool UseDefaultMargins()
         {
